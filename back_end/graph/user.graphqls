@@ -1,0 +1,54 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+directive @goField(
+    forceResolver: Boolean
+    name: String
+) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
+
+scalar Any
+
+directive @auth on FIELD_DEFINITION
+
+enum UserRole {
+    USER
+    ADMIN
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    password: String!
+    subscribe: Boolean!
+    banned: Boolean!
+    role: UserRole!
+}
+
+input NewUser {
+    firstName: String!
+    lastName: String!
+    email: String!
+    phone: String!
+    password: String!
+    subscribe: Boolean!
+    banned: Boolean!
+    role: UserRole!
+}
+
+type AuthOps {
+    login(email: String!, password: String!): Any! @goField(forceResolver: true)
+    register(input: NewUser!): Any! @goField(forceResolver: true)
+}
+
+type Mutation {
+    auth: AuthOps! @goField(forceResolver: true)
+    createUser(input: NewUser!): User!
+}
+
+type Query {
+    user(id: ID!): User! @goField(forceResolver: true) @auth
+    protected: String! @goField(forceResolver: true) @auth
+}
