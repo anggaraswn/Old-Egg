@@ -1,0 +1,22 @@
+.footer {
+  color: gray;
+  height: 140px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.link {
+  display: flex;
+  justify-content: center;
+}
+
+.gray {
+  a: 'link{color: white)}';
+  a: 'visited{color: white)}';
+}
+
+.test {
+  display: flex;
+  justify-content: center;
+}
