@@ -1,0 +1,46 @@
+.navbar {
+  display: flex;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+}
+
+.bottom {
+  display: flex;
+}
+
+.search {
+  width: 369px;
+  height: 22px;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.right {
+  display: flex;
+  min-width: 100%;
+  min-height: 100%;
+  align-items: center;
+  column-gap: 20px;
+}
+
+.user {
+  display: flex;
+  column-gap: 10px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+}
+
+.returns {
+  display: flex;
+  flex-direction: column;
+}

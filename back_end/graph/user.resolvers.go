@@ -11,6 +11,7 @@ import (
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
 	"github.com/anggaraswn/gqlgen-todos/service"
 	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // Login is the resolver for the login field.
@@ -41,12 +42,12 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 		Password:  password,
 		Subscribe: input.Subscribe,
 		Banned:    input.Banned,
-		Role: 	   input.Role,
+		Role:      input.Role,
 		ID:        uuid.NewString(),
 	}
 	// var user *model.User
 	// user.ID = input.UserID
-	
+
 	err = db.Create(user).Error
 
 	return user, err
@@ -60,6 +61,20 @@ func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error
 // Protected is the resolver for the protected field.
 func (r *queryResolver) Protected(ctx context.Context) (string, error) {
 	return "Success", nil
+}
+
+// GetCurrentUser is the resolver for the getCurrentUser field.
+func (r *queryResolver) GetCurrentUser(ctx context.Context) (*model.User, error) {
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, token gaada",
+		}
+	}
+	// fmt.Print("Test",ctx.Value("auth"))
+	id := ctx.Value("auth").(*service.JwtCustomClaim).ID
+	// fmt.Print("ID: ", id)
+
+	return service.UserGetByID(ctx, id)
 }
 
 // AuthOps returns AuthOpsResolver implementation.

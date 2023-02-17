@@ -3,6 +3,7 @@ import styles from '../styles/Login.module.css';
 import Footer from '@/components/footer';
 import { useState } from 'react';
 import axios from 'axios';
+import { setCookies } from 'cookies-next';
 
 const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
 const LOGIN_MUTATION = `mutation login($email: String!, $password: String!){
@@ -36,14 +37,19 @@ export default function Login() {
       })
         .then((response) => {
           console.log(response);
-          const test = response.data.data.auth.login.token;
-          console.log(test);
+          // const test = response.data.data.auth.login.token;
+          if (response.data.data.auth.login) {
+            setCookies('jwt', response.data.data.auth.login.token, {
+              maxAge: 60 * 60,
+            });
+
+            window.location.href = '/';
+          }
+          // console.log(test);
         })
         .catch((err) => {
-          setErrorMsg('Error');
+          setErrorMsg('Invalid credential!');
           console.log(err);
-
-          console.log('Test');
         });
     }
   };

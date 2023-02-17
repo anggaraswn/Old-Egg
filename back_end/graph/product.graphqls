@@ -1,0 +1,45 @@
+type Product {
+    id: ID!
+    name: String!
+    images: [ProductImage!]! @goField(forceResolver: true)
+    price: Float!
+    discount: Int!
+    rating: Int!
+    stock: Int!
+    description: String!
+    numberOfReviews: Int!
+    numberBought: Int!
+    category: Category! @goField(forceResolver: true)
+}
+
+type Category {
+    id: ID!
+    name: String!
+    products: [Product!]! @goField(forceResolver: true)
+}
+
+type ProductImage {
+    id: ID!
+    image: String!
+    product: Product! @goField(forceResolver: true)
+}
+
+type Shop {
+    id: ID!
+    name: String!
+}
+
+extend type Query {
+    product(id: ID!): Product!
+    products(shopID: ID, limit: Int!, topSold: Boolean): [Product!]!
+}
+
+input NewProduct {
+    name: String!
+    categoryID: ID!
+    image: ProductImage!
+    description: String!
+    price: Int!
+    stock: Int!
+    details: String!
+}

@@ -16,7 +16,7 @@ type JwtCustomClaim struct {
 var jwtSecret = []byte(getJwtSecret())
 
 func getJwtSecret() string {
-	secret := "punyandrew"
+	secret := "rahasia"
 	return secret
 }
 
