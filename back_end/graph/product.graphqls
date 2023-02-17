@@ -24,20 +24,19 @@ type ProductImage {
     product: Product! @goField(forceResolver: true)
 }
 
-type Shop {
-    id: ID!
-    name: String!
-}
-
 extend type Query {
     product(id: ID!): Product!
-    products(shopID: ID, limit: Int!, topSold: Boolean): [Product!]!
+    products(shopID: ID, limit: Int, topSold: Boolean): [Product!]!
+}
+
+extend type Mutation {
+    createProduct(input: NewProduct!): Product!
 }
 
 input NewProduct {
     name: String!
     categoryID: ID!
-    image: ProductImage!
+    image: String!
     description: String!
     price: Int!
     stock: Int!
