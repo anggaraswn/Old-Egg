@@ -27,7 +27,6 @@ type NewProduct struct {
 	Price       float64 `json:"price"`
 	Discount    int     `json:"discount"`
 	Stock       int     `json:"stock"`
-	Details     string  `json:"details"`
 }
 
 type NewStore struct {

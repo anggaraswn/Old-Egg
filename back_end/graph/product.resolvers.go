@@ -19,23 +19,23 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewPro
 
 	db := database.GetDB()
 	product := &model.Product{
-		ID:        uuid.NewString(),
-		Name:	input.Name,
-		Images: input.Image,
-		Price: input.Price,
-		Discount: input.Discount,
-		Rating: 0,
-		Stock: input.Stock,
-		Description: input.Description,
+		ID:              uuid.NewString(),
+		Name:            input.Name,
+		Images:          input.Image,
+		Price:           input.Price,
+		Discount:        input.Discount,
+		Rating:          0,
+		Stock:           input.Stock,
+		Description:     input.Description,
 		NumberOfReviews: 0,
-		NumberBought: 0,
-		CategoryID: input.CategoryID,
-		StoreID: input.StoreID,
-		}
+		NumberBought:    0,
+		CategoryID:      input.CategoryID,
+		StoreID:         input.StoreID,
+	}
 
-		err := db.Create(product).Error
+	err := db.Create(product).Error
 
-		return product, err
+	return product, err
 }
 
 // Category is the resolver for the category field.
@@ -55,7 +55,18 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 
 // Products is the resolver for the products field.
 func (r *queryResolver) Products(ctx context.Context, storeID *string, limit *int, topSold *bool) ([]*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Products - products"))
+	// panic(fmt.Errorf("not implemented: Products - products"))
+	db := database.GetDB()
+
+	var models []*model.Product
+	
+	data := db.Model(models)
+
+	if(limit != nil){
+		data = data.Limit(*limit)
+	}
+
+	return models, data.Find(&models).Error
 }
 
 // Product returns ProductResolver implementation.

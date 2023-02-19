@@ -37,7 +37,6 @@ input NewProduct {
     price: Float!
     discount: Int!
     stock: Int!
-    details: String!
 }
 
 input NewCategory {

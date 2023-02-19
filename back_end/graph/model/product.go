@@ -12,9 +12,9 @@ type Product struct {
 	NumberOfReviews int     `json:"numberOfReviews"`
 	NumberBought    int     `json:"numberBought"`
 	CategoryID      string
-	Category        *Category `json:"category" gorm:"foreignKey:CategoryID"`
+	Category        *Category `json:"category"`
 	StoreID         string
-	Store           *Store `json:"store" gorm:"foreignKey:StoreID"`
+	Store           *Store `json:"store"`
 }
 
 type Category struct {
