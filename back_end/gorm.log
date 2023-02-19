@@ -1,55 +1,55 @@
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[125.697ms] [34;1m[rows:1][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND table_type = 'BASE TABLE'
+2023/02/19 23:03:48 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[266.764ms] [34;1m[rows:1][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND table_type = 'BASE TABLE'
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.001ms] [34;1m[rows:1][0m SELECT CURRENT_DATABASE()
+2023/02/19 23:03:48 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.098ms] [34;1m[rows:1][0m SELECT CURRENT_DATABASE()
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[18.080ms] [34;1m[rows:-][0m SELECT c.column_name, c.is_nullable = 'YES', c.udt_name, c.character_maximum_length, c.numeric_precision, c.numeric_precision_radix, c.numeric_scale, c.datetime_precision, 8 * typlen, c.column_default, pd.description, c.identity_increment FROM information_schema.columns AS c JOIN pg_type AS pgt ON c.udt_name = pgt.typname LEFT JOIN pg_catalog.pg_description as pd ON pd.objsubid = c.ordinal_position AND pd.objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = c.table_name AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = c.table_schema)) where table_catalog = 'tpa_web' AND table_schema = CURRENT_SCHEMA() AND table_name = 'users'
+2023/02/19 23:03:48 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[42.051ms] [34;1m[rows:-][0m SELECT c.column_name, c.is_nullable = 'YES', c.udt_name, c.character_maximum_length, c.numeric_precision, c.numeric_precision_radix, c.numeric_scale, c.datetime_precision, 8 * typlen, c.column_default, pd.description, c.identity_increment FROM information_schema.columns AS c JOIN pg_type AS pgt ON c.udt_name = pgt.typname LEFT JOIN pg_catalog.pg_description as pd ON pd.objsubid = c.ordinal_position AND pd.objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = c.table_name AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = c.table_schema)) where table_catalog = 'tpa_web' AND table_schema = CURRENT_SCHEMA() AND table_name = 'users'
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.285ms] [34;1m[rows:-][0m SELECT * FROM "users" LIMIT 1
+2023/02/19 23:03:48 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.510ms] [34;1m[rows:-][0m SELECT * FROM "users" LIMIT 1
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[12.243ms] [34;1m[rows:-][0m SELECT constraint_name FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users' AND constraint_type = 'UNIQUE'
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[18.633ms] [34;1m[rows:-][0m SELECT constraint_name FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users' AND constraint_type = 'UNIQUE'
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[8.999ms] [34;1m[rows:-][0m SELECT c.column_name, constraint_name, constraint_type FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users'
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[8.697ms] [34;1m[rows:-][0m SELECT c.column_name, constraint_name, constraint_type FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users'
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.507ms] [34;1m[rows:-][0m SELECT a.attname as column_name, format_type(a.atttypid, a.atttypmod) AS data_type
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.942ms] [34;1m[rows:-][0m SELECT a.attname as column_name, format_type(a.atttypid, a.atttypmod) AS data_type
 		FROM pg_attribute a JOIN pg_class b ON a.attrelid = b.oid AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA())
 		WHERE a.attnum > 0 -- hide internal columns
 		AND NOT a.attisdropped -- hide deleted columns
 		AND b.relname = 'users'
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[2.804ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'id') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.389ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'id') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.539ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'first_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.505ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'first_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[2.807ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'last_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[3.038ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'last_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[2.019ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'email') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.507ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'email') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[2.516ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'phone') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.506ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'phone') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.509ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'password') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.506ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'password') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'subscribe') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'subscribe') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'banned') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[0.507ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'banned') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:22 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.797ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'role') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/19 23:03:49 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[0.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'role') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/19 13:59:30 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[111.240ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '85a04c28-f329-468d-9eca-c33c666d8543' LIMIT 1
+2023/02/19 23:09:37 [31;1mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:36 [35;1mERROR: relation "products" does not exist (SQLSTATE 42P01)
+[0m[33m[135.680ms] [34;1m[rows:0][0m INSERT INTO "products" ("id","name","images","price","discount","rating","stock","description","number_of_reviews","number_bought","category_id","store_id") VALUES ('a41ae06c-6e0b-4a50-b95f-442f38c560f6','MSI Laptop Creator M16','https://res.cloudinary.com/dwtby8jpe/image/upload/v1676613177/TPA_WEB/34-156-056-V19_rkofwn.jpg',899.000000,0,0,20,'Intel Core i7 11th Gen 11800H (2.30GHz) 16GB Memory 512 GB NVMe SSD NVIDIA GeForce RTX 3050 Ti Laptop GPU 16.0" Windows 10 Pro 64-bit Creator M16 A11UD-671',0,0,'1','1')

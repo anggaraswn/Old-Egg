@@ -13,37 +13,29 @@ import (
 	"github.com/google/uuid"
 )
 
-// Products is the resolver for the products field.
-func (r *categoryResolver) Products(ctx context.Context, obj *model.Category) ([]*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Products - products"))
-}
-
 // CreateProduct is the resolver for the createProduct field.
 func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewProduct) (*model.Product, error) {
+	// panic(fmt.Errorf("not implemented: CreateProduct - createProduct"))
+
 	db := database.GetDB()
-
 	product := &model.Product{
-		ID:              uuid.NewString(),
-		Name:            input.Name,
-		Images:          []*model.ProductImage{},
-		Price:           float64(input.Price),
-		Discount:        0,
-		Rating:          0,
-		Stock:           input.Stock,
-		Description:     input.Description,
+		ID:        uuid.NewString(),
+		Name:	input.Name,
+		Images: input.Image,
+		Price: input.Price,
+		Discount: input.Discount,
+		Rating: 0,
+		Stock: input.Stock,
+		Description: input.Description,
 		NumberOfReviews: 0,
-		NumberBought:    0,
-		Category:        &model.Category{},
-	}
+		NumberBought: 0,
+		CategoryID: input.CategoryID,
+		StoreID: input.StoreID,
+		}
 
-	err := db.Create(product).Error
+		err := db.Create(product).Error
 
-	return product, err
-}
-
-// Images is the resolver for the images field.
-func (r *productResolver) Images(ctx context.Context, obj *model.Product) ([]*model.ProductImage, error) {
-	panic(fmt.Errorf("not implemented: Images - images"))
+		return product, err
 }
 
 // Category is the resolver for the category field.
@@ -51,9 +43,9 @@ func (r *productResolver) Category(ctx context.Context, obj *model.Product) (*mo
 	panic(fmt.Errorf("not implemented: Category - category"))
 }
 
-// Product is the resolver for the product field.
-func (r *productImageResolver) Product(ctx context.Context, obj *model.ProductImage) (*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Product - product"))
+// Store is the resolver for the store field.
+func (r *productResolver) Store(ctx context.Context, obj *model.Product) (*model.Store, error) {
+	panic(fmt.Errorf("not implemented: Store - store"))
 }
 
 // Product is the resolver for the product field.
@@ -62,19 +54,11 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 }
 
 // Products is the resolver for the products field.
-func (r *queryResolver) Products(ctx context.Context, shopID *string, limit *int, topSold *bool) ([]*model.Product, error) {
+func (r *queryResolver) Products(ctx context.Context, storeID *string, limit *int, topSold *bool) ([]*model.Product, error) {
 	panic(fmt.Errorf("not implemented: Products - products"))
 }
-
-// Category returns CategoryResolver implementation.
-func (r *Resolver) Category() CategoryResolver { return &categoryResolver{r} }
 
 // Product returns ProductResolver implementation.
 func (r *Resolver) Product() ProductResolver { return &productResolver{r} }
 
-// ProductImage returns ProductImageResolver implementation.
-func (r *Resolver) ProductImage() ProductImageResolver { return &productImageResolver{r} }
-
-type categoryResolver struct{ *Resolver }
 type productResolver struct{ *Resolver }
-type productImageResolver struct{ *Resolver }

@@ -34,7 +34,8 @@ input NewProduct {
     storeID: ID!
     image: String!
     description: String!
-    price: Int!
+    price: Float!
+    discount: Int!
     stock: Int!
     details: String!
 }

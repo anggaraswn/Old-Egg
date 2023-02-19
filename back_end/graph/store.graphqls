@@ -18,7 +18,7 @@ input NewStore {
 }
 
 extend type Query {
-    store: [Store!]! @goField(forceResolver: true)
+    stores: [Store!]! @goField(forceResolver: true)
     store(id: ID, name: String): Store! @goField(forceResolver: true)
 }
 
