@@ -1,7 +1,7 @@
 type Product {
     id: ID!
     name: String!
-    images: [ProductImage!]! @goField(forceResolver: true)
+    images: String!
     price: Float!
     discount: Int!
     rating: Int!
@@ -10,23 +10,18 @@ type Product {
     numberOfReviews: Int!
     numberBought: Int!
     category: Category! @goField(forceResolver: true)
+    store: Store! @goField(forceResolver: true)
 }
 
 type Category {
     id: ID!
     name: String!
-    products: [Product!]! @goField(forceResolver: true)
-}
-
-type ProductImage {
-    id: ID!
-    image: String!
-    product: Product! @goField(forceResolver: true)
+    description: String!
 }
 
 extend type Query {
     product(id: ID!): Product!
-    products(shopID: ID, limit: Int, topSold: Boolean): [Product!]!
+    products(storeID: ID, limit: Int, topSold: Boolean): [Product!]!
 }
 
 extend type Mutation {
@@ -36,9 +31,15 @@ extend type Mutation {
 input NewProduct {
     name: String!
     categoryID: ID!
+    storeID: ID!
     image: String!
     description: String!
     price: Int!
     stock: Int!
     details: String!
+}
+
+input NewCategory {
+    name: String!
+    description: String!
 }

@@ -67,11 +67,13 @@ func (r *queryResolver) Protected(ctx context.Context) (string, error) {
 func (r *queryResolver) GetCurrentUser(ctx context.Context) (*model.User, error) {
 	if ctx.Value("auth") == nil {
 		return nil, &gqlerror.Error{
-			Message: "Error, token gaada",
+			Message: "Error, Invalid Token !",
 		}
 	}
 	// fmt.Print("Test",ctx.Value("auth"))
+	// id := ctx.Value("auth").(*service.JwtCustomClaim).ID
 	id := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
 	// fmt.Print("ID: ", id)
 
 	return service.UserGetByID(ctx, id)

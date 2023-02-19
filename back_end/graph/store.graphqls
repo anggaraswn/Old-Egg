@@ -1,0 +1,27 @@
+type Store {
+    id: ID!
+    name: String!
+    image: String!
+    followers: Int!
+    salesCount: Int!
+    policy: String!
+    aboutUs: String!
+}
+
+input NewStore {
+    name: String!
+    image: String!
+    followers: Int!
+    salesCount: Int!
+    policy: String!
+    aboutUs: String!
+}
+
+extend type Query {
+    store: [Store!]! @goField(forceResolver: true)
+    store(id: ID, name: String): Store! @goField(forceResolver: true)
+}
+
+extend type Mutation {
+    createStore(input: NewStore!): Store!
+}

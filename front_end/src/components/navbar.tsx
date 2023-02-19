@@ -1,9 +1,27 @@
 import Image from 'next/image';
 import styles from './Navbar.module.css';
 import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import { useEffect, useState } from 'react';
 
 export default function Navbar() {
-  const GET_CURRENT_USER = `
+  const token = getCookie('jwt');
+  const [auth, setAuth] = useState(false);
+  const [user, setUser] = useState('');
+  let res: any = null;
+
+  // console.log(token);
+
+  useEffect(() => {
+    if (token) {
+      setAuth(true);
+    } else {
+      setAuth(false);
+    }
+  }, [token]);
+
+  if (auth) {
+    const GET_CURRENT_USER = `
   query{
     getCurrentUser{
       id,
@@ -19,16 +37,32 @@ export default function Navbar() {
   }
   `;
 
-  const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
-  let res = null;
-  console.log(res);
+    // const headers = {
+    //   Authorization: `Bearer ${token}`,
+    // };
 
-  GRAPHQLAPI.post('', {
-    query: GET_CURRENT_USER,
-  }).then((response) => {
-    console.log(response);
-    res = response;
-  });
+    const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
+    // console.log(res);
+
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: GET_CURRENT_USER,
+        // headers: headers,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      // console.log(response);
+      res = response;
+      // console.log(res?.data.data.getCurrentUser);
+      // console.log(res?.data.data.getCurrentUser.firstName);
+      setUser(res?.data.data.getCurrentUser.firstName);
+    });
+  }
 
   return (
     <div className={styles.navbar}>
@@ -79,7 +113,7 @@ export default function Navbar() {
               ></Image>
               <div className={styles.text}>
                 <div>Welcome</div>
-                <div>Sign In / Register</div>
+                {!auth ? <div>Sign In / Register</div> : <div>{user}</div>}
               </div>
             </a>
           </div>
