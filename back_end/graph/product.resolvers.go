@@ -50,7 +50,12 @@ func (r *productResolver) Store(ctx context.Context, obj *model.Product) (*model
 
 // Product is the resolver for the product field.
 func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Product - product"))
+	// panic(fmt.Errorf("not implemented: Product - product"))
+	db := database.GetDB()
+	
+	product := new(model.Product);
+
+	return product, db.First(product, "id = ?", id).Error
 }
 
 // Products is the resolver for the products field.

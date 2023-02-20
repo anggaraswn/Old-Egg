@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import styles from '../components/Card.module.css';
 
 interface Product {
@@ -8,13 +7,17 @@ interface Product {
   price: number;
 }
 
-export default function Card(props: Product) {
+const productDetail = (productID: string) => {
+  return '/product/' + productID;
+};
+
+export default function Card({ id, image, name, price }: Product) {
   return (
     <div className={styles.cardContainer}>
-      <a href="">
-        <img src={props.image} className={styles.productImage}></img>
-        <p className={styles.productName}>{props.name}</p>
-        <p className={styles.productPrice}>${props.price}</p>
+      <a href={productDetail(id)}>
+        <img src={image} className={styles.productImage}></img>
+        <p className={styles.productName}>{name}</p>
+        <p className={styles.productPrice}>${price}</p>
       </a>
     </div>
   );
