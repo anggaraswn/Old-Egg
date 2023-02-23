@@ -56,7 +56,13 @@ export default function ProductRecommendations() {
       <div className={styles.cardContainer}>
         {products.map((p) => {
           return (
-            <Card id={p.id} image={p.images} name={p.name} price={p.price} />
+            <Card
+              id={p.id}
+              image={p.images}
+              name={p.name}
+              price={p.price}
+              key={p.id}
+            />
           );
         })}
       </div>
