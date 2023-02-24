@@ -20,7 +20,7 @@ type User {
     firstName: String!
     lastName: String!
     email: String!
-    phone: String!
+    phone: String
     password: String!
     subscribe: Boolean!
     banned: Boolean!
@@ -31,7 +31,6 @@ input NewUser {
     firstName: String!
     lastName: String!
     email: String!
-    phone: String!
     password: String!
     subscribe: Boolean!
     banned: Boolean!
@@ -45,7 +44,7 @@ type AuthOps {
 
 type Mutation {
     auth: AuthOps! @goField(forceResolver: true)
-    createUser(input: NewUser!): User!
+    createUser(input: NewUser!, phone: String): User!
 }
 
 type Query {

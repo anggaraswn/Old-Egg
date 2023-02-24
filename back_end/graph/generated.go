@@ -62,8 +62,7 @@ type ComplexityRoot struct {
 	Mutation struct {
 		Auth          func(childComplexity int) int
 		CreateProduct func(childComplexity int, input model.NewProduct) int
-		CreateStore   func(childComplexity int, input model.NewStore) int
-		CreateUser    func(childComplexity int, input model.NewUser) int
+		CreateUser    func(childComplexity int, input model.NewUser, phone *string) int
 	}
 
 	Product struct {
@@ -86,8 +85,6 @@ type ComplexityRoot struct {
 		Product        func(childComplexity int, id string) int
 		Products       func(childComplexity int, storeID *string, limit *int, topSold *bool) int
 		Protected      func(childComplexity int) int
-		Store          func(childComplexity int, id *string, name *string) int
-		Stores         func(childComplexity int) int
 		User           func(childComplexity int, id string) int
 	}
 
@@ -120,9 +117,8 @@ type AuthOpsResolver interface {
 }
 type MutationResolver interface {
 	Auth(ctx context.Context) (*model.AuthOps, error)
-	CreateUser(ctx context.Context, input model.NewUser) (*model.User, error)
+	CreateUser(ctx context.Context, input model.NewUser, phone *string) (*model.User, error)
 	CreateProduct(ctx context.Context, input model.NewProduct) (*model.Product, error)
-	CreateStore(ctx context.Context, input model.NewStore) (*model.Store, error)
 }
 type ProductResolver interface {
 	Category(ctx context.Context, obj *model.Product) (*model.Category, error)
@@ -134,8 +130,6 @@ type QueryResolver interface {
 	GetCurrentUser(ctx context.Context) (*model.User, error)
 	Product(ctx context.Context, id string) (*model.Product, error)
 	Products(ctx context.Context, storeID *string, limit *int, topSold *bool) ([]*model.Product, error)
-	Stores(ctx context.Context) ([]*model.Store, error)
-	Store(ctx context.Context, id *string, name *string) (*model.Store, error)
 }
 
 type executableSchema struct {
@@ -217,18 +211,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateProduct(childComplexity, args["input"].(model.NewProduct)), true
 
-	case "Mutation.createStore":
-		if e.complexity.Mutation.CreateStore == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_createStore_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.CreateStore(childComplexity, args["input"].(model.NewStore)), true
-
 	case "Mutation.createUser":
 		if e.complexity.Mutation.CreateUser == nil {
 			break
@@ -239,7 +221,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser)), true
+		return e.complexity.Mutation.CreateUser(childComplexity, args["input"].(model.NewUser), args["phone"].(*string)), true
 
 	case "Product.category":
 		if e.complexity.Product.Category == nil {
@@ -362,25 +344,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Protected(childComplexity), true
-
-	case "Query.store":
-		if e.complexity.Query.Store == nil {
-			break
-		}
-
-		args, err := ec.field_Query_store_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.Store(childComplexity, args["id"].(*string), args["name"].(*string)), true
-
-	case "Query.stores":
-		if e.complexity.Query.Stores == nil {
-			break
-		}
-
-		return e.complexity.Query.Stores(childComplexity), true
 
 	case "Query.user":
 		if e.complexity.Query.User == nil {
@@ -577,7 +540,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(parsedSchema, parsedSchema.Types[name]), nil
 }
 
-//go:embed "product.graphqls" "store.graphqls" "user.graphqls"
+//go:embed "cart.graphqls" "product.graphqls" "store.graphqls" "user.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -589,6 +552,7 @@ func sourceData(filename string) string {
 }
 
 var sources = []*ast.Source{
+	{Name: "cart.graphqls", Input: sourceData("cart.graphqls"), BuiltIn: false},
 	{Name: "product.graphqls", Input: sourceData("product.graphqls"), BuiltIn: false},
 	{Name: "store.graphqls", Input: sourceData("store.graphqls"), BuiltIn: false},
 	{Name: "user.graphqls", Input: sourceData("user.graphqls"), BuiltIn: false},
@@ -653,21 +617,6 @@ func (ec *executionContext) field_Mutation_createProduct_args(ctx context.Contex
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_createStore_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 model.NewStore
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewStore2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐNewStore(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["input"] = arg0
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -680,6 +629,15 @@ func (ec *executionContext) field_Mutation_createUser_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	var arg1 *string
+	if tmp, ok := rawArgs["phone"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["phone"] = arg1
 	return args, nil
 }
 
@@ -743,30 +701,6 @@ func (ec *executionContext) field_Query_products_args(ctx context.Context, rawAr
 		}
 	}
 	args["topSold"] = arg2
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_store_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 *string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["name"] = arg1
 	return args, nil
 }
 
@@ -1128,7 +1062,7 @@ func (ec *executionContext) _Mutation_createUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateUser(rctx, fc.Args["input"].(model.NewUser))
+		return ec.resolvers.Mutation().CreateUser(rctx, fc.Args["input"].(model.NewUser), fc.Args["phone"].(*string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1262,76 +1196,6 @@ func (ec *executionContext) fieldContext_Mutation_createProduct(ctx context.Cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createProduct_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Mutation_createStore(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_createStore(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().CreateStore(rctx, fc.Args["input"].(model.NewStore))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Store)
-	fc.Result = res
-	return ec.marshalNStore2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStore(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_createStore(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Store_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Store_name(ctx, field)
-			case "image":
-				return ec.fieldContext_Store_image(ctx, field)
-			case "followers":
-				return ec.fieldContext_Store_followers(ctx, field)
-			case "salesCount":
-				return ec.fieldContext_Store_salesCount(ctx, field)
-			case "policy":
-				return ec.fieldContext_Store_policy(ctx, field)
-			case "aboutUs":
-				return ec.fieldContext_Store_aboutUs(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Store", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_createStore_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -2290,135 +2154,6 @@ func (ec *executionContext) fieldContext_Query_products(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_stores(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_stores(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Stores(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]*model.Store)
-	fc.Result = res
-	return ec.marshalNStore2ᚕᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStoreᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_stores(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Store_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Store_name(ctx, field)
-			case "image":
-				return ec.fieldContext_Store_image(ctx, field)
-			case "followers":
-				return ec.fieldContext_Store_followers(ctx, field)
-			case "salesCount":
-				return ec.fieldContext_Store_salesCount(ctx, field)
-			case "policy":
-				return ec.fieldContext_Store_policy(ctx, field)
-			case "aboutUs":
-				return ec.fieldContext_Store_aboutUs(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Store", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_store(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_store(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Store(rctx, fc.Args["id"].(*string), fc.Args["name"].(*string))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.Store)
-	fc.Result = res
-	return ec.marshalNStore2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStore(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_store(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "id":
-				return ec.fieldContext_Store_id(ctx, field)
-			case "name":
-				return ec.fieldContext_Store_name(ctx, field)
-			case "image":
-				return ec.fieldContext_Store_image(ctx, field)
-			case "followers":
-				return ec.fieldContext_Store_followers(ctx, field)
-			case "salesCount":
-				return ec.fieldContext_Store_salesCount(ctx, field)
-			case "policy":
-				return ec.fieldContext_Store_policy(ctx, field)
-			case "aboutUs":
-				return ec.fieldContext_Store_aboutUs(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Store", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_store_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -3051,14 +2786,11 @@ func (ec *executionContext) _User_phone(ctx context.Context, field graphql.Colle
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_User_phone(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -5218,7 +4950,7 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"firstName", "lastName", "email", "phone", "password", "subscribe", "banned", "role"}
+	fieldsInOrder := [...]string{"firstName", "lastName", "email", "password", "subscribe", "banned", "role"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -5246,14 +4978,6 @@ func (ec *executionContext) unmarshalInputNewUser(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
 			it.Email, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "phone":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("phone"))
-			it.Phone, err = ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
@@ -5440,12 +5164,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_createProduct(ctx, field)
-			})
-
-		case "createStore":
-
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_createStore(ctx, field)
 			})
 
 		default:
@@ -5705,46 +5423,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Concurrently(i, func() graphql.Marshaler {
 				return rrm(innerCtx)
 			})
-		case "stores":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_stores(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
-		case "store":
-			field := field
-
-			innerFunc := func(ctx context.Context) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_store(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx, innerFunc)
-			}
-
-			out.Concurrently(i, func() graphql.Marshaler {
-				return rrm(innerCtx)
-			})
 		case "__type":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -5877,9 +5555,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 
 			out.Values[i] = ec._User_phone(ctx, field, obj)
 
-			if out.Values[i] == graphql.Null {
-				invalids++
-			}
 		case "password":
 
 			out.Values[i] = ec._User_password(ctx, field, obj)
@@ -6351,11 +6026,6 @@ func (ec *executionContext) unmarshalNNewProduct2githubᚗcomᚋanggaraswnᚋgql
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) unmarshalNNewStore2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐNewStore(ctx context.Context, v interface{}) (model.NewStore, error) {
-	res, err := ec.unmarshalInputNewStore(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐNewUser(ctx context.Context, v interface{}) (model.NewUser, error) {
 	res, err := ec.unmarshalInputNewUser(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
@@ -6421,50 +6091,6 @@ func (ec *executionContext) marshalNProduct2ᚖgithubᚗcomᚋanggaraswnᚋgqlge
 
 func (ec *executionContext) marshalNStore2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStore(ctx context.Context, sel ast.SelectionSet, v model.Store) graphql.Marshaler {
 	return ec._Store(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNStore2ᚕᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStoreᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Store) graphql.Marshaler {
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNStore2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStore(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
 }
 
 func (ec *executionContext) marshalNStore2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐStore(ctx context.Context, sel ast.SelectionSet, v *model.Store) graphql.Marshaler {
@@ -6824,6 +6450,16 @@ func (ec *executionContext) marshalOInt2ᚖint(ctx context.Context, sel ast.Sele
 		return graphql.Null
 	}
 	res := graphql.MarshalInt(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOString2string(ctx context.Context, v interface{}) (string, error) {
+	res, err := graphql.UnmarshalString(v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOString2string(ctx context.Context, sel ast.SelectionSet, v string) graphql.Marshaler {
+	res := graphql.MarshalString(v)
 	return res
 }
 

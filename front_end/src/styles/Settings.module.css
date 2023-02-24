@@ -1,0 +1,35 @@
+.container {
+  display: flex;
+  padding: 20px;
+}
+
+.left {
+  width: 30%;
+}
+
+.right {
+  width: 70%;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 30px;
+}
+.text {
+  color: gray;
+  font-size: 15px;
+}
+
+.block {
+  display: flex;
+  align-items: baseline;
+}
+
+.val {
+  padding: 20px;
+  margin: 0 auto 0 0;
+}
+
+.btn {
+  margin-right: 50px;
+}

@@ -42,7 +42,6 @@ type NewUser struct {
 	FirstName string   `json:"firstName"`
 	LastName  string   `json:"lastName"`
 	Email     string   `json:"email"`
-	Phone     string   `json:"phone"`
 	Password  string   `json:"password"`
 	Subscribe bool     `json:"subscribe"`
 	Banned    bool     `json:"banned"`

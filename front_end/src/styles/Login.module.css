@@ -32,6 +32,7 @@
   display: flex;
   width: 304px;
   justify-content: center;
+  align-items: center;
 }
 
 .signUpLink {

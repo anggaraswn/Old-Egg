@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
@@ -21,7 +22,7 @@ func (r *authOpsResolver) Login(ctx context.Context, obj *model.AuthOps, email s
 
 // Register is the resolver for the register field.
 func (r *authOpsResolver) Register(ctx context.Context, obj *model.AuthOps, input model.NewUser) (interface{}, error) {
-	return service.UserRegister(ctx, input)
+	panic(fmt.Errorf("not implemented: Register - register"))
 }
 
 // Auth is the resolver for the auth field.
@@ -30,7 +31,9 @@ func (r *mutationResolver) Auth(ctx context.Context) (*model.AuthOps, error) {
 }
 
 // CreateUser is the resolver for the createUser field.
-func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) (*model.User, error) {
+func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, phone *string) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: CreateUser - createUser"))
+	
 	db := database.GetDB()
 	password, err := model.HashPassword(input.Password)
 
@@ -38,7 +41,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser) 
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
 		Email:     input.Email,
-		Phone:     input.Phone,
+		Phone:     *phone,
 		Password:  password,
 		Subscribe: input.Subscribe,
 		Banned:    input.Banned,

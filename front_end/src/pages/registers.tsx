@@ -29,40 +29,39 @@ const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
 //   }
 // `;
 
-const CREATE_USER_MUTATION = `
-  mutation createUser(
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $phone: String!
-    $password: String!
-    $subscribe: Boolean!
-    $banned: Boolean!
-    $role: UserRole!
-  ) {
-    createUser(
-      input: {
-        firstName: $firstName
-        lastName: $lastName
-        email: $email
-        phone: $phone
-        password: $password
-        subscribe: $subscribe
-        banned: $banned
-        role: $role
-      }
-    ) {
-      id
-      firstName
-      lastName
-      email
-      phone
-      password
-      subscribe
-      banned
-      role
+const CREATE_USER_MUTATION = ` mutation createUser(
+  $firstName: String!
+  $lastName: String!
+  $email: String!
+  $phone: String!
+  $password: String!
+  $subscribe: Boolean!
+  $banned: Boolean!
+  $role: UserRole!
+) {
+  createUser(
+    input: {
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      subscribe: $subscribe
+      banned: $banned
+      role: $role
     }
+    phone: $phone
+  ) {
+    id
+    firstName
+    lastName
+    email
+    phone
+    password
+    subscribe
+    banned
+    role
   }
+}
 `;
 
 export default function Register() {
@@ -94,23 +93,19 @@ export default function Register() {
     // console.log(!phoneNumberPattern.test(phone));
     // console.log(!passwordPattern.test(password));
 
-    if (
-      !firstNameInput ||
-      !lastNameInput ||
-      !emailInput ||
-      !phoneInput ||
-      !passwordInput
-    ) {
+    if (!firstNameInput || !lastNameInput || !emailInput || !passwordInput) {
       setErrorMsg('All field must be filled!');
     } else if (!emailPattern.test(emailInput)) {
       setErrorMsg('Email must be a valid email');
-    } else if (!phoneNumberPattern.test(phoneInput)) {
+    } else if (phoneInput && !phoneNumberPattern.test(phoneInput)) {
       setErrorMsg('Phone number must be a valid phone number');
     } else if (!passwordPattern.test(passwordInput)) {
       setErrorMsg('Password must be a valid password');
     } else {
       setErrorMsg('');
-
+      if (!phoneInput) {
+        phoneInput = '';
+      }
       // const userInput = {
       //   firstName: firstNameInput,
       //   lastName: lastNameInput,
@@ -145,7 +140,7 @@ export default function Register() {
           console.log(err.error);
         });
 
-      window.location.href = '/';
+      // window.location.href = '/';
     }
   };
 

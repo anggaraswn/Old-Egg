@@ -3,13 +3,14 @@ import styles from './Navbar.module.css';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { useEffect, useRef, useState } from 'react';
-// import DropdownItem from './dropdown';
 
 function DropdownItem(props: any) {
   return (
     <li className={styles.dropdownItem}>
-      <img src={props.image} alt="Icon" />
-      <a href={`${props.link}`}>{props.text}</a>
+      <img src={props.image} alt="Icon" height={20} width={20} />
+      <a onClick={props.click} href={`${props.link}`}>
+        {props.text}
+      </a>
     </li>
   );
 }
@@ -20,23 +21,11 @@ export default function Navbar() {
   const [user, setUser] = useState('');
   const [open, setOpen] = useState(false);
 
-  let userRef = useRef();
-
-  useEffect(() => {
-    let handler = (e: any) => {
-      if (!userRef?.current?.contains(e.target)) {
-        setOpen(false);
-        console.log(userRef.current);
-      }
-    };
-
-    document.addEventListener('mousedown', handler);
-
-    return () => {
-      document.removeEventListener('mousedown', handler);
-    };
-  });
   let res: any = null;
+
+  const logOut = () => {
+    //
+  };
 
   // console.log(token);
 
@@ -148,7 +137,7 @@ export default function Navbar() {
         </a>
         <div>
           {!auth ? (
-            <div className="test" ref={userRef}>
+            <div className="test">
               <a href="/login" className={styles.user}>
                 <Image
                   src="/assets/icon-user.png"
@@ -163,7 +152,11 @@ export default function Navbar() {
               </a>
             </div>
           ) : (
-            <a className={styles.user} href="#">
+            <a
+              className={styles.user}
+              // href=""
+              onClick={() => setOpen((prev) => !prev)}
+            >
               <Image
                 src="/assets/icon-user.png"
                 alt="User Icon"
@@ -173,23 +166,30 @@ export default function Navbar() {
               <div className={styles.text}>
                 <div>Welcome</div>
                 <div>{user}</div>
-                <div
-                  className={`${styles['dropdownMenu']} ${
-                    styles[open ? 'active' : 'inactive']
-                  }`}
-                >
-                  <p className={styles.dropdownText}>{user}</p>
-                  <p className={styles.dropdownText}>
-                    Thank you for being Newegg customer
-                  </p>
-                  <ul>
-                    <DropdownItem
-                      image="/assets/icon-settings.png"
-                      text="Account Settings"
-                      link="/settings"
-                    />
-                  </ul>
-                </div>
+                {open && (
+                  <div
+                    className={`${styles['dropdownMenu']} ${
+                      styles[open ? 'active' : 'inactive']
+                    }`}
+                  >
+                    <p className={styles.dropdownText}>{user}</p>
+                    <p className={styles.dropdownText}>
+                      Thank you for being Newegg customer
+                    </p>
+                    <ul className={styles.listItem}>
+                      <DropdownItem
+                        image="/assets/icon-settings.png"
+                        text="Account Settings"
+                        link="/settings"
+                      />
+                      <DropdownItem
+                        image="/assets/icon-logout.png"
+                        text="Log Out"
+                        click={logOut}
+                      />
+                    </ul>
+                  </div>
+                )}
               </div>
             </a>
           )}

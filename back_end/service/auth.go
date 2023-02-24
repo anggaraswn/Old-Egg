@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func UserRegister(ctx context.Context, input model.NewUser) (interface{}, error) {
+func UserRegister(ctx context.Context, input model.NewUser, phone *string) (interface{}, error) {
 	// Check Email
 	_, err := UserGetByEmail(ctx, input.Email)
 	if err == nil {
@@ -18,7 +18,7 @@ func UserRegister(ctx context.Context, input model.NewUser) (interface{}, error)
 		}
 	}
 
-	createdUser, err := UserCreate(ctx, input)
+	createdUser, err := UserCreate(ctx, input, phone)
 	if err != nil {
 		return nil, err
 	}

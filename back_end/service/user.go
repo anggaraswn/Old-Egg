@@ -9,7 +9,7 @@ import (
 	"github.com/google/uuid"
 )
 
-func UserCreate(ctx context.Context, input model.NewUser) (*model.User, error) {
+func UserCreate(ctx context.Context, input model.NewUser, phone *string) (*model.User, error) {
 	db := database.GetDB()
 
 	password, err := model.HashPassword(input.Password)
@@ -24,7 +24,7 @@ func UserCreate(ctx context.Context, input model.NewUser) (*model.User, error) {
 		LastName: input.LastName,
 		Email:    strings.ToLower(input.Email),
 		Password: password,
-		Phone:    input.Phone,
+		Phone:    *phone,
 		Banned:   input.Banned,
 	}
 

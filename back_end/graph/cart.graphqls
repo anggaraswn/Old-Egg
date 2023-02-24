@@ -1,31 +1,31 @@
-type Cart{
-    user: User! @goField(forceResolver: true);
-    product: Product!@goField(forceResolver: true);
-    quantity: Int!
-    notes: String!
-}
+# type Cart{
+#     user: User! @goField(forceResolver: true);
+#     product: Product!@goField(forceResolver: true);
+#     quantity: Int!
+#     notes: String!
+# }
 
-type Wishlist{
-    user: User! @goField(forceResolver: true)
-    name: String!
-    # product: [Product!]!
-}
+# type Wishlist{
+#     user: User! @goField(forceResolver: true)
+#     name: String!
+#     # product: [Product!]!
+# }
 
-extend type Query{
-    carts: [Cart!]!
-    wishlists: [Wishlist!]!
-}
+# extend type Query{
+#     carts: [Cart!]!
+#     wishlists: [Wishlist!]!
+# }
 
-extend type Mutation{
-    createCart(input: NewCart!): Cart! @auth
-    updateCart(input: NewCart!): Cart @auth
-    deleteCart(productID: ID!): Boolean! @auth
+# extend type Mutation{
+#     createCart(input: NewCart!): Cart! @auth
+#     updateCart(input: NewCart!): Cart @auth
+#     deleteCart(productID: ID!): Boolean! @auth
 
-    createWishlist(productID: ID!)
-}
+#     createWishlist(productID: ID!)
+# }
 
-input NewCart{
-    productID: ID!
-    quantity: Int!
-    notes: String!
-}
+# input NewCart{
+#     productID: ID!
+#     quantity: Int!
+#     notes: String!
+# }

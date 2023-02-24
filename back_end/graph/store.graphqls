@@ -17,11 +17,11 @@ input NewStore {
     aboutUs: String!
 }
 
-extend type Query {
-    stores: [Store!]! @goField(forceResolver: true)
-    store(id: ID, name: String): Store! @goField(forceResolver: true)
-}
+# extend type Query {
+#     stores: [Store!]! @goField(forceResolver: true)
+#     store(id: ID, name: String): Store! @goField(forceResolver: true)
+# }
 
-extend type Mutation {
-    createStore(input: NewStore!): Store!
-}
+# extend type Mutation {
+#     createStore(input: NewStore!): Store!
+# }
