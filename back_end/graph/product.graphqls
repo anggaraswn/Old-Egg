@@ -1,7 +1,7 @@
 type Product {
     id: ID!
     name: String!
-    images: String!
+    image: String!
     price: Float!
     discount: Int!
     rating: Int!
@@ -11,11 +11,43 @@ type Product {
     numberBought: Int!
     category: Category! @goField(forceResolver: true)
     store: Store! @goField(forceResolver: true)
+    brand: Brand! @goField(forceResolver: true)
+    reviews: [Review!]! @goField(forceResolver: true)
+}
+
+input NewProduct {
+    name: String!
+    categoryID: ID!
+    storeID: ID!
+    brandID: ID!
+    image: String!
+    description: String!
+    price: Float!
+    discount: Int!
+    stock: Int!
 }
 
 type Category {
     id: ID!
     name: String!
+    description: String!
+}
+
+input NewCategory {
+    name: String!
+    description: String!
+}
+
+type Brand {
+    id: ID!
+    name: String!
+    image: String!
+    description: String!
+}
+
+input NewBrand {
+    name: String!
+    image: String!
     description: String!
 }
 
@@ -26,20 +58,4 @@ extend type Query {
 
 extend type Mutation {
     createProduct(input: NewProduct!): Product!
-}
-
-input NewProduct {
-    name: String!
-    categoryID: ID!
-    storeID: ID!
-    image: String!
-    description: String!
-    price: Float!
-    discount: Int!
-    stock: Int!
-}
-
-input NewCategory {
-    name: String!
-    description: String!
 }

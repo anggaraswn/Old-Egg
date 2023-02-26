@@ -8,4 +8,5 @@ type Store struct {
 	SalesCount int    `json:"salesCount"`
 	Policy     string `json:"policy"`
 	AboutUs    string `json:"aboutUs"`
+	Banned     bool   `json:"banned"`
 }

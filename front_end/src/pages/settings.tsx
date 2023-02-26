@@ -17,10 +17,16 @@ interface User {
 
 export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
-
   const token = getCookie('jwt');
-
   let res = null;
+
+  const addPhoneNumber = () => {
+    window.location.href = '/addPhoneNumber';
+  };
+
+  const changePassword = () => {
+    window.location.href = '/changePassword';
+  };
 
   const GET_CURRENT_USER = `
   query{
@@ -76,7 +82,9 @@ export default function Settings() {
           </div>
           <div className={styles.tbody}>
             <div className={styles.block}>
-              <p className={styles.text}>Account Information</p>
+              <p className={`${styles['text']} ${styles['point']}`}>
+                Account Information
+              </p>
               <div className={styles.val}>
                 <p>
                   {user?.firstName}&nbsp;{user?.lastName}
@@ -86,12 +94,43 @@ export default function Settings() {
               </div>
               <button className={styles.btn}>Edit</button>
             </div>
-            <div className={styles.block}>
-              <p className={styles.text}>Mobile Number</p>
-              <div className={styles.val}>
-                <p></p>
+            {user?.phone ? (
+              <div className={styles.block}>
+                <p className={`${styles['text']} ${styles['point']}`}>
+                  Mobile Number
+                </p>
+                <div className={styles.val}>
+                  <p>{user?.phone}</p>
+                </div>
+                <button className={styles.btn}>Edit</button>
               </div>
+            ) : (
+              <div className={styles.block}>
+                <p className={`${styles['text']} ${styles['point']}`}>
+                  Mobile Number
+                </p>
+                <div className={styles.val}>
+                  <p>
+                    To enhance your account security, add your mobile number.
+                  </p>
+                </div>
+                <button className={styles.btn} onClick={addPhoneNumber}>
+                  Add
+                </button>
+              </div>
+            )}
+            <div className={styles.block}>
+              <p className={`${styles['text']} ${styles['point']}`}>Password</p>
+              <div className={styles.val}>********</div>
+              <button className={styles.btn} onClick={changePassword}>
+                Edit
+              </button>
             </div>
+          </div>
+          <div className={styles.text} style={{ fontSize: '13px' }}>
+            Newegg is the sole owner of the information collected on this site.
+            We will not sell, share, or rent this information to any outside
+            parties, except as outlined in the privacy policy.
           </div>
         </div>
       </div>

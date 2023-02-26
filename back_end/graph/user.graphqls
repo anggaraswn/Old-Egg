@@ -45,6 +45,9 @@ type AuthOps {
 type Mutation {
     auth: AuthOps! @goField(forceResolver: true)
     createUser(input: NewUser!, phone: String): User!
+    updatePhonenumber(phone: String!): User! @goField(forceResolver: true)
+    updatePassword(currentPassword: String!, newPassword: String!): User!
+        @goField(forceResolver: true)
 }
 
 type Query {

@@ -4,11 +4,11 @@
 }
 
 .left {
-  width: 30%;
+  width: 20%;
 }
 
 .right {
-  width: 70%;
+  width: 80%;
 }
 
 .title {
@@ -32,4 +32,8 @@
 
 .btn {
   margin-right: 50px;
+}
+
+.point {
+  width: 130px;
 }

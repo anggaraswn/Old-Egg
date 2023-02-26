@@ -1,127 +1,199 @@
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[149.558ms] [34;1m[rows:1][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND table_type = 'BASE TABLE'
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[207.498ms] [34;1m[rows:1][0m SELECT count(*) FROM information_schema.tables WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND table_type = 'BASE TABLE'
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.736ms] [34;1m[rows:1][0m SELECT CURRENT_DATABASE()
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[0.999ms] [34;1m[rows:1][0m SELECT CURRENT_DATABASE()
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[25.035ms] [34;1m[rows:-][0m SELECT c.column_name, c.is_nullable = 'YES', c.udt_name, c.character_maximum_length, c.numeric_precision, c.numeric_precision_radix, c.numeric_scale, c.datetime_precision, 8 * typlen, c.column_default, pd.description, c.identity_increment FROM information_schema.columns AS c JOIN pg_type AS pgt ON c.udt_name = pgt.typname LEFT JOIN pg_catalog.pg_description as pd ON pd.objsubid = c.ordinal_position AND pd.objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = c.table_name AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = c.table_schema)) where table_catalog = 'tpa_web' AND table_schema = CURRENT_SCHEMA() AND table_name = 'users'
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[44.621ms] [34;1m[rows:-][0m SELECT c.column_name, c.is_nullable = 'YES', c.udt_name, c.character_maximum_length, c.numeric_precision, c.numeric_precision_radix, c.numeric_scale, c.datetime_precision, 8 * typlen, c.column_default, pd.description, c.identity_increment FROM information_schema.columns AS c JOIN pg_type AS pgt ON c.udt_name = pgt.typname LEFT JOIN pg_catalog.pg_description as pd ON pd.objsubid = c.ordinal_position AND pd.objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = c.table_name AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = c.table_schema)) where table_catalog = 'tpa_web' AND table_schema = CURRENT_SCHEMA() AND table_name = 'users'
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.679ms] [34;1m[rows:-][0m SELECT * FROM "users" LIMIT 1
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.511ms] [34;1m[rows:-][0m SELECT * FROM "users" LIMIT 1
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[14.469ms] [34;1m[rows:-][0m SELECT constraint_name FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users' AND constraint_type = 'UNIQUE'
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[18.200ms] [34;1m[rows:-][0m SELECT constraint_name FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users' AND constraint_type = 'UNIQUE'
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[8.006ms] [34;1m[rows:-][0m SELECT c.column_name, constraint_name, constraint_type FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users'
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[8.174ms] [34;1m[rows:-][0m SELECT c.column_name, constraint_name, constraint_type FROM information_schema.table_constraints tc JOIN information_schema.constraint_column_usage AS ccu USING (constraint_schema, constraint_name) JOIN information_schema.columns AS c ON c.table_schema = tc.constraint_schema AND tc.table_name = c.table_name AND ccu.column_name = c.column_name WHERE constraint_type IN ('PRIMARY KEY', 'UNIQUE') AND c.table_catalog = 'tpa_web' AND c.table_schema = CURRENT_SCHEMA() AND c.table_name = 'users'
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.906ms] [34;1m[rows:-][0m SELECT a.attname as column_name, format_type(a.atttypid, a.atttypmod) AS data_type
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.914ms] [34;1m[rows:-][0m SELECT a.attname as column_name, format_type(a.atttypid, a.atttypmod) AS data_type
 		FROM pg_attribute a JOIN pg_class b ON a.attrelid = b.oid AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA())
 		WHERE a.attnum > 0 -- hide internal columns
 		AND NOT a.attisdropped -- hide deleted columns
 		AND b.relname = 'users'
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[3.127ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'id') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.567ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'id') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.508ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'first_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[4.261ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'first_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.508ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'last_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.568ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'last_name') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.508ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'email') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.055ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'email') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[1.506ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'phone') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[2.362ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'phone') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[3.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'password') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[1.507ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'password') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
 [0m[33m[0.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'subscribe') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
-[0m[33m[0.507ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'banned') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+[0m[33m[0.505ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'banned') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:14 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
+2023/02/25 15:43:44 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/server.go:33
 [0m[33m[0.000ms] [34;1m[rows:0][0m SELECT description FROM pg_catalog.pg_description WHERE objsubid = (SELECT ordinal_position FROM information_schema.columns WHERE table_schema = CURRENT_SCHEMA() AND table_name = 'users' AND column_name = 'role') AND objoid = (SELECT oid FROM pg_catalog.pg_class WHERE relname = 'users' AND relnamespace = (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = CURRENT_SCHEMA()))
 
-2023/02/24 11:50:39 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:53
-[0m[33m[101.571ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE email = 'budi@gmail.com' LIMIT 1
+2023/02/25 15:51:37 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
+[0m[33m[67.735ms] [34;1m[rows:9][0m SELECT * FROM "products"
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
-[0m[33m[6.843ms] [34;1m[rows:9][0m SELECT * FROM "products"
+2023/02/25 15:51:37 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
+[0m[33m[389.810ms] [34;1m[rows:9][0m SELECT * FROM "products"
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
-[0m[33m[10.094ms] [34;1m[rows:9][0m SELECT * FROM "products"
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:53
+[0m[33m[101.629ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE email = 'budi@gmail.com' LIMIT 1
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[62.100ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
+[0m[33m[1.520ms] [34;1m[rows:9][0m SELECT * FROM "products"
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[85.219ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/product.resolvers.go:74
+[0m[33m[1.000ms] [34;1m[rows:9][0m SELECT * FROM "products"
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[0.501ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.450ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[2.593ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.773ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:31 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[2.066ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[105.758ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[66.790ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.499ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
 [0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.501ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:52:32 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
 [0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:40 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[113.642ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:34 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[101.703ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:45 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[46.850ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:34 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[100.564ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:45 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[46.777ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:34 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[81.786ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:45 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[113.167ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:34 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[94.238ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:45 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[112.568ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[66.903ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[62.702ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[71.941ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[67.948ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[101.381ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[102.710ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[105.918ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[104.974ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.772ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[78.761ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[7.757ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[74.281ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[69.285ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[100.532ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[72.254ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[112.230ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[109.083ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[109.544ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:52:35 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[111.208ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[110.044ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[77.095ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[0.606ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[79.941ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
 
-2023/02/24 11:50:46 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
-[0m[33m[0.492ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[101.153ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[100.730ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.000ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.862ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[68.324ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[106.069ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 15:58:09 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[111.087ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[77.264ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[84.237ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[103.109ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[105.399ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.551ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.387ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.201ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[114.704ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/02/25 16:51:10 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[118.220ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id = '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1

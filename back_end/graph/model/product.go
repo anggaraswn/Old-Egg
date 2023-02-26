@@ -15,10 +15,19 @@ type Product struct {
 	Category        *Category `json:"category"`
 	StoreID         string
 	Store           *Store `json:"store"`
+	BrandID         string
+	Brand           *Brand `json:"brand"`
 }
 
 type Category struct {
-	ID          string `json:"id"`
+	ID          string `json:"id" gorm:"primaryKey"`
 	Name        string `json:"name"`
+	Description string `json:"description"`
+}
+
+type Brand struct {
+	ID          string `json:"id" gorm:"primaryKey"`
+	Name        string `json:"name"`
+	Image       string `json:"image"`
 	Description string `json:"description"`
 }

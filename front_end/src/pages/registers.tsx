@@ -4,7 +4,8 @@ import Footer from '@/components/footer';
 import { useState } from 'react';
 import axios from 'axios';
 import { gql } from 'graphql-tag';
-
+import isEmail from 'validator/lib/isEmail';
+import isMobilePhone from 'validator/lib/isMobilePhone';
 const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
 // const CREATE_USER_MUTATION = gql`
 //   mutation createUser($input: NewUser!) # {
@@ -95,9 +96,9 @@ export default function Register() {
 
     if (!firstNameInput || !lastNameInput || !emailInput || !passwordInput) {
       setErrorMsg('All field must be filled!');
-    } else if (!emailPattern.test(emailInput)) {
+    } else if (!isEmail(emailInput)) {
       setErrorMsg('Email must be a valid email');
-    } else if (phoneInput && !phoneNumberPattern.test(phoneInput)) {
+    } else if (phoneInput && !isMobilePhone(phoneInput)) {
       setErrorMsg('Phone number must be a valid phone number');
     } else if (!passwordPattern.test(passwordInput)) {
       setErrorMsg('Password must be a valid password');
