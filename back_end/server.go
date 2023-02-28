@@ -31,6 +31,10 @@ func main() {
 
 	//Migrate table2 dari Model yang ada
 	db.AutoMigrate(&model.User{})
+	db.AutoMigrate(&model.Cart{})
+	db.AutoMigrate(&model.Product{})
+	db.AutoMigrate(&model.Review{})
+	db.AutoMigrate(&model.Store{})
 
 	router := mux.NewRouter()
 

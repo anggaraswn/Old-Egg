@@ -9,6 +9,8 @@ import (
 	"fmt"
 
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/anggaraswn/gqlgen-todos/service"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // User is the resolver for the user field.
@@ -23,7 +25,24 @@ func (r *cartResolver) Product(ctx context.Context, obj *model.Cart) (*model.Pro
 
 // CreateCart is the resolver for the createCart field.
 func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) (*model.Cart, error) {
-	panic(fmt.Errorf("not implemented: CreateCart - createCart"))
+	// panic(fmt.Errorf("not implemented: CreateCart - createCart"))
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, token gaada",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	cart, _ := service.CartGetByUserProduct(ctx, userID, input.ProductID)
+
+	if cart != nil {
+		cart.Quantity += input.Quantity
+		cart.Notes = input.Notes
+
+		return cart, r.DB.Save(cart).Error
+	}
+	return service.CartCreate(ctx, userID, input.ProductID, input.Quantity, input.Notes)
 }
 
 // UpdateCart is the resolver for the updateCart field.

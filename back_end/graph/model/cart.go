@@ -3,7 +3,7 @@ package model
 type Cart struct {
 	UserID    string   `json:"userID" gorm:"primaryKey"`
 	User      *User    `json:"user"`
-	ProductID string   `json:"productID" gorm:"primaryKey"`
+	ProductID string   `json:"productID"`
 	Product   *Product `json:"product"`
 	Quantity  int      `json:"quantity"`
 	Notes     string   `json:"notes"`

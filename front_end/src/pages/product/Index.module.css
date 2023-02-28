@@ -35,3 +35,34 @@
 .title {
   font-weight: bold;
 }
+
+.inputQtyContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.addMinusContainer {
+  display: flex;
+  flex-direction: column;
+  /* width: 30px;
+  height: 40px; */
+}
+
+.addMinusContainer button {
+  width: 20px;
+  height: 23px;
+  border-radius: 0;
+}
+
+.quantity {
+  width: 60px;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.addToCartBTN {
+  background-color: orange;
+  margin-left: 10px;
+  border-radius: 8px;
+}

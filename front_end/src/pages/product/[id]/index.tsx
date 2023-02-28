@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import styles from '../Index.module.css';
+import { getCookie } from 'cookies-next';
 
 interface Product {
   id: string;
@@ -21,6 +22,7 @@ interface Product {
 export default function ProductDetail() {
   const router = useRouter();
   const { id } = router.query;
+  const token = getCookie('jwt');
   const [product, setProduct] = useState<Product | null>(null);
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const GET_PRODUCT = `query product($id: ID!){
@@ -59,7 +61,38 @@ export default function ProductDetail() {
     }
   }, [id]);
 
-  console.log(product);
+  const addToCart = () => {
+    const ADD_TO_CART_MUTATION = `mutation createCart($productID: ID!, $quantity: Int!, $notes: String!){
+      createCart(input:{
+        productID: $productID,
+        quantity: $quantity,
+        notes: $notes
+      }){
+        product{
+          id,
+          price
+        },
+        quantity
+      }
+    }`;
+    GRAPHQLAPI.post('', {
+      query: ADD_TO_CART_MUTATION,
+      variables: {
+        productID: id,
+        quantity: parseInt(
+          (document.getElementById('quantity') as HTMLInputElement).value,
+        ),
+        notes: '',
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }).then((response) => {
+      console.log(response);
+    });
+  };
+
+  // console.log(product);
   return (
     <>
       <Navbar />
@@ -87,6 +120,26 @@ export default function ProductDetail() {
             <></>
           )}
           <p>${product?.price}</p>
+          <div className={styles.addToCartContainer}>
+            <div className={styles.inputQtyContainer}>
+              <input
+                type="number"
+                className={styles.quantity}
+                min={1}
+                // value={1}
+                defaultValue={1}
+                max={product?.stock}
+                id="quantity"
+              />
+              {/* <div className={styles.addMinusContainer}>
+                <button>+</button>
+                <button>-</button>
+              </div> */}
+              <button className={styles.addToCartBTN} onClick={addToCart}>
+                ADD TO CART
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>
