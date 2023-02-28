@@ -21,7 +21,7 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewPro
 	product := &model.Product{
 		ID:              uuid.NewString(),
 		Name:            input.Name,
-		Images:          input.Image,
+		Images:          input.Images,
 		Price:           input.Price,
 		Discount:        input.Discount,
 		Rating:          0,
@@ -48,12 +48,22 @@ func (r *productResolver) Store(ctx context.Context, obj *model.Product) (*model
 	panic(fmt.Errorf("not implemented: Store - store"))
 }
 
+// Brand is the resolver for the brand field.
+func (r *productResolver) Brand(ctx context.Context, obj *model.Product) (*model.Brand, error) {
+	panic(fmt.Errorf("not implemented: Brand - brand"))
+}
+
+// Reviews is the resolver for the reviews field.
+func (r *productResolver) Reviews(ctx context.Context, obj *model.Product) ([]*model.Review, error) {
+	panic(fmt.Errorf("not implemented: Reviews - reviews"))
+}
+
 // Product is the resolver for the product field.
 func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Product - product"))
 	db := database.GetDB()
-	
-	product := new(model.Product);
+
+	product := new(model.Product)
 
 	return product, db.First(product, "id = ?", id).Error
 }
@@ -64,10 +74,10 @@ func (r *queryResolver) Products(ctx context.Context, storeID *string, limit *in
 	db := database.GetDB()
 
 	var models []*model.Product
-	
+
 	data := db.Model(models)
 
-	if(limit != nil){
+	if limit != nil {
 		data = data.Limit(*limit)
 	}
 
@@ -78,3 +88,13 @@ func (r *queryResolver) Products(ctx context.Context, storeID *string, limit *in
 func (r *Resolver) Product() ProductResolver { return &productResolver{r} }
 
 type productResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *productResolver) Image(ctx context.Context, obj *model.Product) (string, error) {
+	panic(fmt.Errorf("not implemented: Image - image"))
+}

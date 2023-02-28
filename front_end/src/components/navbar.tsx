@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import styles from './Navbar.module.css';
 import axios from 'axios';
-import { getCookie } from 'cookies-next';
+import { getCookie, removeCookies } from 'cookies-next';
 import { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 
 function DropdownItem(props: any) {
   return (
@@ -24,7 +25,9 @@ export default function Navbar() {
   let res: any = null;
 
   const logOut = () => {
-    //
+    removeCookies('jwt');
+    const router = useRouter();
+    router.reload();
   };
 
   // console.log(token);

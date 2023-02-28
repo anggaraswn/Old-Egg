@@ -39,7 +39,7 @@ func UserGetByID(ctx context.Context, id string) (*model.User, error) {
 	db := database.GetDB()
 
 	var user model.User
-	if err := db.Model(user).Where("id = ?", id).Take(&user).Error; err != nil {
+	if err := db.Model(user).Where("id LIKE ?", id).Take(&user).Error; err != nil {
 		return nil, err
 	}
 

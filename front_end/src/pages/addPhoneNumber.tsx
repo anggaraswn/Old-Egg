@@ -4,8 +4,11 @@ import Footer from '@/components/footer';
 import { useState } from 'react';
 import isMobilePhone from 'validator/lib/isMobilePhone';
 import Settings from './settings';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
 
 export default function AddPhonenumber() {
+  const token = getCookie('jwt');
   const [error, setError] = useState('');
 
   const save = () => {
@@ -16,6 +19,34 @@ export default function AddPhonenumber() {
       setError('Please input a valid phone number');
     } else {
       setError('');
+
+      const GRAPHQLAPI = axios.create({
+        baseURL: 'http://localhost:8080/query',
+      });
+      const UPDATE_PHONENUMBER_MUTATION = `mutation updatePhonenumber($phone: String!){
+        updatePhonenumber(phone: $phone){
+          id,
+          phone
+        }
+      }`;
+
+      GRAPHQLAPI.post(
+        '',
+        {
+          query: UPDATE_PHONENUMBER_MUTATION,
+          variables: {
+            phone: phoneNumberInput,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ).then((response) => {
+        console.log(response);
+      });
+
       window.location.href = '/settings';
     }
   };
@@ -34,7 +65,7 @@ export default function AddPhonenumber() {
             width={130}
             height={64}
           ></Image>
-          <p className={styles.title}>Add Mobile Number</p>
+          <p className={styles.title}>Update Mobile Number</p>
           <p className={styles.text}>
             Enter the mobile phone number you would like to associate with your
             profile. We will send a One-time Code to that number.

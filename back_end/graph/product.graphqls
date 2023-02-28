@@ -1,7 +1,7 @@
 type Product {
     id: ID!
     name: String!
-    image: String!
+    images: String!
     price: Float!
     discount: Int!
     rating: Int!
@@ -20,7 +20,7 @@ input NewProduct {
     categoryID: ID!
     storeID: ID!
     brandID: ID!
-    image: String!
+    images: String!
     description: String!
     price: Float!
     discount: Int!

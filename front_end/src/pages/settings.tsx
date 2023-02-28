@@ -3,6 +3,7 @@ import styles from '../styles/Settings.module.css';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
+import { Link } from 'react-router-dom';
 
 interface User {
   id: string;
@@ -102,7 +103,9 @@ export default function Settings() {
                 <div className={styles.val}>
                   <p>{user?.phone}</p>
                 </div>
-                <button className={styles.btn}>Edit</button>
+                <button className={styles.btn} onClick={addPhoneNumber}>
+                  Edit
+                </button>
               </div>
             ) : (
               <div className={styles.block}>

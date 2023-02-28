@@ -13,6 +13,18 @@ type AuthOps struct {
 	Register interface{} `json:"register"`
 }
 
+type NewBrand struct {
+	Name        string `json:"name"`
+	Image       string `json:"image"`
+	Description string `json:"description"`
+}
+
+type NewCart struct {
+	ProductID string `json:"productID"`
+	Quantity  int    `json:"quantity"`
+	Notes     string `json:"notes"`
+}
+
 type NewCategory struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
@@ -22,11 +34,18 @@ type NewProduct struct {
 	Name        string  `json:"name"`
 	CategoryID  string  `json:"categoryID"`
 	StoreID     string  `json:"storeID"`
-	Image       string  `json:"image"`
+	BrandID     string  `json:"brandID"`
+	Images      string  `json:"images"`
 	Description string  `json:"description"`
 	Price       float64 `json:"price"`
 	Discount    int     `json:"discount"`
 	Stock       int     `json:"stock"`
+}
+
+type NewReview struct {
+	ProductID   string `json:"productID"`
+	Rating      int    `json:"rating"`
+	Description string `json:"description"`
 }
 
 type NewStore struct {
@@ -46,6 +65,12 @@ type NewUser struct {
 	Subscribe bool     `json:"subscribe"`
 	Banned    bool     `json:"banned"`
 	Role      UserRole `json:"role"`
+}
+
+type WishListDetail struct {
+	ID       string    `json:"id"`
+	Wishlist *Wishlist `json:"wishlist"`
+	Product  *Product  `json:"product"`
 }
 
 type UserRole string

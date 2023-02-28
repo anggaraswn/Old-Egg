@@ -33,7 +33,7 @@ func (r *mutationResolver) Auth(ctx context.Context) (*model.AuthOps, error) {
 // CreateUser is the resolver for the createUser field.
 func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, phone *string) (*model.User, error) {
 	// panic(fmt.Errorf("not implemented: CreateUser - createUser"))
-	
+
 	db := database.GetDB()
 	password, err := model.HashPassword(input.Password)
 
@@ -54,6 +54,63 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, 
 	err = db.Create(user).Error
 
 	return user, err
+}
+
+// UpdatePhonenumber is the resolver for the updatePhonenumber field.
+func (r *mutationResolver) UpdatePhonenumber(ctx context.Context, phone string) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: UpdatePhonenumber - updatePhonenumber"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, Invalid Token !",
+		}
+	}
+
+	id := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	user, _ := service.UserGetByID(ctx, id)
+
+	if user == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, UserID isn't valid!",
+		}
+	}
+
+	user.Phone = phone
+
+	return user, db.Save(user).Error
+}
+
+// UpdatePassword is the resolver for the updatePassword field.
+func (r *mutationResolver) UpdatePassword(ctx context.Context, currentPassword string, newPassword string) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: UpdatePassword - updatePassword"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	user, _ := service.UserGetByID(ctx, userID)
+
+	if user == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, UserID isn't valid!",
+		}
+	}
+
+	if err:= model.ComparePassword(user.Password, currentPassword); err != nil{
+		return nil, &gqlerror.Error{
+			Message: "Error, Invalid password",
+		}
+	}else{
+		user.Password, _ = model.HashPassword(newPassword);
+	}
+
+
+	return user, db.Save(user).Error
 }
 
 // User is the resolver for the user field.
