@@ -20,7 +20,6 @@ type Wishlist {
 }
 
 type WishListDetail {
-    id: ID!
     wishlist: Wishlist! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
 }

@@ -173,7 +173,6 @@ type ComplexityRoot struct {
 	}
 
 	WishListDetail struct {
-		ID       func(childComplexity int) int
 		Product  func(childComplexity int) int
 		Wishlist func(childComplexity int) int
 	}
@@ -994,13 +993,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Subscribe(childComplexity), true
-
-	case "WishListDetail.id":
-		if e.complexity.WishListDetail.ID == nil {
-			break
-		}
-
-		return e.complexity.WishListDetail.ID(childComplexity), true
 
 	case "WishListDetail.product":
 		if e.complexity.WishListDetail.Product == nil {
@@ -3149,8 +3141,6 @@ func (ec *executionContext) fieldContext_Mutation_createWishlistDetail(ctx conte
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_WishListDetail_id(ctx, field)
 			case "wishlist":
 				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
 			case "product":
@@ -6786,50 +6776,6 @@ func (ec *executionContext) fieldContext_User_role(ctx context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _WishListDetail_id(ctx context.Context, field graphql.CollectedField, obj *model.WishListDetail) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_WishListDetail_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_WishListDetail_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "WishListDetail",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _WishListDetail_wishlist(ctx context.Context, field graphql.CollectedField, obj *model.WishListDetail) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_WishListDetail_wishlist(ctx, field)
 	if err != nil {
@@ -7195,8 +7141,6 @@ func (ec *executionContext) fieldContext_Wishlist_wishlistDetails(ctx context.Co
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_WishListDetail_id(ctx, field)
 			case "wishlist":
 				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
 			case "product":
@@ -10568,13 +10512,6 @@ func (ec *executionContext) _WishListDetail(ctx context.Context, sel ast.Selecti
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("WishListDetail")
-		case "id":
-
-			out.Values[i] = ec._WishListDetail_id(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "wishlist":
 			field := field
 

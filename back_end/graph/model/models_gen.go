@@ -67,12 +67,6 @@ type NewUser struct {
 	Role      UserRole `json:"role"`
 }
 
-type WishListDetail struct {
-	ID       string    `json:"id"`
-	Wishlist *Wishlist `json:"wishlist"`
-	Product  *Product  `json:"product"`
-}
-
 type UserRole string
 
 const (

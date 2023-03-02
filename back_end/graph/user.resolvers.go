@@ -101,14 +101,13 @@ func (r *mutationResolver) UpdatePassword(ctx context.Context, currentPassword s
 		}
 	}
 
-	if err:= model.ComparePassword(user.Password, currentPassword); err != nil{
+	if err := model.ComparePassword(user.Password, currentPassword); err != nil {
 		return nil, &gqlerror.Error{
 			Message: "Error, Invalid password",
 		}
-	}else{
-		user.Password, _ = model.HashPassword(newPassword);
+	} else {
+		user.Password, _ = model.HashPassword(newPassword)
 	}
-
 
 	return user, db.Save(user).Error
 }

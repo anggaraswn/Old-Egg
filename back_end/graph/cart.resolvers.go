@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
 	"github.com/anggaraswn/gqlgen-todos/service"
 	"github.com/vektah/gqlparser/v2/gqlerror"
@@ -26,6 +27,7 @@ func (r *cartResolver) Product(ctx context.Context, obj *model.Cart) (*model.Pro
 // CreateCart is the resolver for the createCart field.
 func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) (*model.Cart, error) {
 	// panic(fmt.Errorf("not implemented: CreateCart - createCart"))
+	db := database.GetDB()
 	if ctx.Value("auth") == nil {
 		return nil, &gqlerror.Error{
 			Message: "Error, token gaada",
@@ -40,7 +42,7 @@ func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) 
 		cart.Quantity += input.Quantity
 		cart.Notes = input.Notes
 
-		return cart, r.DB.Save(cart).Error
+		return cart, db.Save(cart).Error
 	}
 	return service.CartCreate(ctx, userID, input.ProductID, input.Quantity, input.Notes)
 }

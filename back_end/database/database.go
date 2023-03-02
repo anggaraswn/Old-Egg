@@ -47,7 +47,7 @@ func init() {
 		)
 		temp = mysql.Open(databaseConfig)
 	} else {
-		databaseConfig := "host=localhost user=postgres password=Aslab222 dbname=tpa_web port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+		databaseConfig := "host=localhost user=postgres password=Aslab222 dbname=web port=5432 sslmode=disable TimeZone=Asia/Shanghai"
 		temp = postgres.Open(databaseConfig)
 	}
 
