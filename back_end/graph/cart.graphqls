@@ -1,3 +1,8 @@
+enum Option {
+    PUBLIC
+    PRIVATE
+}
+
 type Cart {
     user: User! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
@@ -43,7 +48,7 @@ extend type Mutation {
     createCart(input: NewCart!): Cart! @auth
     updateCart(input: NewCart!): Cart @auth
     deleteCart(productID: ID!): Boolean! @auth
-    createWishlist(name: String!, option: String!): Wishlist! @auth
+    createWishlist(name: String!, option: Option!): Wishlist! @auth
     updateWishlist(wishlistID: ID!, name: String!, option: String!): Wishlist!
         @auth
     deleteWishlist(wishlistID: ID!): Boolean! @auth

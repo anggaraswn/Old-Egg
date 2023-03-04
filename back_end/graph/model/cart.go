@@ -1,10 +1,10 @@
 package model
 
 type Cart struct {
-	UserID    string
-	User      *User `json:"user"`
-	ProductID string
-	Product   *Product `json:"product"`
+	UserID    string   `json:"userID" gorm:"primaryKey"`
+	User      *User    `json:"user" gorm:"foreignKey:UserID"`
+	ProductID string   `json:"productID" gorm:"primaryKey"`
+	Product   *Product `json:"product" gorm:"foreignKey:ProductID"`
 	Quantity  int      `json:"quantity"`
 	Notes     string   `json:"notes"`
 }
@@ -14,8 +14,10 @@ type Wishlist struct {
 	Name   string `json:"name"`
 	UserID string
 	User   *User  `json:"user"`
-	Option string `json:"option"`
+	Option Option `json:"option"`
 }
+
+type Option string
 
 type WishListDetail struct {
 	WishlistID string

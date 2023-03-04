@@ -36,6 +36,10 @@
   font-weight: bold;
 }
 
+.labelWishlist {
+  margin: 5px 10px;
+}
+
 .inputQtyContainer {
   display: flex;
   flex-direction: row;
@@ -65,4 +69,131 @@
   background-color: orange;
   margin-left: 10px;
   border-radius: 8px;
+}
+
+.line {
+  height: 1px;
+  width: 80%;
+  background-color: gray;
+}
+
+.iconHeart {
+  width: 14px;
+  height: 14px;
+  margin-right: 10px;
+}
+
+.addToFavorites a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: bold;
+  color: black;
+}
+
+.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+@keyframes modal-in {
+  0% {
+    translate: -50% 10%;
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+  }
+}
+
+.modal,
+.background,
+.container {
+  transition: 0.5s;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  color: black;
+  padding: 48px 40px;
+  padding: 0 48px 48px 48px;
+  width: 500px;
+  border-radius: 12px;
+  translate: -50% -50%;
+  scale: 1;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.body.open .modal {
+  opacity: 1;
+  visibility: visible;
+  animation: modal-in 0.5s;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.body.open .background {
+  visibility: visible;
+  opacity: 1;
+}
+
+.body {
+  height: 100vh;
+}
+
+.titleManage {
+  font-weight: bold;
+  font-size: 40px;
+}
+
+.wishlist {
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+}
+
+.wishlist input {
+  margin: 0, 30px, 0, 0;
+  margin-right: 10px;
+}
+
+.wishlist p {
+  margin: 5px 0;
+}
+
+.saveBTNContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.saveBTNContainer button {
+  background-color: rgb(14, 111, 255);
+  border: 0;
+  border-radius: 3px;
+  height: 32px;
+  width: 60px;
+}
+
+.inputNewWishlist {
+  width: 500px;
+  height: 25px;
+  margin: 10px 0 30px 0;
+  /* margin-bottom: 30px; */
 }

@@ -28,6 +28,7 @@ func CartGetByUserProduct(ctx context.Context, userID string, productID string) 
 	db := database.GetDB()
 
 	var cart model.Cart
+
 	if err := db.Model(cart).Where("user_id = ? AND product_id = ?", userID, productID).Take(&cart).Error; err != nil {
 		return nil, err
 	}

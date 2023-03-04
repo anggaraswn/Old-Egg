@@ -87,7 +87,7 @@ type ComplexityRoot struct {
 		CreateSaveForLater   func(childComplexity int, productID string) int
 		CreateStore          func(childComplexity int, input model.NewStore) int
 		CreateUser           func(childComplexity int, input model.NewUser, phone *string) int
-		CreateWishlist       func(childComplexity int, name string, option string) int
+		CreateWishlist       func(childComplexity int, name string, option model.Option) int
 		CreateWishlistDetail func(childComplexity int, wishlistID string, productID string) int
 		DeleteCart           func(childComplexity int, productID string) int
 		DeleteSaveForLater   func(childComplexity int, productID string) int
@@ -202,7 +202,7 @@ type MutationResolver interface {
 	CreateCart(ctx context.Context, input model.NewCart) (*model.Cart, error)
 	UpdateCart(ctx context.Context, input model.NewCart) (*model.Cart, error)
 	DeleteCart(ctx context.Context, productID string) (bool, error)
-	CreateWishlist(ctx context.Context, name string, option string) (*model.Wishlist, error)
+	CreateWishlist(ctx context.Context, name string, option model.Option) (*model.Wishlist, error)
 	UpdateWishlist(ctx context.Context, wishlistID string, name string, option string) (*model.Wishlist, error)
 	DeleteWishlist(ctx context.Context, wishlistID string) (bool, error)
 	CreateWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error)
@@ -459,7 +459,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateWishlist(childComplexity, args["name"].(string), args["option"].(string)), true
+		return e.complexity.Mutation.CreateWishlist(childComplexity, args["name"].(string), args["option"].(model.Option)), true
 
 	case "Mutation.createWishlistDetail":
 		if e.complexity.Mutation.CreateWishlistDetail == nil {
@@ -1315,10 +1315,10 @@ func (ec *executionContext) field_Mutation_createWishlist_args(ctx context.Conte
 		}
 	}
 	args["name"] = arg0
-	var arg1 string
+	var arg1 model.Option
 	if tmp, ok := rawArgs["option"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("option"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		arg1, err = ec.unmarshalNOption2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -2852,7 +2852,7 @@ func (ec *executionContext) _Mutation_createWishlist(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().CreateWishlist(rctx, fc.Args["name"].(string), fc.Args["option"].(string))
+			return ec.resolvers.Mutation().CreateWishlist(rctx, fc.Args["name"].(string), fc.Args["option"].(model.Option))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.Auth == nil {
@@ -7084,9 +7084,9 @@ func (ec *executionContext) _Wishlist_option(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(model.Option)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNString2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Wishlist_option(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -11169,6 +11169,22 @@ func (ec *executionContext) unmarshalNNewUser2githubᚗcomᚋanggaraswnᚋgqlgen
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNOption2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx context.Context, v interface{}) (model.Option, error) {
+	tmp, err := graphql.UnmarshalString(v)
+	res := model.Option(tmp)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNOption2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx context.Context, sel ast.SelectionSet, v model.Option) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
+}
+
 func (ec *executionContext) marshalNProduct2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐProduct(ctx context.Context, sel ast.SelectionSet, v model.Product) graphql.Marshaler {
 	return ec._Product(ctx, sel, &v)
 }
@@ -11399,6 +11415,21 @@ func (ec *executionContext) marshalNStore2ᚖgithubᚗcomᚋanggaraswnᚋgqlgen�
 		return graphql.Null
 	}
 	return ec._Store(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNString2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx context.Context, v interface{}) (model.Option, error) {
+	res, err := graphql.UnmarshalString(v)
+	return model.Option(res), graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalNString2githubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐOption(ctx context.Context, sel ast.SelectionSet, v model.Option) graphql.Marshaler {
+	res := graphql.MarshalString(string(v))
+	if res == graphql.Null {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+	}
+	return res
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

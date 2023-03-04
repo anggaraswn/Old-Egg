@@ -186,6 +186,11 @@ export default function Navbar() {
                         link="/settings"
                       />
                       <DropdownItem
+                        image="/assets/icon-wishlist.png"
+                        text="Wishlist"
+                        link="/wishlist"
+                      />
+                      <DropdownItem
                         image="/assets/icon-logout.png"
                         text="Log Out"
                         click={logOut}
