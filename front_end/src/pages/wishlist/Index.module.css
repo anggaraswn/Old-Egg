@@ -36,7 +36,7 @@
   padding: 48px 40px;
   padding: 0 48px 48px 48px;
   width: 500px;
-  height: 400px;
+  height: 317px;
   border-radius: 5px;
   translate: -50% -50%;
   scale: 1;
@@ -190,4 +190,35 @@ div.privateP:hover {
   position: relative;
   border-bottom: 2px solid orange;
   top: 11px;
+}
+
+.createBTNContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createBTNContainer button {
+  background-color: orange;
+  border: none;
+  height: 31px;
+  width: 73px;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 80px;
+}
+
+.addLine::before {
+  content: '';
+  display: block;
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid gray;
+  top: 60px;
+}
+
+.errorMsg {
+  color: red;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
 }

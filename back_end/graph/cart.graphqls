@@ -42,6 +42,7 @@ extend type Query {
     wishlists: [Wishlist!]!
     wishlist(wishlistID: ID!): Wishlist!
     saveForLaters: [SaveForLater!]! @auth
+    wishlistDetails(wishlistID: ID!): [WishListDetail!]!
 }
 
 extend type Mutation {

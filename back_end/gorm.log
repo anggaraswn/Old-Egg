@@ -1926,3 +1926,84 @@
 
 2023/03/04 08:17:43 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
 [0m[33m[105.373ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[108.674ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[105.435ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.257ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[2.000ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[8.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[107.300ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[110.878ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[137.643ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[139.143ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.499ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[1.000ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.000ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:07 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[0.500ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:55 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[81.199ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:55 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[101.076ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:55 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[100.874ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:55 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[85.230ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:59 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[101.486ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:59 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[77.958ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:59 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[102.471ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:30:59 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[84.230ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:31:39 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[57.530ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:31:39 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[59.771ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:31:39 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[114.608ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:31:39 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/service/user.go:42
+[0m[33m[115.148ms] [34;1m[rows:1][0m SELECT * FROM "users" WHERE id LIKE '8175422b-f1e9-4347-99c4-7a423a0aae68' LIMIT 1
+
+2023/03/04 08:45:04 [32mD:/Angga/Laboratory Assistant/AG22-2/TPA/03. TPA Web/Application/back_end/graph/cart.resolvers.go:96
+[0m[33m[119.508ms] [34;1m[rows:1][0m INSERT INTO "wishlists" ("id","name","user_id","option") VALUES ('6840eed2-f3b1-4047-b74d-fb94d0a3f6f9','Test','8175422b-f1e9-4347-99c4-7a423a0aae68','PUBLIC')

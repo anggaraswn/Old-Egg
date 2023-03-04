@@ -1,10 +1,25 @@
 import Navbar from '@/components/navbar';
 import styles from './Index.module.css';
 import { useState } from 'react';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import WishlistCard from '@/components/wishlistCard';
 
 export default function WishList() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState('');
+  const [error, setError] = useState('');
+  const token = getCookie('jwt');
+
+  const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
+
+  const CREATE_WISHLIST = `mutation createWishlist($name: String!, $option: Option!){
+    createWishlist(name: $name, option:$option){
+      id,
+      name,
+      option
+    }
+  }`;
 
   const handleClick = (option: any) => {
     setSelected(option);
@@ -22,6 +37,36 @@ export default function WishList() {
 
   const createList = () => {
     openModal();
+  };
+
+  const createWishlist = () => {
+    console.log(selected);
+    console.log(
+      (document.getElementById('inputName') as HTMLInputElement).value,
+    );
+    if (selected) {
+      GRAPHQLAPI.post(
+        '',
+        {
+          query: CREATE_WISHLIST,
+          variables: {
+            name: (document.getElementById('inputName') as HTMLInputElement)
+              .value,
+            option: selected,
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ).then((response) => {
+        console.log(response);
+      });
+      setError('');
+    } else {
+      setError('Please choose whether public or privacy');
+    }
   };
 
   return (
@@ -42,23 +87,26 @@ export default function WishList() {
         <div className={styles.privacyContainer}>
           <div
             className={`${styles.publicP} ${
-              selected === 'public' ? styles.selected : ''
+              selected === 'PUBLIC' ? styles.selected : ''
             }`}
-            onClick={() => handleClick('public')}
+            onClick={() => handleClick('PUBLIC')}
           >
             Public
           </div>
           <div
             className={`${styles.privateP} ${
-              selected === 'private' ? styles.selected : ''
+              selected === 'PRIVATE' ? styles.selected : ''
             }`}
-            onClick={() => handleClick('private')}
+            onClick={() => handleClick('PRIVATE')}
           >
             Private
           </div>
         </div>
-        <div className={styles.saveBTNContainer}>
-          {/* <button onClick={saveWishlist}>Save</button> */}
+        <div className={styles.addLine}>
+          <div className={styles.errorMsg}>{error}</div>
+          <div className={styles.createBTNContainer}>
+            <button onClick={createWishlist}>CREATE</button>
+          </div>
         </div>
       </div>
       <div className={styles.container}>
@@ -76,7 +124,8 @@ export default function WishList() {
             </button>
             <button className={styles.manageListBTN}>MANAGE LISTS</button>
             <div className={styles.cardInfo}>
-              <div className={styles.cardTitle}>My Favorites</div>
+              {/* <div className={styles.cardTitle}>My Favorites</div> */}
+              <WishlistCard />
             </div>
           </div>
         </div>
