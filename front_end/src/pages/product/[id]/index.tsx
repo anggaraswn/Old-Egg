@@ -105,6 +105,7 @@ export default function ProductDetail() {
         },
       ).then((response) => {
         console.log(response);
+        closeModal();
       });
     }
   };

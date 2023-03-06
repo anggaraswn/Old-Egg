@@ -1,0 +1,32 @@
+.cardItem {
+  /* height: 442px; */
+  height: auto;
+  border: 1px solid rgba(128, 128, 128, 0.432);
+  margin-bottom: 10px;
+  padding: 30px;
+}
+
+.productImage {
+  width: 187px;
+}
+
+.itemContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.itemSubContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+
+.flex button {
+  margin-left: 10px;
+}
+
+.divider {
+  background-color: rgba(128, 128, 128, 0.432);
+  height: 1.5px;
+}

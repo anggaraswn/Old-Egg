@@ -1,0 +1,23 @@
+.pageSectionInner {
+  padding: 40px 20px;
+}
+
+.topLeft h1 {
+  font-weight: 800;
+  font-size: 2rem;
+}
+
+.itemCount {
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+
+.inner {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.rowBody {
+  width: 75%;
+}

@@ -84,6 +84,10 @@ export default function Navbar() {
     });
   }
 
+  const openCart = () => {
+    window.location.href = '/cart';
+  };
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
@@ -211,10 +215,12 @@ export default function Navbar() {
           </a>
         </div>
         <Image
+          onClick={openCart}
           src="/assets/icon-cart.png"
           alt="Cart Icon"
           height={28}
           width={28}
+          className={styles.cart}
         ></Image>
       </div>
     </nav>

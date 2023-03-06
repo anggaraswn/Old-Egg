@@ -1,8 +1,269 @@
 .card {
-  border: 1px solid black;
+  border: 1px solid rgba(128, 128, 128, 0.555);
   min-width: 601px;
   min-height: 261px;
   /* width: 792px; */
   /* height: 262px; */
   padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card:hover .cardTitle a {
+  visibility: visible;
+}
+
+.cardTitle {
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.5rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cardTitle a {
+  text-decoration: none;
+  color: blue;
+  font-weight: 100;
+  font-size: 15px;
+  visibility: hidden;
+}
+
+.top {
+  display: flex;
+  flex-direction: row;
+}
+
+.wishlistItem {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.wishlistItem li {
+  flex: 1;
+  height: 100%;
+}
+
+.itemContainer img {
+  height: 15vh;
+  width: 10vw;
+}
+
+.itemContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.itemInfo {
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.itemInfo p {
+  margin: 0 2px;
+}
+
+.price {
+  font-size: 30px;
+}
+
+@keyframes modal-in {
+  0% {
+    translate: -50% 10%;
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+  }
+}
+
+.openUpdate {
+  visibility: visible;
+  opacity: 1;
+}
+
+.updateModal,
+.container {
+  transition: 0.5s;
+}
+
+.updateModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  color: black;
+  padding: 48px 40px;
+  padding: 0 48px 48px 48px;
+  width: 500px;
+  height: 317px;
+  border-radius: 5px;
+  translate: -50% -50%;
+  scale: 1;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.card.openUpdate .updateModal {
+  opacity: 1;
+  visibility: visible;
+  animation: modal-in 0.5s;
+}
+
+/* .background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(0, 0, 0, 0.25);
+} */
+
+.openUpdate .background {
+  visibility: visible;
+  opacity: 1;
+}
+
+.body {
+  height: 100vh;
+}
+
+.pageTitle {
+  text-decoration: underline;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.selectedBTN {
+  border-bottom: none;
+  border-color: gray;
+  box-sizing: border-box;
+  width: 76px;
+  /* padding: 1px 6px; */
+}
+
+.selectedBTN::after {
+  content: '';
+  display: block;
+  position: relative;
+  top: 3px;
+  width: 76px;
+  border-bottom: 2px solid white;
+  right: 8px;
+}
+
+.otherBTN {
+  border-bottom: none;
+}
+
+.updateModalTitle {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.updateForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.updateForm label {
+  margin-bottom: 5px;
+  color: gray;
+}
+
+.updateForm input {
+  height: 12px;
+  width: 440px;
+  padding: 7px 13px;
+}
+
+.privacyTxt {
+  color: gray;
+}
+
+.privacyContainer {
+  display: flex;
+}
+
+.privacyContainer div {
+  background-color: darkgrey;
+  padding: 10px 20px;
+  margin-right: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+div.publicP:hover {
+  content: '';
+  display: block;
+  position: relative;
+  border-bottom: 2px solid orange;
+}
+
+div.privateP:hover {
+  content: '';
+  display: block;
+  position: relative;
+  border-bottom: 2px solid orange;
+}
+
+.selected::after {
+  content: '';
+  display: block;
+  position: relative;
+  border-bottom: 2px solid orange;
+  top: 11px;
+}
+
+.createBTNContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.createBTNContainer button {
+  background-color: orange;
+  border: none;
+  height: 31px;
+  width: 73px;
+  border-radius: 5px;
+  font-weight: bold;
+  margin-top: 80px;
+}
+
+.addLine::before {
+  content: '';
+  display: block;
+  position: relative;
+  width: 100%;
+  border-bottom: 1px solid gray;
+  top: 60px;
+}
+
+.errorMsg {
+  color: red;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.topModal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close img {
+  height: 20px;
+  width: 20px;
 }

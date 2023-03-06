@@ -17,12 +17,22 @@ import (
 
 // User is the resolver for the user field.
 func (r *cartResolver) User(ctx context.Context, obj *model.Cart) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB();
+
+	user:= new(model.User);
+
+	return user, db.First(user, "id = ?", obj.UserID).Error
 }
 
 // Product is the resolver for the product field.
 func (r *cartResolver) Product(ctx context.Context, obj *model.Cart) (*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Product - product"))
+	// panic(fmt.Errorf("not implemented: Product - product"))
+	db:= database.GetDB();
+
+	product := new(model.Product);
+
+	return product, db.First(product, "id = ?", obj.ProductID).Error
 }
 
 // CreateCart is the resolver for the createCart field.
@@ -102,8 +112,25 @@ func (r *mutationResolver) CreateWishlist(ctx context.Context, name string, opti
 
 // UpdateWishlist is the resolver for the updateWishlist field.
 func (r *mutationResolver) UpdateWishlist(ctx context.Context, wishlistID string, name string, option string) (*model.Wishlist, error) {
-	panic(fmt.Errorf("not implemented: UpdateWishlist - updateWishlist"))
+	// panic(fmt.Errorf("not implemented: UpdateWishlist - updateWishlist"))
+	db := database.GetDB();
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	var wishlist model.Wishlist
+	if err := db.Model(wishlist).Where("id = ?", wishlistID).Take(&wishlist).Error; err != nil {
+		return nil, err
+	}
+
+	wishlist.Name = name
+	wishlist.Option = model.Option(option)
+
+	return &wishlist, db.Save(wishlist).Error
 }
+
 
 // DeleteWishlist is the resolver for the deleteWishlist field.
 func (r *mutationResolver) DeleteWishlist(ctx context.Context, wishlistID string) (bool, error) {
@@ -113,7 +140,7 @@ func (r *mutationResolver) DeleteWishlist(ctx context.Context, wishlistID string
 // CreateWishlistDetail is the resolver for the createWishlistDetail field.
 func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error) {
 	// panic(fmt.Errorf("not implemented: CreateWishlistDetail - createWishlistDetail"))
-	db := database.GetDB();
+	db := database.GetDB()
 
 	if ctx.Value("auth") == nil {
 		return nil, &gqlerror.Error{
@@ -125,7 +152,7 @@ func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID 
 
 	wishlist := &model.WishListDetail{
 		WishlistID: wishlistID,
-		ProductID: productID,
+		ProductID:  productID,
 	}
 
 	return wishlist, db.Model(wishlist).Create(&wishlist).Error
@@ -148,7 +175,19 @@ func (r *mutationResolver) DeleteSaveForLater(ctx context.Context, productID str
 
 // Carts is the resolver for the carts field.
 func (r *queryResolver) Carts(ctx context.Context) ([]*model.Cart, error) {
-	panic(fmt.Errorf("not implemented: Carts - carts"))
+	// panic(fmt.Errorf("not implemented: Carts - carts"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+	var models []*model.Cart
+
+	return models, db.Where("user_id = ?", userID).Find(&models).Error
+
 }
 
 // Cart is the resolver for the cart field.
@@ -189,6 +228,15 @@ func (r *queryResolver) SaveForLaters(ctx context.Context) ([]*model.SaveForLate
 	panic(fmt.Errorf("not implemented: SaveForLaters - saveForLaters"))
 }
 
+// WishlistDetails is the resolver for the wishlistDetails field.
+func (r *queryResolver) WishlistDetails(ctx context.Context, wishlistID string) ([]*model.WishListDetail, error) {
+	// panic(fmt.Errorf("not implemented: WishlistDetails - wishlistDetails"))
+	db := database.GetDB()
+
+	var models []*model.WishListDetail
+	return models, db.Where("wishlist_id = ?", wishlistID).Find(&models).Error
+}
+
 // User is the resolver for the user field.
 func (r *saveForLaterResolver) User(ctx context.Context, obj *model.SaveForLater) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: User - user"))
@@ -202,7 +250,7 @@ func (r *saveForLaterResolver) Product(ctx context.Context, obj *model.SaveForLa
 // Wishlist is the resolver for the wishlist field.
 func (r *wishListDetailResolver) Wishlist(ctx context.Context, obj *model.WishListDetail) (*model.Wishlist, error) {
 	// panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
-	db := database.GetDB();
+	db := database.GetDB()
 
 	wishlist := new(model.Wishlist)
 
@@ -212,7 +260,7 @@ func (r *wishListDetailResolver) Wishlist(ctx context.Context, obj *model.WishLi
 // Product is the resolver for the product field.
 func (r *wishListDetailResolver) Product(ctx context.Context, obj *model.WishListDetail) (*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Product - product"))
-	db := database.GetDB();
+	db := database.GetDB()
 
 	product := new(model.Product)
 

@@ -1,20 +1,52 @@
 import Navbar from '@/components/navbar';
 import styles from './Index.module.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import WishlistCard from '@/components/wishlistCard';
+
+interface Wishlist {
+  id: string;
+  name: string;
+  option: string;
+}
 
 export default function WishList() {
   const [isOpen, setIsOpen] = useState(false);
   const [selected, setSelected] = useState('');
   const [error, setError] = useState('');
+  const [wishlists, setWishlists] = useState<Wishlist[] | null>([]);
   const token = getCookie('jwt');
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
 
+  useEffect(() => {
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: GET_CURR_USER_WISHLIST,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      console.log(response);
+      setWishlists(response.data.data.currentUserWishlist);
+    });
+  }, [token]);
+
   const CREATE_WISHLIST = `mutation createWishlist($name: String!, $option: Option!){
     createWishlist(name: $name, option:$option){
+      id,
+      name,
+      option
+    }
+  }`;
+
+  const GET_CURR_USER_WISHLIST = `query{
+    currentUserWishlist{
       id,
       name,
       option
@@ -125,7 +157,9 @@ export default function WishList() {
             <button className={styles.manageListBTN}>MANAGE LISTS</button>
             <div className={styles.cardInfo}>
               {/* <div className={styles.cardTitle}>My Favorites</div> */}
-              <WishlistCard />
+              {wishlists?.map((w) => {
+                return <WishlistCard wishlist={w} />;
+              })}
             </div>
           </div>
         </div>
