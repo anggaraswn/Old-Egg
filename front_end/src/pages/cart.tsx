@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import CartCard from '@/components/CartCard';
+import FooterMain from '@/components/footerMain';
 
 interface Product {
   id: string;
@@ -27,6 +28,8 @@ interface Cart {
 export default function Cart() {
   const token = getCookie('jwt');
   const [carts, setCarts] = useState<Cart[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const delivery = 0;
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const CARTS_QUERY = `query{
@@ -63,6 +66,12 @@ export default function Cart() {
     });
   }, [token]);
 
+  useEffect(() => {
+    carts.map((c) => {
+      setTotalPrice(totalPrice + c.product.price * c.quantity);
+    });
+  }, [carts]);
+
   return (
     <div className={styles.body}>
       <Navbar />
@@ -81,14 +90,61 @@ export default function Cart() {
             <div className={styles.rowBody}>
               <div className={styles.itemContainer}>
                 {carts.map((c) => {
-                  return <CartCard cart={c} />;
+                  // setTotalPrice(totalPrice + c.product.price * c.quantity);
+                  return <CartCard cart={c} key={c.product.id} />;
                 })}
               </div>
             </div>
-            <div className={styles.rowSide}></div>
+            <div className={styles.rowSide}>
+              <div className={styles.summarySide}>
+                <h3>Summary</h3>
+                <div className={styles.summary}>
+                  <div className={styles.summaryContent}>
+                    <ul>
+                      <li>
+                        <label htmlFor="">Item(s): </label>
+                        <span>$ {totalPrice.toFixed(2)}</span>
+                      </li>
+                      <li>
+                        <label htmlFor="">Est. Delivery: </label>
+                        <span>${delivery.toFixed(2)}</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div className={styles.divider}></div>
+                  <div className={styles.addPromo}>
+                    <h4 className={styles.flex}>
+                      <span>Apply Promo Code</span>
+                      <img src="/assets/icon-plus2.png" alt="" height={14} />
+                    </h4>
+                  </div>
+                  <div className={styles.divider}></div>
+                  <div className={styles.summaryContent}>
+                    <ul>
+                      <li>
+                        <label htmlFor="">Est. Total:</label>
+                        <span>${(delivery + totalPrice).toFixed(2)}</span>
+                      </li>
+                    </ul>
+                    <div className={styles.summaryActions}>
+                      <button>SECURE CHECKOUT</button>
+                      <div className={styles.others}>
+                        <div className={styles.splitLine}>
+                          <div className={styles.line}></div>
+                          <span>OR</span>
+                          <div className={styles.line}></div>
+                        </div>
+                        {/* <button></button> */}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <FooterMain />
     </div>
   );
 }

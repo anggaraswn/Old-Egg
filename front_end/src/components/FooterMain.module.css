@@ -1,0 +1,33 @@
+.footer {
+  width: 100%;
+}
+.pageContentInner {
+  display: flex;
+}
+
+.gridContainer {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  background-color: rgb(10, 24, 92);
+  color: #d4d6e2;
+  width: 100%;
+  justify-items: center;
+}
+
+.title {
+  margin-bottom: 20px;
+}
+
+.list ul {
+  list-style: none;
+  padding: 0;
+}
+
+.list ul li {
+  margin-top: 10px;
+}
+
+.list ul li a {
+  color: #d4d6e2;
+  text-decoration: none;
+}

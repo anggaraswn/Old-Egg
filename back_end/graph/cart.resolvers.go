@@ -76,7 +76,27 @@ func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) 
 
 // UpdateCart is the resolver for the updateCart field.
 func (r *mutationResolver) UpdateCart(ctx context.Context, input model.NewCart) (*model.Cart, error) {
-	panic(fmt.Errorf("not implemented: UpdateCart - updateCart"))
+	// panic(fmt.Errorf("not implemented: UpdateCart - updateCart"))
+	db := database.GetDB();
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	var cart model.Cart
+	if err := db.Model(cart).Where("product_id = ?", input.ProductID).Take(&cart).Error; err != nil {
+		return nil, err
+	}
+
+	cart.UserID = userID
+	cart.ProductID = input.ProductID
+	cart.Quantity = input.Quantity
+	cart.Notes = input.Notes
+
+	return &cart, db.Save(cart).Error
 }
 
 // DeleteCart is the resolver for the deleteCart field.

@@ -16,6 +16,21 @@
   align-items: center;
 }
 
+.itemContainer input {
+  width: 10%;
+  text-align: center;
+}
+
+.itemInfo {
+  width: 40%;
+}
+
+.itemAction {
+  width: 10%;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .itemSubContainer {
   display: flex;
   justify-content: space-between;
@@ -29,4 +44,127 @@
 .divider {
   background-color: rgba(128, 128, 128, 0.432);
   height: 1.5px;
+}
+
+/*
+===============================================================
+*/
+
+.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+@keyframes modal-in {
+  0% {
+    translate: -50% 10%;
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+  }
+}
+
+.modal,
+.background,
+.container {
+  transition: 0.5s;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  color: black;
+  padding: 48px 40px;
+  padding: 0 48px 48px 48px;
+  width: 500px;
+  border-radius: 12px;
+  translate: -50% -50%;
+  scale: 1;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.cardItem.open .modal {
+  opacity: 1;
+  visibility: visible;
+  animation: modal-in 0.5s;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.cardItem.open .background {
+  visibility: visible;
+  opacity: 1;
+}
+
+.body {
+  height: 100vh;
+}
+
+.titleManage {
+  font-weight: bold;
+  font-size: 25px;
+  margin-bottom: 20px;
+}
+
+.wishlist {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 15px;
+}
+
+.wishlist input {
+  margin: 0, 30px, 0, 0;
+  margin-right: 10px;
+}
+
+.wishlist p {
+  margin: 5px 0;
+}
+
+.btnContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.addBTN {
+  background-color: orange;
+  border: 0;
+  border-radius: 3px;
+  height: 32px;
+  width: 60px;
+}
+
+.closeBTN {
+  background-color: white;
+  border: 1px solid rgba(128, 128, 128, 0.432);
+  border-radius: 3px;
+  height: 32px;
+  width: 60px;
+  margin-right: 10px;
+}
+
+.inputNewWishlist {
+  width: 500px;
+  height: 25px;
+  margin: 10px 0 30px 0;
+  /* margin-bottom: 30px; */
 }

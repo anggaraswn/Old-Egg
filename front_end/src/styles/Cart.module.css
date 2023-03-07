@@ -1,3 +1,7 @@
+/* .body {
+  margin: 0px;
+  height: 100vh;
+} */
 .pageSectionInner {
   padding: 40px 20px;
 }
@@ -20,4 +24,72 @@
 
 .rowBody {
   width: 75%;
+}
+
+.rowSide {
+  width: 25%;
+  margin-left: 10px;
+}
+
+.summaryContent ul {
+  list-style: none;
+  padding: 0;
+}
+
+.summaryContent ul li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.divider {
+  background-color: rgba(128, 128, 128, 0.432);
+  height: 1.5px;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.summaryActions button {
+  background-color: orange;
+  align-items: center;
+  border: 2px solid rgb(255, 157, 0);
+  width: 100%;
+  height: 34px;
+  border-radius: 5px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+/* .sp::after {
+  content: '';
+  height: 1px;
+  background-color: gray;
+  right: 100%;
+  position: absolute;
+  top: 50%;
+  margin-top: -1px;
+  width: 9999em;
+} */
+
+/* .splitLine span::after {
+  content: '';
+  width: 100%;
+  height: 1px;
+  color: gray;
+} */
+
+.splitLine {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.line {
+  width: 40%;
+  background-color: rgba(128, 128, 128, 0.432);
+  height: 1.5px;
+  /* padding: 0 10px; */
 }
