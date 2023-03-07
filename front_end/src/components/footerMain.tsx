@@ -10,7 +10,7 @@ export default function FooterMain() {
               <div className={styles.title}>CUSTOMER SERVICE</div>
               <ul>
                 <li>
-                  <a href="#">Help Center</a>
+                  <a href="https://kb.newegg.com/">Help Center</a>
                 </li>
                 <li>
                   <a href="#">Track an Order</a>
@@ -19,10 +19,14 @@ export default function FooterMain() {
                   <a href="#">Return an Item</a>
                 </li>
                 <li>
-                  <a href="#">Return Policy</a>
+                  <a href="https://www.newegg.com/promotions/nepro/22-0073/index.html?cm_sp=cs_menu-_-return_policy">
+                    Return Policy
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Privacy & Security</a>
+                  <a href="https://kb.newegg.com/knowledge-base/privacy-policy-newegg/">
+                    Privacy & Security
+                  </a>
                 </li>
                 <li>
                   <a href="#">Feedback</a>
@@ -35,7 +39,7 @@ export default function FooterMain() {
               <div className={styles.title}>MY ACCOUNT</div>
               <ul>
                 <li>
-                  <a href="#">Login/Register</a>
+                  <a href="/login">Login/Register</a>
                 </li>
                 <li>
                   <a href="#">Order History</a>
@@ -47,7 +51,7 @@ export default function FooterMain() {
                   <a href="#">Address Book</a>
                 </li>
                 <li>
-                  <a href="#">Wish Lists</a>
+                  <a href="/wishlist">Wish Lists</a>
                 </li>
                 <li>
                   <a href="#">Email Notifications</a>
@@ -66,28 +70,50 @@ export default function FooterMain() {
               <div className={styles.title}>COMPANY INFORMATION</div>
               <ul>
                 <li>
-                  <a href="#">About Newegg</a>
+                  <a href="https://www.newegg.com/corporate/about">
+                    About Newegg
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Awards/Rankings</a>
+                  <a href="https://www.newegg.com/corporate/homepage">
+                    Investor Relations
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Hours and Locations</a>
+                  <a href="https://www.newegg.com/d/Info/Awards">
+                    Awards/Rankings
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Press Inquiries</a>
+                  <a href="https://www.newegg.com/d/Info/OfficeHours">
+                    Hours and Locations
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Newegg Careers</a>
+                  <a href="https://www.newegg.com/d/Info/PressInquires?cm_sp=press_inquires_footer">
+                    Press Inquiries
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Newsroom</a>
+                  <a href="https://www.newegg.com/careers">Newegg Careers</a>
                 </li>
                 <li>
-                  <a href="#">Newegg Insider</a>
+                  <a href="https://www.newegg.com/corporate/newsroom">
+                    Newsroom
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Calif. Transparency in Supply Chains Act</a>
+                  <a href="https://www.newegg.com/insider/">Newegg Insider</a>
+                </li>
+                <li>
+                  <a href="https://kb.newegg.com/knowledge-base/ca-transparency-in-supply-chains-act/">
+                    Calif. Transparency in Supply Chains Act
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.cigna.com/legal/compliance/machine-readable-files">
+                    Cigna MRF
+                  </a>
                 </li>
               </ul>
             </div>
@@ -97,16 +123,24 @@ export default function FooterMain() {
               <div className={styles.title}>TOOLS & RESOURCES</div>
               <ul>
                 <li>
-                  <a href="#">Sell on Newegg</a>
+                  <a href="https://www.newegg.com/sellers/?cm_sp=sell_on_newegg_footer">
+                    Sell on Newegg
+                  </a>
                 </li>
                 <li>
-                  <a href="#">For Your Business</a>
+                  <a href="https://www.neweggbusiness.com/why-business-account?cm_sp=for_your_business_footer">
+                    For Your Business
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Newegg Partner Services</a>
+                  <a href="https://partner.newegg.com/?cm_sp=newegg_partner_services_footer">
+                    Newegg Partner Services
+                  </a>
                 </li>
                 <li>
-                  <a href="#">Become an Affiliate</a>
+                  <a href="https://www.newegg.com/creators?cm_sp=Homepage-bottom-_-affiliates">
+                    Become an Affiliate
+                  </a>
                 </li>
                 <li>
                   <a href="#">Newegg Creators</a>

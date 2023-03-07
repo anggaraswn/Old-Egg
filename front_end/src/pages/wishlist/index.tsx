@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import WishlistCard from '@/components/wishlistCard';
+import FooterMain from '@/components/footerMain';
 
 interface Wishlist {
   id: string;
@@ -164,6 +165,7 @@ export default function WishList() {
           </div>
         </div>
       </div>
+      <FooterMain />
     </div>
   );
 }

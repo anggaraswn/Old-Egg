@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styles from '../Index.module.css';
 import { getCookie } from 'cookies-next';
+import FooterMain from '@/components/footerMain';
 
 interface Product {
   id: string;
@@ -276,6 +277,7 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+      <FooterMain />
     </div>
   );
 }

@@ -10,6 +10,7 @@
   align-items: center;
   justify-content: space-between;
   border-bottom: 3px solid gray;
+  padding: 15px 20px;
 }
 
 .searchIcon {
@@ -136,6 +137,7 @@
   border-radius: 15px;
   background-color: white;
   border: 1px solid gray;
+  z-index: 9999;
 }
 
 .dropdownMenu::before {

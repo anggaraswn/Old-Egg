@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
 import { Link } from 'react-router-dom';
+import FooterMain from '@/components/footerMain';
 
 interface User {
   id: string;
@@ -137,6 +138,7 @@ export default function Settings() {
           </div>
         </div>
       </div>
+      <FooterMain />
     </div>
   );
 }
