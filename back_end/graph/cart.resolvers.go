@@ -240,7 +240,12 @@ func (r *queryResolver) Wishlists(ctx context.Context) ([]*model.Wishlist, error
 
 // Wishlist is the resolver for the wishlist field.
 func (r *queryResolver) Wishlist(ctx context.Context, wishlistID string) (*model.Wishlist, error) {
-	panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
+	// panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
+	db := database.GetDB();
+
+	wishlist := new(model.Wishlist);
+
+	return wishlist, db.First(wishlist, "id = ?", wishlistID).Error
 }
 
 // SaveForLaters is the resolver for the saveForLaters field.
@@ -289,12 +294,21 @@ func (r *wishListDetailResolver) Product(ctx context.Context, obj *model.WishLis
 
 // User is the resolver for the user field.
 func (r *wishlistResolver) User(ctx context.Context, obj *model.Wishlist) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.Where("id = ?", obj.UserID).Take(&user).Error
 }
 
 // WishlistDetails is the resolver for the wishlistDetails field.
 func (r *wishlistResolver) WishlistDetails(ctx context.Context, obj *model.Wishlist) ([]*model.WishListDetail, error) {
-	panic(fmt.Errorf("not implemented: WishlistDetails - wishlistDetails"))
+	// panic(fmt.Errorf("not implemented: WishlistDetails - wishlistDetails"))
+	db := database.GetDB()
+
+	var models []*model.WishListDetail
+	return models, db.Where("wishlist_id = ?", obj.ID).Find(&models).Error
 }
 
 // Cart returns CartResolver implementation.

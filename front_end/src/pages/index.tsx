@@ -26,7 +26,7 @@ export default function Home() {
     ]);
 
     document.body.style.margin = '0';
-    document.body.style.width = '100%';
+    document.body.style.width = '100';
   }, []);
 
   return (

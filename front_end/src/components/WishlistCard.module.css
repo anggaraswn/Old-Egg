@@ -6,6 +6,7 @@
   /* height: 262px; */
   padding: 20px;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .card:hover .cardTitle a {

@@ -8,6 +8,10 @@
   /* border: var(--border); */
 }
 
+.cardContainer a {
+  text-decoration: none;
+}
+
 .productImage {
   height: 6rem;
   width: 6rem;

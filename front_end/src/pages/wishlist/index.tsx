@@ -17,6 +17,7 @@ export default function WishList() {
   const [selected, setSelected] = useState('');
   const [error, setError] = useState('');
   const [wishlists, setWishlists] = useState<Wishlist[] | null>([]);
+  const [change, setChange] = useState(0);
   const token = getCookie('jwt');
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
@@ -36,7 +37,7 @@ export default function WishList() {
       console.log(response);
       setWishlists(response.data.data.currentUserWishlist);
     });
-  }, [token]);
+  }, [change]);
 
   const CREATE_WISHLIST = `mutation createWishlist($name: String!, $option: Option!){
     createWishlist(name: $name, option:$option){
@@ -97,6 +98,8 @@ export default function WishList() {
         console.log(response);
       });
       setError('');
+      setChange(change + 1);
+      closeModal();
     } else {
       setError('Please choose whether public or privacy');
     }
@@ -134,6 +137,7 @@ export default function WishList() {
           >
             Private
           </div>
+          {/* <div>({})</div> */}
         </div>
         <div className={styles.addLine}>
           <div className={styles.errorMsg}>{error}</div>

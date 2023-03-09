@@ -27,7 +27,6 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
   const [errorMsg, setErrorMsg] = useState('');
   const token = getCookie('jwt');
 
-  // const
   let counter = 0;
   let price = 0;
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
@@ -100,11 +99,17 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
     });
   }, [wishlist]);
   // console.log(isUpdateOpen);
+
+  const openWishlistDetail = () => {
+    console.log('/wishlist/' + wishlist.id);
+    window.location.href = '/wishlist/' + wishlist.id;
+  };
   return (
     <div
       className={`${styles.card} ${
         isUpdateOpen ? styles['openUpdate'] : styles['']
       }`}
+      onClick={openWishlistDetail}
     >
       <div
         className={`${styles.updateModal} ${
