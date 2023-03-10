@@ -29,6 +29,7 @@ export default function Cart() {
   const token = getCookie('jwt');
   const [carts, setCarts] = useState<Cart[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [changes, setChanges] = useState(0);
   const delivery = 0;
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
@@ -62,15 +63,21 @@ export default function Cart() {
       },
     ).then((response) => {
       console.log(response);
+      setTotalPrice(0);
       setCarts(response.data.data.carts);
     });
-  }, [token]);
+  }, [changes]);
 
   useEffect(() => {
     carts.map((c) => {
       setTotalPrice(totalPrice + c.product.price * c.quantity);
     });
   }, [carts]);
+
+  const handleChanges = () => {
+    setChanges(changes + 1);
+    console.log('in');
+  };
 
   return (
     <div className={styles.body}>
@@ -90,8 +97,13 @@ export default function Cart() {
             <div className={styles.rowBody}>
               <div className={styles.itemContainer}>
                 {carts.map((c) => {
-                  // setTotalPrice(totalPrice + c.product.price * c.quantity);
-                  return <CartCard cart={c} key={c.product.id} />;
+                  return (
+                    <CartCard
+                      cart={c}
+                      key={c.product.id}
+                      handleChanges={handleChanges}
+                    />
+                  );
                 })}
               </div>
             </div>

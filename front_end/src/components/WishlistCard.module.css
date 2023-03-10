@@ -118,7 +118,7 @@
   animation: modal-in 0.5s;
 }
 
-/* .background {
+.background {
   position: fixed;
   top: 0;
   left: 0;
@@ -129,7 +129,7 @@
   opacity: 0;
   visibility: hidden;
   background: rgba(0, 0, 0, 0.25);
-} */
+}
 
 .openUpdate .background {
   visibility: visible;
@@ -267,4 +267,8 @@ div.privateP:hover {
 .close img {
   height: 20px;
   width: 20px;
+}
+
+.links a {
+  z-index: 999;
 }

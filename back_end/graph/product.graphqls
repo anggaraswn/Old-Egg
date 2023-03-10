@@ -4,11 +4,12 @@ type Product {
     images: String!
     price: Float!
     discount: Int!
-    rating: Int!
+    rating: Float!
     stock: Int!
     description: String!
     numberOfReviews: Int!
     numberBought: Int!
+    numberOfRatings: Int!
     category: Category! @goField(forceResolver: true)
     store: Store! @goField(forceResolver: true)
     brand: Brand! @goField(forceResolver: true)

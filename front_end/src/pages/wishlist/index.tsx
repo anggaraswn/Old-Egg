@@ -163,7 +163,7 @@ export default function WishList() {
             <div className={styles.cardInfo}>
               {/* <div className={styles.cardTitle}>My Favorites</div> */}
               {wishlists?.map((w) => {
-                return <WishlistCard wishlist={w} />;
+                return <WishlistCard wishlist={w} key={w.id} />;
               })}
             </div>
           </div>

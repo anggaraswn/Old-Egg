@@ -28,12 +28,16 @@ interface WishList {
   option: string;
 }
 
-export default function CartCard(props: { cart: Cart }) {
-  const { cart } = props;
+export default function CartCard(props: {
+  cart: Cart;
+  handleChanges: Function;
+}) {
+  const { cart, handleChanges } = props;
   const token = getCookie('jwt');
   const [isOpen, setIsOpen] = useState(false);
   const [wishlist, setWishlist] = useState<WishList[]>([]);
   const [selected, setSelected] = useState(null);
+  const [changes, setChanges] = useState(false);
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const UPDATE_CART_MUTATION = `mutation updateCart($productID: ID!, $quantity: Int!, $notes: String!){
@@ -75,6 +79,16 @@ export default function CartCard(props: { cart: Cart }) {
       option
     }
   }`;
+  const REMOVE_CART_MUTATION = `mutation deleteCart($productID: ID!){
+  deleteCart(productID: $productID){
+    user{
+      firstName
+    },
+    product{
+      name
+    }
+  }
+}`;
 
   const updateQuantity = () => {
     GRAPHQLAPI.post(
@@ -96,6 +110,7 @@ export default function CartCard(props: { cart: Cart }) {
     ).then((response) => {
       console.log('QTY Updated');
       console.log(response);
+      handleChanges();
     });
   };
 
@@ -154,6 +169,26 @@ export default function CartCard(props: { cart: Cart }) {
       console.log(wishlist);
     });
   }, [isOpen]);
+
+  const handleRemoveItem = () => {
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: REMOVE_CART_MUTATION,
+        variables: {
+          productID: cart.product.id,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      console.log(response);
+      handleChanges();
+    });
+  };
 
   return (
     <div
@@ -217,7 +252,7 @@ export default function CartCard(props: { cart: Cart }) {
           </button>
         </div>
         <div className={styles.flex}>
-          <button>
+          <button onClick={handleRemoveItem}>
             <img src="/assets/icon-delete.png" alt="" height={12} /> REMOVE
           </button>
         </div>

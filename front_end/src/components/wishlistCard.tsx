@@ -25,6 +25,7 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
   const [isUpdateOpen, setIsUpdateOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [inputValue, setInputValue] = useState('');
   const token = getCookie('jwt');
 
   let counter = 0;
@@ -56,20 +57,33 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
     console.log(isUpdateOpen);
   };
 
+  const closeUpdateModal = () => {
+    setIsUpdateOpen(false);
+    console.log(isUpdateOpen);
+  };
+
   const handleClickOption = (option: any) => {
     setSelectedOption(option);
   };
 
+  const handleInput = () => {
+    setInputValue(
+      (document.getElementById(`input${wishlist.id}`) as HTMLInputElement)
+        .value,
+    );
+    console.log(inputValue);
+  };
+
   const saveUpdate = () => {
     if (selectedOption) {
+      console.log(inputValue);
       GRAPHQLAPI.post(
         '',
         {
           query: UPDATE_WISHLIST_MUTATION,
           variables: {
             wishlistID: wishlist.id,
-            name: (document.getElementById('inputUpdate') as HTMLInputElement)
-              .value,
+            name: inputValue,
             option: selectedOption,
           },
         },
@@ -109,8 +123,8 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
       className={`${styles.card} ${
         isUpdateOpen ? styles['openUpdate'] : styles['']
       }`}
-      onClick={openWishlistDetail}
     >
+      <div className={styles.background} onClick={closeUpdateModal}></div>
       <div
         className={`${styles.updateModal} ${
           isUpdateOpen ? styles['openUpdate'] : styles['']
@@ -130,7 +144,12 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
         </div>
         <div className={styles.updateForm}>
           <label htmlFor="inputUpdate">Name</label>
-          <input type="text" id="inputUpdate" defaultValue={wishlist.name} />
+          <input
+            type="text"
+            id={`input${wishlist.id}`}
+            defaultValue={wishlist.name}
+            onChange={handleInput}
+          />
         </div>
         <p className={styles.privacyTxt}>Privacy</p>
         <div className={styles.privacyContainer}>
@@ -166,13 +185,13 @@ export default function WishlistCard(props: { wishlist: Wishlist }) {
           </a>
         </div>
       </div>
-      <div className={styles.top}>
+      <div className={styles.top} onClick={openWishlistDetail}>
         <ul className={styles.wishlistItem}>
           {products?.map((p) => {
             counter += 1;
             price += p.product.price;
             return (
-              <li>
+              <li key={p.product.id}>
                 <div className={styles.itemContainer}>
                   <img src={p?.product.images} alt="image logo" />
                   <p>{p.product.name}</p>

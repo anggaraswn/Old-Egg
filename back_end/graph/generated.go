@@ -88,7 +88,7 @@ type ComplexityRoot struct {
 		CreateStore          func(childComplexity int, input model.NewStore) int
 		CreateUser           func(childComplexity int, input model.NewUser, phone *string) int
 		CreateWishlist       func(childComplexity int, name string, option model.Option) int
-		CreateWishlistDetail func(childComplexity int, wishlistID string, productID string) int
+		CreateWishlistDetail func(childComplexity int, wishlistID string, productID string, quantity *int) int
 		DeleteCart           func(childComplexity int, productID string) int
 		DeleteSaveForLater   func(childComplexity int, productID string) int
 		DeleteWishlist       func(childComplexity int, wishlistID string) int
@@ -97,7 +97,8 @@ type ComplexityRoot struct {
 		UpdatePassword       func(childComplexity int, currentPassword string, newPassword string) int
 		UpdatePhonenumber    func(childComplexity int, phone string) int
 		UpdateStore          func(childComplexity int, input model.NewStore) int
-		UpdateWishlist       func(childComplexity int, wishlistID string, name string, option string) int
+		UpdateWishlist       func(childComplexity int, wishlistID string, name *string, option *string, notes *string) int
+		UpdateWishlistDetail func(childComplexity int, wishlistID *string, productID string, quantity *int) int
 	}
 
 	Product struct {
@@ -109,6 +110,7 @@ type ComplexityRoot struct {
 		Images          func(childComplexity int) int
 		Name            func(childComplexity int) int
 		NumberBought    func(childComplexity int) int
+		NumberOfRatings func(childComplexity int) int
 		NumberOfReviews func(childComplexity int) int
 		Price           func(childComplexity int) int
 		Rating          func(childComplexity int) int
@@ -175,12 +177,14 @@ type ComplexityRoot struct {
 
 	WishListDetail struct {
 		Product  func(childComplexity int) int
+		Quantity func(childComplexity int) int
 		Wishlist func(childComplexity int) int
 	}
 
 	Wishlist struct {
 		ID              func(childComplexity int) int
 		Name            func(childComplexity int) int
+		Notes           func(childComplexity int) int
 		Option          func(childComplexity int) int
 		User            func(childComplexity int) int
 		WishlistDetails func(childComplexity int) int
@@ -202,14 +206,15 @@ type MutationResolver interface {
 	UpdatePassword(ctx context.Context, currentPassword string, newPassword string) (*model.User, error)
 	CreateCart(ctx context.Context, input model.NewCart) (*model.Cart, error)
 	UpdateCart(ctx context.Context, input model.NewCart) (*model.Cart, error)
-	DeleteCart(ctx context.Context, productID string) (bool, error)
+	DeleteCart(ctx context.Context, productID string) (*model.Cart, error)
 	CreateWishlist(ctx context.Context, name string, option model.Option) (*model.Wishlist, error)
-	UpdateWishlist(ctx context.Context, wishlistID string, name string, option string) (*model.Wishlist, error)
+	UpdateWishlist(ctx context.Context, wishlistID string, name *string, option *string, notes *string) (*model.Wishlist, error)
 	DeleteWishlist(ctx context.Context, wishlistID string) (bool, error)
-	CreateWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error)
-	DeleteWishlistDetail(ctx context.Context, wishlistID string, productID string) (bool, error)
+	CreateWishlistDetail(ctx context.Context, wishlistID string, productID string, quantity *int) (*model.WishListDetail, error)
+	UpdateWishlistDetail(ctx context.Context, wishlistID *string, productID string, quantity *int) (*model.WishListDetail, error)
+	DeleteWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error)
 	CreateSaveForLater(ctx context.Context, productID string) (*model.SaveForLater, error)
-	DeleteSaveForLater(ctx context.Context, productID string) (bool, error)
+	DeleteSaveForLater(ctx context.Context, productID string) (*model.Product, error)
 	CreateProduct(ctx context.Context, input model.NewProduct) (*model.Product, error)
 	CreateReview(ctx context.Context, input model.NewReview) (*model.Review, error)
 	CreateStore(ctx context.Context, input model.NewStore) (*model.Store, error)
@@ -473,7 +478,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateWishlistDetail(childComplexity, args["wishlistID"].(string), args["productID"].(string)), true
+		return e.complexity.Mutation.CreateWishlistDetail(childComplexity, args["wishlistID"].(string), args["productID"].(string), args["quantity"].(*int)), true
 
 	case "Mutation.deleteCart":
 		if e.complexity.Mutation.DeleteCart == nil {
@@ -581,7 +586,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateWishlist(childComplexity, args["wishlistID"].(string), args["name"].(string), args["option"].(string)), true
+		return e.complexity.Mutation.UpdateWishlist(childComplexity, args["wishlistID"].(string), args["name"].(*string), args["option"].(*string), args["notes"].(*string)), true
+
+	case "Mutation.updateWishlistDetail":
+		if e.complexity.Mutation.UpdateWishlistDetail == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateWishlistDetail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateWishlistDetail(childComplexity, args["wishlistID"].(*string), args["productID"].(string), args["quantity"].(*int)), true
 
 	case "Product.brand":
 		if e.complexity.Product.Brand == nil {
@@ -638,6 +655,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Product.NumberBought(childComplexity), true
+
+	case "Product.numberOfRatings":
+		if e.complexity.Product.NumberOfRatings == nil {
+			break
+		}
+
+		return e.complexity.Product.NumberOfRatings(childComplexity), true
 
 	case "Product.numberOfReviews":
 		if e.complexity.Product.NumberOfReviews == nil {
@@ -1015,6 +1039,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.WishListDetail.Product(childComplexity), true
 
+	case "WishListDetail.quantity":
+		if e.complexity.WishListDetail.Quantity == nil {
+			break
+		}
+
+		return e.complexity.WishListDetail.Quantity(childComplexity), true
+
 	case "WishListDetail.wishlist":
 		if e.complexity.WishListDetail.Wishlist == nil {
 			break
@@ -1035,6 +1066,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Wishlist.Name(childComplexity), true
+
+	case "Wishlist.notes":
+		if e.complexity.Wishlist.Notes == nil {
+			break
+		}
+
+		return e.complexity.Wishlist.Notes(childComplexity), true
 
 	case "Wishlist.option":
 		if e.complexity.Wishlist.Option == nil {
@@ -1314,6 +1352,15 @@ func (ec *executionContext) field_Mutation_createWishlistDetail_args(ctx context
 		}
 	}
 	args["productID"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["quantity"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quantity"))
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quantity"] = arg2
 	return args, nil
 }
 
@@ -1479,6 +1526,39 @@ func (ec *executionContext) field_Mutation_updateStore_args(ctx context.Context,
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_updateWishlistDetail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *string
+	if tmp, ok := rawArgs["wishlistID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("wishlistID"))
+		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["wishlistID"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["productID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("productID"))
+		arg1, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["productID"] = arg1
+	var arg2 *int
+	if tmp, ok := rawArgs["quantity"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quantity"))
+		arg2, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quantity"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateWishlist_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1491,24 +1571,33 @@ func (ec *executionContext) field_Mutation_updateWishlist_args(ctx context.Conte
 		}
 	}
 	args["wishlistID"] = arg0
-	var arg1 string
+	var arg1 *string
 	if tmp, ok := rawArgs["name"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["name"] = arg1
-	var arg2 string
+	var arg2 *string
 	if tmp, ok := rawArgs["option"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("option"))
-		arg2, err = ec.unmarshalNString2string(ctx, tmp)
+		arg2, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["option"] = arg2
+	var arg3 *string
+	if tmp, ok := rawArgs["notes"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("notes"))
+		arg3, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["notes"] = arg3
 	return args, nil
 }
 
@@ -2121,6 +2210,8 @@ func (ec *executionContext) fieldContext_Cart_product(ctx context.Context, field
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -2823,10 +2914,10 @@ func (ec *executionContext) _Mutation_deleteCart(ctx context.Context, field grap
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(bool); ok {
+		if data, ok := tmp.(*model.Cart); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/anggaraswn/gqlgen-todos/graph/model.Cart`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2837,9 +2928,9 @@ func (ec *executionContext) _Mutation_deleteCart(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*model.Cart)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNCart2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐCart(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteCart(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2849,7 +2940,17 @@ func (ec *executionContext) fieldContext_Mutation_deleteCart(ctx context.Context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "user":
+				return ec.fieldContext_Cart_user(ctx, field)
+			case "product":
+				return ec.fieldContext_Cart_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_Cart_quantity(ctx, field)
+			case "notes":
+				return ec.fieldContext_Cart_notes(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Cart", field.Name)
 		},
 	}
 	defer func() {
@@ -2932,6 +3033,8 @@ func (ec *executionContext) fieldContext_Mutation_createWishlist(ctx context.Con
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -2967,7 +3070,7 @@ func (ec *executionContext) _Mutation_updateWishlist(ctx context.Context, field 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().UpdateWishlist(rctx, fc.Args["wishlistID"].(string), fc.Args["name"].(string), fc.Args["option"].(string))
+			return ec.resolvers.Mutation().UpdateWishlist(rctx, fc.Args["wishlistID"].(string), fc.Args["name"].(*string), fc.Args["option"].(*string), fc.Args["notes"].(*string))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.Auth == nil {
@@ -3018,6 +3121,8 @@ func (ec *executionContext) fieldContext_Mutation_updateWishlist(ctx context.Con
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -3127,7 +3232,7 @@ func (ec *executionContext) _Mutation_createWishlistDetail(ctx context.Context, 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().CreateWishlistDetail(rctx, fc.Args["wishlistID"].(string), fc.Args["productID"].(string))
+			return ec.resolvers.Mutation().CreateWishlistDetail(rctx, fc.Args["wishlistID"].(string), fc.Args["productID"].(string), fc.Args["quantity"].(*int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.Auth == nil {
@@ -3174,6 +3279,8 @@ func (ec *executionContext) fieldContext_Mutation_createWishlistDetail(ctx conte
 				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
 			case "product":
 				return ec.fieldContext_WishListDetail_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_WishListDetail_quantity(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type WishListDetail", field.Name)
 		},
@@ -3186,6 +3293,88 @@ func (ec *executionContext) fieldContext_Mutation_createWishlistDetail(ctx conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_createWishlistDetail_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updateWishlistDetail(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updateWishlistDetail(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return ec.resolvers.Mutation().UpdateWishlistDetail(rctx, fc.Args["wishlistID"].(*string), fc.Args["productID"].(string), fc.Args["quantity"].(*int))
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.Auth == nil {
+				return nil, errors.New("directive auth is not implemented")
+			}
+			return ec.directives.Auth(ctx, nil, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(*model.WishListDetail); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/anggaraswn/gqlgen-todos/graph/model.WishListDetail`, tmp)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.WishListDetail)
+	fc.Result = res
+	return ec.marshalNWishListDetail2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐWishListDetail(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updateWishlistDetail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "wishlist":
+				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
+			case "product":
+				return ec.fieldContext_WishListDetail_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_WishListDetail_quantity(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WishListDetail", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updateWishlistDetail_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -3223,10 +3412,10 @@ func (ec *executionContext) _Mutation_deleteWishlistDetail(ctx context.Context, 
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(bool); ok {
+		if data, ok := tmp.(*model.WishListDetail); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/anggaraswn/gqlgen-todos/graph/model.WishListDetail`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3237,9 +3426,9 @@ func (ec *executionContext) _Mutation_deleteWishlistDetail(ctx context.Context, 
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*model.WishListDetail)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNWishListDetail2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐWishListDetail(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteWishlistDetail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3249,7 +3438,15 @@ func (ec *executionContext) fieldContext_Mutation_deleteWishlistDetail(ctx conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "wishlist":
+				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
+			case "product":
+				return ec.fieldContext_WishListDetail_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_WishListDetail_quantity(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type WishListDetail", field.Name)
 		},
 	}
 	defer func() {
@@ -3379,10 +3576,10 @@ func (ec *executionContext) _Mutation_deleteSaveForLater(ctx context.Context, fi
 		if tmp == nil {
 			return nil, nil
 		}
-		if data, ok := tmp.(bool); ok {
+		if data, ok := tmp.(*model.Product); ok {
 			return data, nil
 		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be bool`, tmp)
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be *github.com/anggaraswn/gqlgen-todos/graph/model.Product`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3393,9 +3590,9 @@ func (ec *executionContext) _Mutation_deleteSaveForLater(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(bool)
+	res := resTmp.(*model.Product)
 	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+	return ec.marshalNProduct2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐProduct(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_deleteSaveForLater(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3405,7 +3602,39 @@ func (ec *executionContext) fieldContext_Mutation_deleteSaveForLater(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_Product_id(ctx, field)
+			case "name":
+				return ec.fieldContext_Product_name(ctx, field)
+			case "images":
+				return ec.fieldContext_Product_images(ctx, field)
+			case "price":
+				return ec.fieldContext_Product_price(ctx, field)
+			case "discount":
+				return ec.fieldContext_Product_discount(ctx, field)
+			case "rating":
+				return ec.fieldContext_Product_rating(ctx, field)
+			case "stock":
+				return ec.fieldContext_Product_stock(ctx, field)
+			case "description":
+				return ec.fieldContext_Product_description(ctx, field)
+			case "numberOfReviews":
+				return ec.fieldContext_Product_numberOfReviews(ctx, field)
+			case "numberBought":
+				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
+			case "category":
+				return ec.fieldContext_Product_category(ctx, field)
+			case "store":
+				return ec.fieldContext_Product_store(ctx, field)
+			case "brand":
+				return ec.fieldContext_Product_brand(ctx, field)
+			case "reviews":
+				return ec.fieldContext_Product_reviews(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Product", field.Name)
 		},
 	}
 	defer func() {
@@ -3480,6 +3709,8 @@ func (ec *executionContext) fieldContext_Mutation_createProduct(ctx context.Cont
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -3984,9 +4215,9 @@ func (ec *executionContext) _Product_rating(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(float64)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNFloat2float64(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Product_rating(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3996,7 +4227,7 @@ func (ec *executionContext) fieldContext_Product_rating(ctx context.Context, fie
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type Float does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4166,6 +4397,50 @@ func (ec *executionContext) _Product_numberBought(ctx context.Context, field gra
 }
 
 func (ec *executionContext) fieldContext_Product_numberBought(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Product",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Product_numberOfRatings(ctx context.Context, field graphql.CollectedField, obj *model.Product) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Product_numberOfRatings(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.NumberOfRatings, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Product_numberOfRatings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Product",
 		Field:      field,
@@ -4867,6 +5142,8 @@ func (ec *executionContext) fieldContext_Query_currentUserWishlist(ctx context.C
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -4922,6 +5199,8 @@ func (ec *executionContext) fieldContext_Query_wishlists(ctx context.Context, fi
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -4977,6 +5256,8 @@ func (ec *executionContext) fieldContext_Query_wishlist(ctx context.Context, fie
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -5110,6 +5391,8 @@ func (ec *executionContext) fieldContext_Query_wishlistDetails(ctx context.Conte
 				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
 			case "product":
 				return ec.fieldContext_WishListDetail_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_WishListDetail_quantity(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type WishListDetail", field.Name)
 		},
@@ -5186,6 +5469,8 @@ func (ec *executionContext) fieldContext_Query_product(ctx context.Context, fiel
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -5270,6 +5555,8 @@ func (ec *executionContext) fieldContext_Query_products(ctx context.Context, fie
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -5791,6 +6078,8 @@ func (ec *executionContext) fieldContext_Review_product(ctx context.Context, fie
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -6105,6 +6394,8 @@ func (ec *executionContext) fieldContext_SaveForLater_product(ctx context.Contex
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -6912,6 +7203,8 @@ func (ec *executionContext) fieldContext_WishListDetail_wishlist(ctx context.Con
 				return ec.fieldContext_Wishlist_user(ctx, field)
 			case "option":
 				return ec.fieldContext_Wishlist_option(ctx, field)
+			case "notes":
+				return ec.fieldContext_Wishlist_notes(ctx, field)
 			case "wishlistDetails":
 				return ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 			}
@@ -6980,6 +7273,8 @@ func (ec *executionContext) fieldContext_WishListDetail_product(ctx context.Cont
 				return ec.fieldContext_Product_numberOfReviews(ctx, field)
 			case "numberBought":
 				return ec.fieldContext_Product_numberBought(ctx, field)
+			case "numberOfRatings":
+				return ec.fieldContext_Product_numberOfRatings(ctx, field)
 			case "category":
 				return ec.fieldContext_Product_category(ctx, field)
 			case "store":
@@ -6990,6 +7285,50 @@ func (ec *executionContext) fieldContext_WishListDetail_product(ctx context.Cont
 				return ec.fieldContext_Product_reviews(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Product", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _WishListDetail_quantity(ctx context.Context, field graphql.CollectedField, obj *model.WishListDetail) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_WishListDetail_quantity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Quantity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_WishListDetail_quantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "WishListDetail",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7191,6 +7530,47 @@ func (ec *executionContext) fieldContext_Wishlist_option(ctx context.Context, fi
 	return fc, nil
 }
 
+func (ec *executionContext) _Wishlist_notes(ctx context.Context, field graphql.CollectedField, obj *model.Wishlist) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Wishlist_notes(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Notes, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Wishlist_notes(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Wishlist",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Wishlist_wishlistDetails(ctx context.Context, field graphql.CollectedField, obj *model.Wishlist) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Wishlist_wishlistDetails(ctx, field)
 	if err != nil {
@@ -7234,6 +7614,8 @@ func (ec *executionContext) fieldContext_Wishlist_wishlistDetails(ctx context.Co
 				return ec.fieldContext_WishListDetail_wishlist(ctx, field)
 			case "product":
 				return ec.fieldContext_WishListDetail_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_WishListDetail_quantity(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type WishListDetail", field.Name)
 		},
@@ -9737,6 +10119,12 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_createWishlistDetail(ctx, field)
 			})
 
+		case "updateWishlistDetail":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updateWishlistDetail(ctx, field)
+			})
+
 		case "deleteWishlistDetail":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -9863,6 +10251,13 @@ func (ec *executionContext) _Product(ctx context.Context, sel ast.SelectionSet, 
 		case "numberBought":
 
 			out.Values[i] = ec._Product_numberBought(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
+		case "numberOfRatings":
+
+			out.Values[i] = ec._Product_numberOfRatings(ctx, field, obj)
 
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
@@ -10661,6 +11056,13 @@ func (ec *executionContext) _WishListDetail(ctx context.Context, sel ast.Selecti
 				return innerFunc(ctx)
 
 			})
+		case "quantity":
+
+			out.Values[i] = ec._WishListDetail_quantity(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -10723,6 +11125,10 @@ func (ec *executionContext) _Wishlist(ctx context.Context, sel ast.SelectionSet,
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&invalids, 1)
 			}
+		case "notes":
+
+			out.Values[i] = ec._Wishlist_notes(ctx, field, obj)
+
 		case "wishlistDetails":
 			field := field
 

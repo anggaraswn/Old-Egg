@@ -18,9 +18,9 @@ import (
 // User is the resolver for the user field.
 func (r *cartResolver) User(ctx context.Context, obj *model.Cart) (*model.User, error) {
 	// panic(fmt.Errorf("not implemented: User - user"))
-	db := database.GetDB();
+	db := database.GetDB()
 
-	user:= new(model.User);
+	user := new(model.User)
 
 	return user, db.First(user, "id = ?", obj.UserID).Error
 }
@@ -28,9 +28,9 @@ func (r *cartResolver) User(ctx context.Context, obj *model.Cart) (*model.User, 
 // Product is the resolver for the product field.
 func (r *cartResolver) Product(ctx context.Context, obj *model.Cart) (*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Product - product"))
-	db:= database.GetDB();
+	db := database.GetDB()
 
-	product := new(model.Product);
+	product := new(model.Product)
 
 	return product, db.First(product, "id = ?", obj.ProductID).Error
 }
@@ -77,7 +77,7 @@ func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) 
 // UpdateCart is the resolver for the updateCart field.
 func (r *mutationResolver) UpdateCart(ctx context.Context, input model.NewCart) (*model.Cart, error) {
 	// panic(fmt.Errorf("not implemented: UpdateCart - updateCart"))
-	db := database.GetDB();
+	db := database.GetDB()
 	if ctx.Value("auth") == nil {
 		return nil, &gqlerror.Error{
 			Message: "Invalid Token !",
@@ -100,8 +100,23 @@ func (r *mutationResolver) UpdateCart(ctx context.Context, input model.NewCart) 
 }
 
 // DeleteCart is the resolver for the deleteCart field.
-func (r *mutationResolver) DeleteCart(ctx context.Context, productID string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteCart - deleteCart"))
+func (r *mutationResolver) DeleteCart(ctx context.Context, productID string) (*model.Cart, error) {
+	// panic(fmt.Errorf("not implemented: DeleteCart - deleteCart"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	cart := new(model.Cart)
+	if err := db.Where("user_id = ? AND product_id = ?", userID, productID).Take(&cart).Error; err != nil {
+		return nil, err
+	}
+
+	return cart, db.Exec("DELETE FROM carts WHERE user_id = ? AND product_id = ?", userID, productID).Error
 }
 
 // CreateWishlist is the resolver for the createWishlist field.
@@ -131,9 +146,9 @@ func (r *mutationResolver) CreateWishlist(ctx context.Context, name string, opti
 }
 
 // UpdateWishlist is the resolver for the updateWishlist field.
-func (r *mutationResolver) UpdateWishlist(ctx context.Context, wishlistID string, name string, option string) (*model.Wishlist, error) {
+func (r *mutationResolver) UpdateWishlist(ctx context.Context, wishlistID string, name *string, option *string, notes *string) (*model.Wishlist, error) {
 	// panic(fmt.Errorf("not implemented: UpdateWishlist - updateWishlist"))
-	db := database.GetDB();
+	db := database.GetDB()
 	if ctx.Value("auth") == nil {
 		return nil, &gqlerror.Error{
 			Message: "Invalid Token !",
@@ -145,12 +160,19 @@ func (r *mutationResolver) UpdateWishlist(ctx context.Context, wishlistID string
 		return nil, err
 	}
 
-	wishlist.Name = name
-	wishlist.Option = model.Option(option)
+	if name != nil {
+		wishlist.Name = *name
+	}
+
+	if option != nil {
+		wishlist.Option = model.Option(*option)
+	}
+	if notes != nil {
+		wishlist.Notes = *notes
+	}
 
 	return &wishlist, db.Save(wishlist).Error
 }
-
 
 // DeleteWishlist is the resolver for the deleteWishlist field.
 func (r *mutationResolver) DeleteWishlist(ctx context.Context, wishlistID string) (bool, error) {
@@ -158,7 +180,7 @@ func (r *mutationResolver) DeleteWishlist(ctx context.Context, wishlistID string
 }
 
 // CreateWishlistDetail is the resolver for the createWishlistDetail field.
-func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error) {
+func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID string, productID string, quantity *int) (*model.WishListDetail, error) {
 	// panic(fmt.Errorf("not implemented: CreateWishlistDetail - createWishlistDetail"))
 	db := database.GetDB()
 
@@ -175,12 +197,70 @@ func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID 
 		ProductID:  productID,
 	}
 
+	if quantity != nil {
+		wishlist.Quantity = *quantity
+	}
+
 	return wishlist, db.Model(wishlist).Create(&wishlist).Error
 }
 
+// UpdateWishlistDetail is the resolver for the updateWishlistDetail field.
+func (r *mutationResolver) UpdateWishlistDetail(ctx context.Context, wishlistID *string, productID string, quantity *int) (*model.WishListDetail, error) {
+	// panic(fmt.Errorf("not implemented: UpdateWishlistDetail - updateWishlistDetail"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	wishlistDetail := new(model.WishListDetail)
+
+	if err := db.Where("wishlist_id = ? AND product_id = ?", wishlistID, productID).Take(&wishlistDetail).Error; err != nil {
+		return nil, err
+	}
+
+	product := new(model.Product)
+
+	if err := db.Where("id = ?", productID).Take(&product).Error; err != nil {
+		return nil, err
+	}
+
+	var err error
+	if quantity != nil {
+		if *quantity <= product.Stock && *quantity > 0 {
+			err = db.Exec("UPDATE wish_list_details SET quantity = ? WHERE product_id = ? AND wishlist_id = ?", quantity, productID, wishlistID).Error
+		} else {
+			err = &gqlerror.Error{
+				Message: "Quantity not valid",
+			}
+		}
+	} else {
+		err = &gqlerror.Error{
+			Message: "Tidak ada quantity",
+		}
+	}
+
+	return wishlistDetail, err
+}
+
 // DeleteWishlistDetail is the resolver for the deleteWishlistDetail field.
-func (r *mutationResolver) DeleteWishlistDetail(ctx context.Context, wishlistID string, productID string) (bool, error) {
-	panic(fmt.Errorf("not implemented: DeleteWishlistDetail - deleteWishlistDetail"))
+func (r *mutationResolver) DeleteWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error) {
+	// panic(fmt.Errorf("not implemented: DeleteWishlistDetail - deleteWishlistDetail"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	wishlistDetail := new(model.WishListDetail)
+	if err := db.First(wishlistDetail, "wishlist_id = ? AND product_id = ?", wishlistID, productID).Error; err != nil {
+		return nil, err
+	}
+
+	// return wishlistDetail, db.Delete(wishlistDetail).Error
+	return wishlistDetail, db.Exec("DELETE FROM wish_list_details WHERE wishlist_id = ? AND product_id = ?", wishlistID, productID).Error
 }
 
 // CreateSaveForLater is the resolver for the createSaveForLater field.
@@ -189,7 +269,7 @@ func (r *mutationResolver) CreateSaveForLater(ctx context.Context, productID str
 }
 
 // DeleteSaveForLater is the resolver for the deleteSaveForLater field.
-func (r *mutationResolver) DeleteSaveForLater(ctx context.Context, productID string) (bool, error) {
+func (r *mutationResolver) DeleteSaveForLater(ctx context.Context, productID string) (*model.Product, error) {
 	panic(fmt.Errorf("not implemented: DeleteSaveForLater - deleteSaveForLater"))
 }
 
@@ -207,7 +287,6 @@ func (r *queryResolver) Carts(ctx context.Context) ([]*model.Cart, error) {
 	var models []*model.Cart
 
 	return models, db.Where("user_id = ?", userID).Find(&models).Error
-
 }
 
 // Cart is the resolver for the cart field.
@@ -241,9 +320,9 @@ func (r *queryResolver) Wishlists(ctx context.Context) ([]*model.Wishlist, error
 // Wishlist is the resolver for the wishlist field.
 func (r *queryResolver) Wishlist(ctx context.Context, wishlistID string) (*model.Wishlist, error) {
 	// panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
-	db := database.GetDB();
+	db := database.GetDB()
 
-	wishlist := new(model.Wishlist);
+	wishlist := new(model.Wishlist)
 
 	return wishlist, db.First(wishlist, "id = ?", wishlistID).Error
 }

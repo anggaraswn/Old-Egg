@@ -21,12 +21,14 @@ type Wishlist {
     name: String!
     user: User! @goField(forceResolver: true)
     option: String!
+    notes: String
     wishlistDetails: [WishListDetail!]! @goField(forceResolver: true)
 }
 
 type WishListDetail {
     wishlist: Wishlist! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
+    quantity: Int!
 }
 
 type SaveForLater {
@@ -48,13 +50,26 @@ extend type Query {
 extend type Mutation {
     createCart(input: NewCart!): Cart! @auth
     updateCart(input: NewCart!): Cart @auth
-    deleteCart(productID: ID!): Boolean! @auth
+    deleteCart(productID: ID!): Cart! @auth
     createWishlist(name: String!, option: Option!): Wishlist! @auth
-    updateWishlist(wishlistID: ID!, name: String!, option: String!): Wishlist!
-        @auth
+    updateWishlist(
+        wishlistID: ID!
+        name: String
+        option: String
+        notes: String
+    ): Wishlist! @auth
     deleteWishlist(wishlistID: ID!): Boolean! @auth
-    createWishlistDetail(wishlistID: ID!, productID: ID!): WishListDetail! @auth
-    deleteWishlistDetail(wishlistID: ID!, productID: ID!): Boolean! @auth
+    createWishlistDetail(
+        wishlistID: ID!
+        productID: ID!
+        quantity: Int
+    ): WishListDetail! @auth
+    updateWishlistDetail(
+        wishlistID: ID
+        productID: ID!
+        quantity: Int
+    ): WishListDetail! @auth
+    deleteWishlistDetail(wishlistID: ID!, productID: ID!): WishListDetail! @auth
     createSaveForLater(productID: ID!): SaveForLater! @auth
-    deleteSaveForLater(productID: ID!): Boolean! @auth
+    deleteSaveForLater(productID: ID!): Product! @auth
 }

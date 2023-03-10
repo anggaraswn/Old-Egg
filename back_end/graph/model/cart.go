@@ -14,6 +14,7 @@ type Wishlist struct {
 	Name   string `json:"name"`
 	UserID string
 	User   *User  `json:"user"`
+	Notes  string `json:"notes"`
 	Option Option `json:"option"`
 }
 
@@ -24,6 +25,7 @@ type WishListDetail struct {
 	Wishlist   *Wishlist `json:"wishlist"`
 	ProductID  string
 	Product    *Product `json:"product"`
+	Quantity   int      `json:"quantity"`
 }
 
 type SaveForLater struct {
