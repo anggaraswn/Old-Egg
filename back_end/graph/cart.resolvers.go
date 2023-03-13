@@ -79,7 +79,7 @@ func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) 
 		}
 	}
 
-	if(saveForLater != nil){
+	if saveForLater != nil {
 		db.Exec("DELETE FROM save_for_laters WHERE user_id = ? AND product_id = ?", userID, input.ProductID)
 	}
 
@@ -297,14 +297,14 @@ func (r *mutationResolver) CreateSaveForLater(ctx context.Context, productID str
 		}
 	}
 
-	if(quantity < 1){
+	if quantity < 1 {
 		return nil, &gqlerror.Error{
 			Message: "Invalid Quantity !",
 		}
 	}
 
 	saveForLater, _ := service.SaveForLaterGetByUserProduct(ctx, userID, productID)
-	
+
 	println(product.Stock)
 	// saveForLater := new(model.SaveForLater)
 
@@ -314,9 +314,9 @@ func (r *mutationResolver) CreateSaveForLater(ctx context.Context, productID str
 	// 	}
 	// }
 
-	if(saveForLater != nil){
+	if saveForLater != nil {
 		println(saveForLater.Quantity)
-		if((saveForLater.Quantity + quantity) > product.Stock){
+		if (saveForLater.Quantity + quantity) > product.Stock {
 			return nil, &gqlerror.Error{
 				Message: "Invalid Quantity !",
 			}
@@ -338,7 +338,7 @@ func (r *mutationResolver) CreateSaveForLater(ctx context.Context, productID str
 	}
 
 	println(cart.UserID)
-	if(cart != nil){
+	if cart != nil {
 		db.Exec("DELETE FROM carts WHERE user_id = ? AND product_id = ?", cart.UserID, cart.ProductID)
 	}
 
@@ -459,7 +459,7 @@ func (r *saveForLaterResolver) User(ctx context.Context, obj *model.SaveForLater
 // Product is the resolver for the product field.
 func (r *saveForLaterResolver) Product(ctx context.Context, obj *model.SaveForLater) (*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Product - product"))
-	db:= database.GetDB()
+	db := database.GetDB()
 
 	product := new(model.Product)
 

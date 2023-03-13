@@ -31,7 +31,36 @@ func (r *reviewResolver) Product(ctx context.Context, obj *model.Review) (*model
 	panic(fmt.Errorf("not implemented: Product - product"))
 }
 
+// Rating is the resolver for the rating field.
+func (r *reviewResolver) Rating(ctx context.Context, obj *model.Review) (float64, error) {
+	panic(fmt.Errorf("not implemented: Rating - rating"))
+}
+
+// Shop is the resolver for the shop field.
+func (r *shopReviewResolver) Shop(ctx context.Context, obj *model.ShopReview) (*model.Shop, error) {
+	panic(fmt.Errorf("not implemented: Shop - shop"))
+}
+
+// User is the resolver for the user field.
+func (r *shopReviewResolver) User(ctx context.Context, obj *model.ShopReview) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: User - user"))
+}
+
+// TransactionHeader is the resolver for the transactionHeader field.
+func (r *shopReviewResolver) TransactionHeader(ctx context.Context, obj *model.ShopReview) (*model.TransactionHeader, error) {
+	panic(fmt.Errorf("not implemented: TransactionHeader - transactionHeader"))
+}
+
+// Rating is the resolver for the rating field.
+func (r *shopReviewResolver) Rating(ctx context.Context, obj *model.ShopReview) (float64, error) {
+	panic(fmt.Errorf("not implemented: Rating - rating"))
+}
+
 // Review returns ReviewResolver implementation.
 func (r *Resolver) Review() ReviewResolver { return &reviewResolver{r} }
 
+// ShopReview returns ShopReviewResolver implementation.
+func (r *Resolver) ShopReview() ShopReviewResolver { return &shopReviewResolver{r} }
+
 type reviewResolver struct{ *Resolver }
+type shopReviewResolver struct{ *Resolver }

@@ -33,7 +33,7 @@ type NewCategory struct {
 type NewProduct struct {
 	Name        string  `json:"name"`
 	CategoryID  string  `json:"categoryID"`
-	StoreID     string  `json:"storeID"`
+	ShopID      string  `json:"shopID"`
 	BrandID     string  `json:"brandID"`
 	Images      string  `json:"images"`
 	Description string  `json:"description"`
@@ -43,18 +43,20 @@ type NewProduct struct {
 }
 
 type NewReview struct {
-	ProductID   string `json:"productID"`
-	Rating      int    `json:"rating"`
-	Description string `json:"description"`
+	ProductID   string  `json:"productID"`
+	Rating      float64 `json:"rating"`
+	Description string  `json:"description"`
 }
 
-type NewStore struct {
+type NewShop struct {
 	Name       string `json:"name"`
 	Image      string `json:"image"`
+	Banner     string `json:"banner"`
 	Followers  int    `json:"followers"`
 	SalesCount int    `json:"salesCount"`
 	Policy     string `json:"policy"`
 	AboutUs    string `json:"aboutUs"`
+	UserID     string `json:"userID"`
 }
 
 type NewUser struct {

@@ -5,14 +5,29 @@ type Review {
     user: User! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
     createdAt: Time!
-    rating: Int!
+    rating: Float!
     description: String!
 }
 
 input NewReview {
     productID: ID!
-    rating: Int!
+    rating: Float!
     description: String!
+}
+
+type ShopReview {
+    id: ID!
+    shop: Shop! @goField(forceResolver: true)
+    user: User! @goField(forceResolver: true)
+    transactionHeader: TransactionHeader! @goField(forceResolver: true)
+    rating: Float!
+    review: String!
+    reviewDetails: String!
+    createdAt: Time!
+    deliveryOnTime: Boolean!
+    productAccuracy: Boolean!
+    serviceSatisfaction: Boolean!
+    helpful: Boolean!
 }
 
 extend type Query {

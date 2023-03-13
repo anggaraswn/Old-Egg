@@ -1,0 +1,24 @@
+type Address {
+    id: ID!
+    user: User! @goField(forceResolver: true)
+    firstName: String!
+    lastName: String!
+    company: String
+    country: String!
+    phone: String!
+    description: String!
+    city: String!
+    state: String!
+    zipCode: String!
+    addressAs: String
+    isDefault: Boolean!
+}
+
+extend type Query {
+    addresses: [Address!]! @auth
+    address(id: ID!): Address!
+}
+
+# extend type Mutation{
+#     createAddress:
+# }

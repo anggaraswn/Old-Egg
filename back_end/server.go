@@ -31,7 +31,7 @@ func main() {
 
 	//Migrate table2 dari Model yang ada
 	db.AutoMigrate(&model.User{})
-	db.AutoMigrate(&model.Store{})
+	db.AutoMigrate(&model.Shop{})
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Brand{})
 	db.AutoMigrate(&model.Product{})

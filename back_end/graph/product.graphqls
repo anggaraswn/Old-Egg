@@ -11,7 +11,7 @@ type Product {
     numberBought: Int!
     numberOfRatings: Int!
     category: Category! @goField(forceResolver: true)
-    store: Store! @goField(forceResolver: true)
+    shop: Shop! @goField(forceResolver: true)
     brand: Brand! @goField(forceResolver: true)
     reviews: [Review!]! @goField(forceResolver: true)
 }
@@ -19,7 +19,7 @@ type Product {
 input NewProduct {
     name: String!
     categoryID: ID!
-    storeID: ID!
+    shopID: ID!
     brandID: ID!
     images: String!
     description: String!
@@ -54,7 +54,7 @@ input NewBrand {
 
 extend type Query {
     product(id: ID!): Product!
-    products(storeID: ID, limit: Int, topSold: Boolean): [Product!]!
+    products(shopID: ID, limit: Int, topSold: Boolean): [Product!]!
 }
 
 extend type Mutation {

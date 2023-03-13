@@ -14,8 +14,8 @@ type Product struct {
 	NumberOfRatings int     `json:"numberOfRatings"`
 	CategoryID      string
 	Category        *Category `json:"category"`
-	StoreID         string
-	Store           *Store `json:"store"`
+	ShopID          string
+	Shop            *Shop `json:"shop"`
 	BrandID         string
 	Brand           *Brand `json:"brand"`
 }

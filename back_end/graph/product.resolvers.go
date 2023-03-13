@@ -30,7 +30,7 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewPro
 		NumberOfReviews: 0,
 		NumberBought:    0,
 		CategoryID:      input.CategoryID,
-		StoreID:         input.StoreID,
+		ShopID:          input.ShopID,
 	}
 
 	err := db.Create(product).Error
@@ -43,9 +43,9 @@ func (r *productResolver) Category(ctx context.Context, obj *model.Product) (*mo
 	panic(fmt.Errorf("not implemented: Category - category"))
 }
 
-// Store is the resolver for the store field.
-func (r *productResolver) Store(ctx context.Context, obj *model.Product) (*model.Store, error) {
-	panic(fmt.Errorf("not implemented: Store - store"))
+// Shop is the resolver for the shop field.
+func (r *productResolver) Shop(ctx context.Context, obj *model.Product) (*model.Shop, error) {
+	panic(fmt.Errorf("not implemented: Shop - shop"))
 }
 
 // Brand is the resolver for the brand field.
@@ -69,7 +69,7 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 }
 
 // Products is the resolver for the products field.
-func (r *queryResolver) Products(ctx context.Context, storeID *string, limit *int, topSold *bool) ([]*model.Product, error) {
+func (r *queryResolver) Products(ctx context.Context, shopID *string, limit *int, topSold *bool) ([]*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Products - products"))
 	db := database.GetDB()
 
@@ -95,6 +95,9 @@ type productResolver struct{ *Resolver }
 //   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
 //     it when you're done.
 //   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *productResolver) Store(ctx context.Context, obj *model.Product) (*model.Shop, error) {
+	panic(fmt.Errorf("not implemented: Store - store"))
+}
 func (r *productResolver) Image(ctx context.Context, obj *model.Product) (string, error) {
 	panic(fmt.Errorf("not implemented: Image - image"))
 }

@@ -1,0 +1,34 @@
+type Shop {
+    id: ID!
+    name: String!
+    image: String!
+    banner: String!
+    followers: Int!
+    salesCount: Int!
+    policy: String!
+    aboutUs: String!
+    banned: Boolean!
+    user: User! @goField(forceResolver: true)
+    products: [Product!]! @goField(forceResolver: true)
+}
+
+input NewShop {
+    name: String!
+    image: String!
+    banner: String!
+    followers: Int!
+    salesCount: Int!
+    policy: String!
+    aboutUs: String!
+    userID: ID!
+}
+
+extend type Query {
+    Shops: [Shop!]! @goField(forceResolver: true)
+    Shop(id: ID, name: String): Shop! @goField(forceResolver: true)
+}
+
+extend type Mutation {
+    createShop(input: NewShop!): Shop!
+    updateShop(input: NewShop!): Shop!
+}
