@@ -153,20 +153,8 @@
   border-bottom: 1px solid gray;
 }
 
-.dropdownItem {
-  list-style-type: none;
-  display: flex;
-  align-content: center;
-  margin: 10px 0;
-  padding: 0;
-}
-
 .cart:hover {
   cursor: pointer;
-}
-
-.dropdownItem img {
-  margin-right: 5px;
 }
 
 .listItem {

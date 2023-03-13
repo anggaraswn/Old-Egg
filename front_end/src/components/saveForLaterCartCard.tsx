@@ -1,26 +1,7 @@
-import axios from 'axios';
-import styles from './CartCard.module.css';
 import { getCookie } from 'cookies-next';
+import styles from './saveForLaterCartCard.module.css';
 import { useEffect, useState } from 'react';
-
-interface Product {
-  id: string;
-  name: string;
-  images: string;
-  price: number;
-  rating: number;
-  numberOfReviews: number;
-  numberBought: number;
-  stock: number;
-  description: string;
-  discount: number;
-}
-
-interface Cart {
-  product: Product;
-  quantity: number;
-  notes: string;
-}
+import axios from 'axios';
 
 interface WishList {
   id: string;
@@ -28,15 +9,16 @@ interface WishList {
   option: string;
 }
 
-export default function CartCard(props: {
-  cart: Cart;
+export default function SaveForLaterCart(props: {
+  SaveForLater: any;
   handleChanges: Function;
 }) {
-  const { cart, handleChanges } = props;
+  const { SaveForLater, handleChanges } = props;
   const token = getCookie('jwt');
   const [isOpen, setIsOpen] = useState(false);
   const [wishlist, setWishlist] = useState<WishList[]>([]);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState('');
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const UPDATE_CART_MUTATION = `mutation updateCart($productID: ID!, $quantity: Int!, $notes: String!){
@@ -89,39 +71,39 @@ export default function CartCard(props: {
   }
 }`;
 
-  const CREATE_SAVE_FOR_LATER_MUTATION = `mutation createSaveForLater($productID: ID!, $quantity: Int!){
-    createSaveForLater(productID: $productID, quantity: $quantity){
-      product{
-        name,
-        price
-      },
-      quantity
-    }
-  }`;
+  const MOVE_TO_CART_MUTATION = `mutation createCart($productID: ID!, $quantity: Int!, $notes: String!){
+  createCart(input:{
+    productID: $productID,
+    quantity: $quantity,
+    notes: $notes
+  }){
+    quantity
+  }
+}`;
 
-  const updateQuantity = () => {
-    GRAPHQLAPI.post(
-      '',
-      {
-        query: UPDATE_CART_MUTATION,
-        variables: {
-          productID: cart.product.id,
-          quantity: (document.getElementById('quantity') as HTMLInputElement)
-            .value,
-          notes: '',
-        },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
-    ).then((response) => {
-      console.log('QTY Updated');
-      console.log(response);
-      handleChanges();
-    });
-  };
+  // const updateQuantity = () => {
+  //   GRAPHQLAPI.post(
+  //     '',
+  //     {
+  //       query: UPDATE_CART_MUTATION,
+  //       variables: {
+  //         productID: cart.product.id,
+  //         quantity: (document.getElementById('quantity') as HTMLInputElement)
+  //           .value,
+  //         notes: '',
+  //       },
+  //     },
+  //     {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     },
+  //   ).then((response) => {
+  //     console.log('QTY Updated');
+  //     console.log(response);
+  //     handleChanges();
+  //   });
+  // };
 
   const handleCheckboxChange = (event: any, w: any) => {
     setSelected(w.id);
@@ -146,7 +128,7 @@ export default function CartCard(props: {
           query: ADD_TO_WISHLIST,
           variables: {
             wishlistID: selected,
-            productID: cart.product.id,
+            productID: SaveForLater.product.id,
           },
         },
         {
@@ -185,7 +167,7 @@ export default function CartCard(props: {
       {
         query: REMOVE_CART_MUTATION,
         variables: {
-          productID: cart.product.id,
+          productID: SaveForLater.product.id,
         },
       },
       {
@@ -199,15 +181,17 @@ export default function CartCard(props: {
     });
   };
 
-  const handleSaveForLater = () => {
+  const handleMoveToCart = () => {
+    console.log(SaveForLater.product.id);
+    console.log(SaveForLater.quantity);
     GRAPHQLAPI.post(
       '',
       {
-        query: CREATE_SAVE_FOR_LATER_MUTATION,
+        query: MOVE_TO_CART_MUTATION,
         variables: {
-          productID: cart.product.id,
-          quantity: (document.getElementById('quantity') as HTMLInputElement)
-            .value,
+          productID: SaveForLater.product.id,
+          quantity: SaveForLater.quantity,
+          notes: '',
         },
       },
       {
@@ -218,6 +202,9 @@ export default function CartCard(props: {
     ).then((response) => {
       console.log(response);
       handleChanges();
+      if (!response.data.data.createCart) {
+        setError('Invalid quantity');
+      }
     });
   };
 
@@ -257,20 +244,24 @@ export default function CartCard(props: {
         </div>
       </div>
       <div className={styles.itemContainer}>
-        <img src={cart.product.images} className={styles.productImage}></img>
-        <div className={styles.itemInfo}>{cart.product.name}</div>
+        <img
+          src={SaveForLater.product.images}
+          className={styles.productImage}
+        ></img>
+        <div className={styles.itemInfo}>{SaveForLater.product.name}</div>
         {/* <div className={styles.itemQuantity}>{cart.quantity}</div> */}
         <div className={styles.qtyPriceContainer}>
-          <input
+          <div>{SaveForLater.quantity}</div>
+          {/* <input
             type="number"
             className={styles.quantity}
-            defaultValue={cart.quantity}
+            defaultValue={SaveForLater.quantity}
             min={1}
-            max={cart.product.stock}
-            onChange={updateQuantity}
+            max={SaveForLater.product.stock}
+            // onChange={updateQuantity}
             id="quantity"
-          />
-          <div className={styles.itemAction}>${cart.product.price}</div>
+          /> */}
+          <div className={styles.itemAction}>${SaveForLater.product.price}</div>
         </div>
       </div>
       <div className={styles.itemSubContainer}>
@@ -279,9 +270,8 @@ export default function CartCard(props: {
             <img src="/assets/icon-heart.png" alt="" height={12} /> MOVE TO WISH
             LIST
           </button>
-          <button onClick={handleSaveForLater}>
-            <img src="/assets/icon-save.png" alt="" height={12} /> SAVE FOR
-            LATER
+          <button onClick={handleMoveToCart}>
+            <img src="/assets/icon-cart.png" alt="" height={12} /> Move To Cart
           </button>
         </div>
         <div className={styles.flex}>

@@ -6,6 +6,7 @@ import styles from './Index.module.css';
 import WishList from '..';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { getCookie } from 'cookies-next';
+import FooterMain from '@/components/footerMain';
 
 interface WishList {
   id: string;
@@ -446,69 +447,75 @@ export default function WishlistDetail() {
                                 width={115}
                                 height={86}
                               />
-                              <div className={styles.itemInfo}>
-                                <div className={styles.itemInfoInner}>
-                                  <div className={styles.itemBranding}>
-                                    <div>
-                                      {[...Array(fullStars)].map((_, index) => (
-                                        <FaStar
-                                          key={index}
-                                          className={styles.star}
-                                        />
-                                      ))}
-                                      {[...Array(halfStars)].map((_, index) => (
-                                        <FaStarHalfAlt
-                                          key={index}
-                                          className={styles.star}
-                                        />
-                                      ))}
+                              <div className={styles.itemNonImage}>
+                                <div className={styles.itemInfo}>
+                                  <div className={styles.itemInfoInner}>
+                                    <div className={styles.itemBranding}>
+                                      <div>
+                                        {[...Array(fullStars)].map(
+                                          (_, index) => (
+                                            <FaStar
+                                              key={index}
+                                              className={styles.star}
+                                            />
+                                          ),
+                                        )}
+                                        {[...Array(halfStars)].map(
+                                          (_, index) => (
+                                            <FaStarHalfAlt
+                                              key={index}
+                                              className={styles.star}
+                                            />
+                                          ),
+                                        )}
+                                      </div>
+                                      <div>({w.product.numberOfRatings})</div>
                                     </div>
-                                    <div>({w.product.numberOfRatings})</div>
+                                    <div>{w.product.name}</div>
                                   </div>
-                                  <div>{w.product.name}</div>
                                 </div>
-                              </div>
-                              <div className={styles.itemAction}>
-                                <p className={styles.price}>
-                                  ${w.product.price}
-                                </p>
-                                <p>Free Shipping</p>
-                                <div className={styles.itemOperate}>
-                                  <div className={styles.itemBTNContainer}>
-                                    <input
-                                      type="number"
-                                      className={styles.quantity}
-                                      defaultValue={w.quantity}
-                                      min={1}
-                                      max={w.product.stock}
-                                      onChange={() => {
-                                        updateQuantity(w.product.id);
-                                      }}
-                                      id="quantity"
-                                    />
-                                    <button
-                                      className={`${styles.orangeBTN} ${styles.addToCartBTN}`}
-                                    >
-                                      ADD TO CART
-                                    </button>
-                                  </div>
-                                  <div className={styles.removeContainer}>
-                                    <button
-                                      onClick={() => {
-                                        removeItem(w.product.id);
-                                      }}
-                                    >
-                                      <img
-                                        src="/assets/icon-delete.png"
-                                        alt=""
-                                        height={12}
-                                        width={11}
-                                      />{' '}
-                                      REMOVE
-                                    </button>
-                                    <div>
-                                      <input type="checkbox" />
-                                      COMPARE
+                                <div className={styles.itemAction}>
+                                  <p className={styles.price}>
+                                    ${w.product.price}
+                                  </p>
+                                  <p>Free Shipping</p>
+                                  <div className={styles.itemOperate}>
+                                    <div className={styles.itemBTNContainer}>
+                                      <input
+                                        type="number"
+                                        className={styles.quantity}
+                                        defaultValue={w.quantity}
+                                        min={1}
+                                        max={w.product.stock}
+                                        onChange={() => {
+                                          updateQuantity(w.product.id);
+                                        }}
+                                        id="quantity"
+                                      />
+                                      <button
+                                        className={`${styles.orangeBTN} ${styles.addToCartBTN}`}
+                                      >
+                                        ADD TO CART
+                                      </button>
+                                    </div>
+                                    <div className={styles.removeContainer}>
+                                      <button
+                                        onClick={() => {
+                                          removeItem(w.product.id);
+                                        }}
+                                      >
+                                        <img
+                                          src="/assets/icon-delete.png"
+                                          alt=""
+                                          height={12}
+                                          width={11}
+                                        />{' '}
+                                        REMOVE
+                                      </button>
+                                      <div>
+                                        <input type="checkbox" />
+                                        COMPARE
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -525,6 +532,7 @@ export default function WishlistDetail() {
           </div>
         </section>
       </div>
+      <FooterMain />
     </div>
   );
 }

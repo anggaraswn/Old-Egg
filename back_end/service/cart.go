@@ -35,3 +35,15 @@ func CartGetByUserProduct(ctx context.Context, userID string, productID string) 
 
 	return &cart, nil
 }
+
+func SaveForLaterGetByUserProduct(ctx context.Context, userID string, productID string) (*model.SaveForLater, error) {
+	db := database.GetDB()
+
+	var saveForLater model.SaveForLater
+
+	if err := db.Model(saveForLater).Where("user_id = ? AND product_id = ?", userID, productID).Take(&saveForLater).Error; err != nil {
+		return nil, err
+	}
+
+	return &saveForLater, nil
+}

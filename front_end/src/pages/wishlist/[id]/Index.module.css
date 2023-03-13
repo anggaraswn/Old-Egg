@@ -5,6 +5,8 @@
 
 .pageSectionInner {
   padding: 40px 20px;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .container {
@@ -13,10 +15,12 @@
 
 .left {
   width: 25%;
+  border-right: 1px solid rgb(238, 238, 238);
+  padding-right: 20px;
 }
 
 .right {
-  width: 75%;
+  width: 70%;
   margin-left: 20px;
 }
 
@@ -75,12 +79,29 @@
   color: rgb(255, 187, 0);
 }
 
+.item {
+  border: 1px solid rgb(238, 238, 238);
+  padding: 30px;
+  margin-bottom: 20px;
+}
+
 .itemInfo {
   display: flex;
+  width: 320px;
+}
+
+.itemInfoInner {
+  width: 100%;
 }
 
 .itemBranding {
   display: flex;
+}
+
+.itemAction {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 @keyframes modal-in {
@@ -364,4 +385,74 @@ div.privateP:hover {
 
 .toolsBar {
   text-align: right;
+}
+
+@media (max-width: 850px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* .sideInner {
+    display: flex;
+  } */
+
+  .left {
+    width: 100%;
+  }
+
+  .right {
+    width: 100%;
+  }
+}
+
+@media (max-width: 450px) {
+  .container {
+    align-items: flex-start;
+  }
+
+  .pageSectionInner {
+    margin: 0;
+    padding: 0;
+    padding-left: 10px;
+  }
+
+  .left {
+    width: 400px;
+  }
+
+  .info {
+    margin-right: 10px;
+  }
+
+  .toolsBar {
+    /* text-align: right; */
+    margin-right: 20px;
+  }
+
+  .addNotes {
+    width: 380px;
+  }
+
+  .item {
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgb(238, 238, 238);
+    margin-bottom: 10px;
+  }
+
+  .itemNonImage {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 260px;
+  }
+
+  .itemInfo {
+    width: 260px;
+  }
+
+  .itemAction {
+    width: 260px;
+  }
 }

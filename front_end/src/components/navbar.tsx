@@ -4,17 +4,7 @@ import axios from 'axios';
 import { getCookie, removeCookies } from 'cookies-next';
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
-
-function DropdownItem(props: any) {
-  return (
-    <li className={styles.dropdownItem}>
-      <img src={props.image} alt="Icon" height={20} width={20} />
-      <a onClick={props.click} href={`${props.link}`}>
-        {props.text}
-      </a>
-    </li>
-  );
-}
+import DropdownItem from './dropDownItem';
 
 export default function Navbar() {
   const token = getCookie('jwt');

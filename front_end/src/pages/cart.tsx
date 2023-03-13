@@ -5,6 +5,7 @@ import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import CartCard from '@/components/CartCard';
 import FooterMain from '@/components/footerMain';
+import SaveForLaterCart from '@/components/saveForLaterCartCard';
 
 interface Product {
   id: string;
@@ -25,9 +26,15 @@ interface Cart {
   notes: string;
 }
 
+interface SaveForLater {
+  product: Product;
+  quantity: number;
+}
+
 export default function Cart() {
   const token = getCookie('jwt');
   const [carts, setCarts] = useState<Cart[]>([]);
+  const [saveForLater, setSaveForLater] = useState<SaveForLater[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [changes, setChanges] = useState(0);
   const delivery = 0;
@@ -50,6 +57,24 @@ export default function Cart() {
     }
   }`;
 
+  const SAVE_FOR_LATERS_QUERY = `query{
+    saveForLaters{
+      user{
+        id,
+        firstName
+      },
+      product{
+        id,
+        name,
+        images,
+        price,
+        stock,
+        rating
+      },
+      quantity
+    }
+  }`;
+
   useEffect(() => {
     GRAPHQLAPI.post(
       '',
@@ -65,6 +90,21 @@ export default function Cart() {
       console.log(response);
       setTotalPrice(0);
       setCarts(response.data.data.carts);
+    });
+
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: SAVE_FOR_LATERS_QUERY,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      console.log(response);
+      setSaveForLater(response.data.data.saveForLaters);
     });
   }, [changes]);
 
@@ -151,6 +191,30 @@ export default function Cart() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div className={styles.SFLContainer}>
+            <div className={styles.SFLTop}>
+              <h1>
+                Saved for Later(
+                <span className={styles.itemCount}>
+                  {saveForLater.length} item(s)
+                </span>
+                )
+              </h1>
+            </div>
+            <div className={styles.SFLBody}>
+              <div className={styles.itemContainer}>
+                {saveForLater.map((s) => {
+                  return (
+                    <SaveForLaterCart
+                      SaveForLater={s}
+                      handleChanges={handleChanges}
+                      key={s.id}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>

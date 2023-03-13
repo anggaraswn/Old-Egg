@@ -94,3 +94,18 @@
   height: 1.5px;
   /* padding: 0 10px; */
 }
+
+@media (max-width: 450px) {
+  .inner {
+    flex-direction: column;
+  }
+
+  .rowBody {
+    width: 100%;
+  }
+
+  .rowSide {
+    width: 100%;
+    margin: 0;
+  }
+}

@@ -32,9 +32,9 @@ type WishListDetail {
 }
 
 type SaveForLater {
-    id: ID!
     user: User! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
+    quantity: Int!
 }
 
 extend type Query {
@@ -70,6 +70,6 @@ extend type Mutation {
         quantity: Int
     ): WishListDetail! @auth
     deleteWishlistDetail(wishlistID: ID!, productID: ID!): WishListDetail! @auth
-    createSaveForLater(productID: ID!): SaveForLater! @auth
+    createSaveForLater(productID: ID!, quantity: Int!): SaveForLater! @auth
     deleteSaveForLater(productID: ID!): Product! @auth
 }

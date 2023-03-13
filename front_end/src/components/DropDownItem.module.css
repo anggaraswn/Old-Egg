@@ -1,0 +1,11 @@
+.dropdownItem {
+  list-style-type: none;
+  display: flex;
+  align-content: center;
+  margin: 10px 0;
+  padding: 0;
+}
+
+.dropdownItem img {
+  margin-right: 5px;
+}

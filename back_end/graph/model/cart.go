@@ -29,9 +29,9 @@ type WishListDetail struct {
 }
 
 type SaveForLater struct {
-	ID        string `json:"id" gorm:"primaryKey"`
 	UserID    string
 	User      *User `json:"user"`
 	ProductID string
 	Product   *Product `json:"product"`
+	Quantity  int      `json:"quantity"`
 }

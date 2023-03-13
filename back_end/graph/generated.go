@@ -84,7 +84,7 @@ type ComplexityRoot struct {
 		CreateCart           func(childComplexity int, input model.NewCart) int
 		CreateProduct        func(childComplexity int, input model.NewProduct) int
 		CreateReview         func(childComplexity int, input model.NewReview) int
-		CreateSaveForLater   func(childComplexity int, productID string) int
+		CreateSaveForLater   func(childComplexity int, productID string, quantity int) int
 		CreateStore          func(childComplexity int, input model.NewStore) int
 		CreateUser           func(childComplexity int, input model.NewUser, phone *string) int
 		CreateWishlist       func(childComplexity int, name string, option model.Option) int
@@ -147,9 +147,9 @@ type ComplexityRoot struct {
 	}
 
 	SaveForLater struct {
-		ID      func(childComplexity int) int
-		Product func(childComplexity int) int
-		User    func(childComplexity int) int
+		Product  func(childComplexity int) int
+		Quantity func(childComplexity int) int
+		User     func(childComplexity int) int
 	}
 
 	Store struct {
@@ -213,7 +213,7 @@ type MutationResolver interface {
 	CreateWishlistDetail(ctx context.Context, wishlistID string, productID string, quantity *int) (*model.WishListDetail, error)
 	UpdateWishlistDetail(ctx context.Context, wishlistID *string, productID string, quantity *int) (*model.WishListDetail, error)
 	DeleteWishlistDetail(ctx context.Context, wishlistID string, productID string) (*model.WishListDetail, error)
-	CreateSaveForLater(ctx context.Context, productID string) (*model.SaveForLater, error)
+	CreateSaveForLater(ctx context.Context, productID string, quantity int) (*model.SaveForLater, error)
 	DeleteSaveForLater(ctx context.Context, productID string) (*model.Product, error)
 	CreateProduct(ctx context.Context, input model.NewProduct) (*model.Product, error)
 	CreateReview(ctx context.Context, input model.NewReview) (*model.Review, error)
@@ -430,7 +430,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.CreateSaveForLater(childComplexity, args["productID"].(string)), true
+		return e.complexity.Mutation.CreateSaveForLater(childComplexity, args["productID"].(string), args["quantity"].(int)), true
 
 	case "Mutation.createStore":
 		if e.complexity.Mutation.CreateStore == nil {
@@ -892,19 +892,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Review.User(childComplexity), true
 
-	case "SaveForLater.id":
-		if e.complexity.SaveForLater.ID == nil {
-			break
-		}
-
-		return e.complexity.SaveForLater.ID(childComplexity), true
-
 	case "SaveForLater.product":
 		if e.complexity.SaveForLater.Product == nil {
 			break
 		}
 
 		return e.complexity.SaveForLater.Product(childComplexity), true
+
+	case "SaveForLater.quantity":
+		if e.complexity.SaveForLater.Quantity == nil {
+			break
+		}
+
+		return e.complexity.SaveForLater.Quantity(childComplexity), true
 
 	case "SaveForLater.user":
 		if e.complexity.SaveForLater.User == nil {
@@ -1289,6 +1289,15 @@ func (ec *executionContext) field_Mutation_createSaveForLater_args(ctx context.C
 		}
 	}
 	args["productID"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["quantity"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("quantity"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["quantity"] = arg1
 	return args, nil
 }
 
@@ -3478,7 +3487,7 @@ func (ec *executionContext) _Mutation_createSaveForLater(ctx context.Context, fi
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		directive0 := func(rctx context.Context) (interface{}, error) {
 			ctx = rctx // use context from middleware stack in children
-			return ec.resolvers.Mutation().CreateSaveForLater(rctx, fc.Args["productID"].(string))
+			return ec.resolvers.Mutation().CreateSaveForLater(rctx, fc.Args["productID"].(string), fc.Args["quantity"].(int))
 		}
 		directive1 := func(ctx context.Context) (interface{}, error) {
 			if ec.directives.Auth == nil {
@@ -3521,12 +3530,12 @@ func (ec *executionContext) fieldContext_Mutation_createSaveForLater(ctx context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_SaveForLater_id(ctx, field)
 			case "user":
 				return ec.fieldContext_SaveForLater_user(ctx, field)
 			case "product":
 				return ec.fieldContext_SaveForLater_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_SaveForLater_quantity(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SaveForLater", field.Name)
 		},
@@ -5336,12 +5345,12 @@ func (ec *executionContext) fieldContext_Query_saveForLaters(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "id":
-				return ec.fieldContext_SaveForLater_id(ctx, field)
 			case "user":
 				return ec.fieldContext_SaveForLater_user(ctx, field)
 			case "product":
 				return ec.fieldContext_SaveForLater_product(ctx, field)
+			case "quantity":
+				return ec.fieldContext_SaveForLater_quantity(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type SaveForLater", field.Name)
 		},
@@ -6227,50 +6236,6 @@ func (ec *executionContext) fieldContext_Review_description(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _SaveForLater_id(ctx context.Context, field graphql.CollectedField, obj *model.SaveForLater) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_SaveForLater_id(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_SaveForLater_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "SaveForLater",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _SaveForLater_user(ctx context.Context, field graphql.CollectedField, obj *model.SaveForLater) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_SaveForLater_user(ctx, field)
 	if err != nil {
@@ -6406,6 +6371,50 @@ func (ec *executionContext) fieldContext_SaveForLater_product(ctx context.Contex
 				return ec.fieldContext_Product_reviews(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Product", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _SaveForLater_quantity(ctx context.Context, field graphql.CollectedField, obj *model.SaveForLater) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_SaveForLater_quantity(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Quantity, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_SaveForLater_quantity(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "SaveForLater",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -10790,13 +10799,6 @@ func (ec *executionContext) _SaveForLater(ctx context.Context, sel ast.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("SaveForLater")
-		case "id":
-
-			out.Values[i] = ec._SaveForLater_id(ctx, field, obj)
-
-			if out.Values[i] == graphql.Null {
-				atomic.AddUint32(&invalids, 1)
-			}
 		case "user":
 			field := field
 
@@ -10837,6 +10839,13 @@ func (ec *executionContext) _SaveForLater(ctx context.Context, sel ast.Selection
 				return innerFunc(ctx)
 
 			})
+		case "quantity":
+
+			out.Values[i] = ec._SaveForLater_quantity(ctx, field, obj)
+
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&invalids, 1)
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
