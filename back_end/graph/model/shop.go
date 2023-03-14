@@ -12,6 +12,4 @@ type Shop struct {
 	Banned     bool   `json:"banned"`
 	UserID     string
 	User       *User `json:"user"`
-	ProductID  string
-	Product    *Product `json:"product"`
 }

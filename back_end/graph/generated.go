@@ -157,7 +157,7 @@ type ComplexityRoot struct {
 		Protected           func(childComplexity int) int
 		Reviews             func(childComplexity int, productID *string) int
 		SaveForLaters       func(childComplexity int) int
-		Shop                func(childComplexity int, id *string, name *string) int
+		Shop                func(childComplexity int, id string) int
 		Shops               func(childComplexity int) int
 		User                func(childComplexity int, id string) int
 		Wishlist            func(childComplexity int, wishlistID string) int
@@ -309,7 +309,7 @@ type QueryResolver interface {
 	Products(ctx context.Context, shopID *string, limit *int, topSold *bool) ([]*model.Product, error)
 	Reviews(ctx context.Context, productID *string) ([]*model.Review, error)
 	Shops(ctx context.Context) ([]*model.Shop, error)
-	Shop(ctx context.Context, id *string, name *string) (*model.Shop, error)
+	Shop(ctx context.Context, id string) (*model.Shop, error)
 }
 type ReviewResolver interface {
 	User(ctx context.Context, obj *model.Review) (*model.User, error)
@@ -1012,7 +1012,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.Shop(childComplexity, args["id"].(*string), args["name"].(*string)), true
+		return e.complexity.Query.Shop(childComplexity, args["id"].(string)), true
 
 	case "Query.Shops":
 		if e.complexity.Query.Shops == nil {
@@ -2011,24 +2011,15 @@ func (ec *executionContext) field_Mutation_updateWishlist_args(ctx context.Conte
 func (ec *executionContext) field_Query_Shop_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 string
 	if tmp, ok := rawArgs["id"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalOID2ᚖstring(ctx, tmp)
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
 	args["id"] = arg0
-	var arg1 *string
-	if tmp, ok := rawArgs["name"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
-		arg1, err = ec.unmarshalOString2ᚖstring(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["name"] = arg1
 	return args, nil
 }
 
@@ -7019,7 +7010,7 @@ func (ec *executionContext) _Query_Shop(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().Shop(rctx, fc.Args["id"].(*string), fc.Args["name"].(*string))
+		return ec.resolvers.Query().Shop(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -12332,7 +12323,7 @@ func (ec *executionContext) unmarshalInputNewShop(ctx context.Context, obj inter
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "image", "banner", "followers", "salesCount", "policy", "aboutUs", "userID"}
+	fieldsInOrder := [...]string{"name", "image", "banner", "policy", "aboutUs", "userID"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -12360,22 +12351,6 @@ func (ec *executionContext) unmarshalInputNewShop(ctx context.Context, obj inter
 
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("banner"))
 			it.Banner, err = ec.unmarshalNString2string(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "followers":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("followers"))
-			it.Followers, err = ec.unmarshalNInt2int(ctx, v)
-			if err != nil {
-				return it, err
-			}
-		case "salesCount":
-			var err error
-
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("salesCount"))
-			it.SalesCount, err = ec.unmarshalNInt2int(ctx, v)
 			if err != nil {
 				return it, err
 			}

@@ -8,12 +8,42 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // CreateShop is the resolver for the createShop field.
 func (r *mutationResolver) CreateShop(ctx context.Context, input model.NewShop) (*model.Shop, error) {
-	panic(fmt.Errorf("not implemented: CreateShop - createShop"))
+	// panic(fmt.Errorf("not implemented: CreateShop - createShop"))
+	db := database.GetDB()
+
+	shop := new(model.Shop)
+	if err := db.Where("name = ?", input.Name).Take(&shop).Error; err != nil {
+		shop = nil
+	}
+
+	if shop != nil {
+		return nil, &gqlerror.Error{
+			Message: "Name already taken!",
+		}
+	}
+
+	shop = &model.Shop{
+		ID:         uuid.NewString(),
+		Name:       input.Name,
+		Image:      input.Image,
+		Banner:     input.Banner,
+		Followers:  0,
+		SalesCount: 0,
+		Policy:     input.Policy,
+		AboutUs:    input.AboutUs,
+		Banned:     false,
+		UserID:     input.UserID,
+	}
+
+	return shop, db.Model(shop).Create(&shop).Error
 }
 
 // UpdateShop is the resolver for the updateShop field.
@@ -23,17 +53,32 @@ func (r *mutationResolver) UpdateShop(ctx context.Context, input model.NewShop) 
 
 // Shops is the resolver for the Shops field.
 func (r *queryResolver) Shops(ctx context.Context) ([]*model.Shop, error) {
-	panic(fmt.Errorf("not implemented: Shops - Shops"))
+	// panic(fmt.Errorf("not implemented: Shops - Shops"))
+	db := database.GetDB()
+
+	var shops []*model.Shop
+
+	return shops, db.Find(&shops).Error
 }
 
 // Shop is the resolver for the Shop field.
-func (r *queryResolver) Shop(ctx context.Context, id *string, name *string) (*model.Shop, error) {
-	panic(fmt.Errorf("not implemented: Shop - Shop"))
+func (r *queryResolver) Shop(ctx context.Context, id string) (*model.Shop, error) {
+	// panic(fmt.Errorf("not implemented: Shop - Shop"))
+	db := database.GetDB()
+
+	shop := new(model.Shop)
+
+	return shop, db.First(shop, "id = ?", id).Error
 }
 
 // User is the resolver for the user field.
 func (r *shopResolver) User(ctx context.Context, obj *model.Shop) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.Where("id = ?", obj.UserID).Take(&user).Error
 }
 
 // Products is the resolver for the products field.

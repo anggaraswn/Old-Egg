@@ -8,13 +8,47 @@ import { useEffect, useState } from 'react';
 import PromoCarousel from '@/components/carousel';
 import ProductRecommendations from '@/components/productRecommendations';
 import FooterMain from '@/components/footerMain';
+import axios from 'axios';
+import ShopCard from '@/components/shopCard';
 
 // Note: The subsets need to use single quotes because the font loader values must be explicitly written literal.
 // eslint-disable-next-line @typescript-eslint/quotes
 const inter = Inter({ subsets: ['latin'] });
 
+interface Shop {
+  id: string;
+  name: string;
+  image: string;
+  banner: string;
+  followers: number;
+  salesCount: number;
+  policy: string;
+  aboutUs: string;
+  banned: boolean;
+}
+
 export default function Home() {
   const [images, setImages] = useState<ImageType[]>();
+  const [shops, setShops] = useState<Shop[] | null>([]);
+  const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
+  const GET_SHOPS_QUERY = `query{
+    Shops{
+      id,
+      name,
+      image,
+      banner,
+      followers,
+      salesCount,
+      policy,
+      aboutUs,
+      banned,
+      user{
+        id,
+        firstName,
+        lastName
+      }
+    }
+  }`;
 
   useEffect(() => {
     setImages([
@@ -27,6 +61,13 @@ export default function Home() {
 
     document.body.style.margin = '0';
     document.body.style.width = '100';
+
+    GRAPHQLAPI.post('', {
+      query: GET_SHOPS_QUERY,
+    }).then((response) => {
+      console.log(response);
+      setShops(response.data.data.Shops);
+    });
   }, []);
 
   return (
@@ -35,6 +76,28 @@ export default function Home() {
       <Carousel images={images}></Carousel>
       <a href="/login">Test</a>
       <ProductRecommendations />
+      <div className={styles.topShops}>
+        <div className={styles.sectionTitle}>
+          <h2>Expolore Our Top 3 Shops</h2>
+        </div>
+        <div className={styles.shops}>
+          {shops?.map((s) => {
+            return (
+              <ShopCard
+                id={s.id}
+                name={s.name}
+                image={s.image}
+                banner={s.banner}
+                followers={s.followers}
+                salesCount={s.salesCount}
+                policy={s.policy}
+                aboutUs={s.aboutUs}
+                banned={s.banned}
+              />
+            );
+          })}
+        </div>
+      </div>
       <FooterMain />
     </>
   );

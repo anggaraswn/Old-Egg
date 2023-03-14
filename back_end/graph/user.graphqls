@@ -13,6 +13,7 @@ directive @auth on FIELD_DEFINITION
 enum UserRole {
     USER
     ADMIN
+    SHOP
 }
 
 type User {

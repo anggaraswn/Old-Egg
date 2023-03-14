@@ -49,14 +49,12 @@ type NewReview struct {
 }
 
 type NewShop struct {
-	Name       string `json:"name"`
-	Image      string `json:"image"`
-	Banner     string `json:"banner"`
-	Followers  int    `json:"followers"`
-	SalesCount int    `json:"salesCount"`
-	Policy     string `json:"policy"`
-	AboutUs    string `json:"aboutUs"`
-	UserID     string `json:"userID"`
+	Name    string `json:"name"`
+	Image   string `json:"image"`
+	Banner  string `json:"banner"`
+	Policy  string `json:"policy"`
+	AboutUs string `json:"aboutUs"`
+	UserID  string `json:"userID"`
 }
 
 type NewUser struct {
@@ -74,16 +72,18 @@ type UserRole string
 const (
 	UserRoleUser  UserRole = "USER"
 	UserRoleAdmin UserRole = "ADMIN"
+	UserRoleShop  UserRole = "SHOP"
 )
 
 var AllUserRole = []UserRole{
 	UserRoleUser,
 	UserRoleAdmin,
+	UserRoleShop,
 }
 
 func (e UserRole) IsValid() bool {
 	switch e {
-	case UserRoleUser, UserRoleAdmin:
+	case UserRoleUser, UserRoleAdmin, UserRoleShop:
 		return true
 	}
 	return false

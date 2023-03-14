@@ -1,0 +1,39 @@
+.cardContainer {
+  text-align: left;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  /* border-radius: 0.5rem; */
+  /* box-shadow: var(--box-shadow); */
+  /* border: var(--border); */
+  /* border: 1px solid ; */
+}
+
+.cardContainer a {
+  text-decoration: none;
+}
+
+.shopImage {
+  height: 6rem;
+  width: 6rem;
+  line-height: 6rem;
+  font-size: 2.5rem;
+  background: #eee;
+  /* border-radius: 50%; */
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+.shopName {
+  color: black;
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.shopPrice {
+  font-size: 1rem;
+  /* padding: 1rem 0; */
+  line-height: 1.8;
+  height: 12rem;
+  margin: 0;
+}

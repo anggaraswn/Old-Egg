@@ -16,8 +16,6 @@ input NewShop {
     name: String!
     image: String!
     banner: String!
-    followers: Int!
-    salesCount: Int!
     policy: String!
     aboutUs: String!
     userID: ID!
@@ -25,7 +23,7 @@ input NewShop {
 
 extend type Query {
     Shops: [Shop!]! @goField(forceResolver: true)
-    Shop(id: ID, name: String): Shop! @goField(forceResolver: true)
+    Shop(id: ID!): Shop! @goField(forceResolver: true)
 }
 
 extend type Mutation {
