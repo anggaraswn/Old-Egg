@@ -1,19 +1,14 @@
-import Navbar from '@/components/navbar';
-import styles from './Index.module.css';
-import axios from 'axios';
-import { useRouter } from 'next/router';
-import { getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
 import FooterMain from '@/components/footerMain';
-// import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import Navbar from '@/components/navbar';
+import styles from './AboutUs.module.css';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
-export default function ShopHomePage() {
+export default function AboutUs() {
   const router = useRouter();
   const { id } = router.query;
   const [shop, setShop] = useState([]);
-
-  // const fullStars = Math.floor(w.product.rating);
-  // const halfStars = Math.round(w.product.rating - fullStars);
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const GET_SHOP_QUERY = `query Shop($id: ID!){
@@ -25,7 +20,8 @@ export default function ShopHomePage() {
       salesCount,
       policy,
       aboutUs,
-      banned
+      banned,
+      rating
     }
   }
   `;
@@ -46,13 +42,14 @@ export default function ShopHomePage() {
       });
   }, [id]);
 
-  const handleAboutUs = () => {
-    return '/shop/aboutUs/' + id;
+  const handleHome = () => {
+    return '/shop/' + id;
   };
 
   const handleReviews = () => {
     return '/shop/review/' + id;
   };
+
   return (
     <div className={styles.body}>
       <Navbar />
@@ -75,7 +72,9 @@ export default function ShopHomePage() {
                     <span className={styles.sellerDataFollow}>
                       {shop.followers} Followers |&nbsp;
                     </span>
-                    <div className={styles.sellerDataRating}></div>
+                    <span className={styles.sellerDataRating}>
+                      {shop.rating} Ratings |&nbsp;
+                    </span>
                   </li>
                   <li className={styles.sellerBtn}>
                     <div className={styles.sellerBtnGroup}>
@@ -93,8 +92,8 @@ export default function ShopHomePage() {
         <div className={styles.sellerNavTab}>
           <div className={styles.contentInner2}>
             <div className={styles.tab}>
-              <div className={`${styles['tabCell']} ${styles['curr']}`}>
-                <a href="#">Store Home</a>
+              <div className={styles.tabCell}>
+                <a href={handleHome()}>Store Home</a>
               </div>
               <div className={styles.tabCell}>
                 <a href="#">All Products</a>
@@ -105,16 +104,17 @@ export default function ShopHomePage() {
               <div className={styles.tabCell}>
                 <a href="#">Return Policy</a>
               </div>
-              <div className={styles.tabCell}>
-                <a href={handleAboutUs()}>About Us</a>
+              <div className={`${styles.tabCell}  ${styles['curr']}`}>
+                <a href="#">About Us</a>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <img className={styles.banner} src={shop.banner} alt="" />
       <div className={styles.pageContentInner}>
-        <h1 className={styles.sectionTitle}>SHOP BY CATEGORY</h1>
+        <h1 className={styles.sectionTitle}>ABOUT US</h1>
+        <p>{shop.name}</p>
+        <div className={styles.aboutUsContent}>{shop.aboutUs}</div>
       </div>
       <FooterMain />
     </div>

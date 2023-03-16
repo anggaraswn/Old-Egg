@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import styles from '../styles/Login.module.css';
 import Footer from '@/components/footer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { setCookies } from 'cookies-next';
 
@@ -14,6 +14,22 @@ const LOGIN_MUTATION = `mutation login($email: String!, $password: String!){
 
 export default function Login() {
   const [errorMsg, setErrorMsg] = useState('');
+  const [token, setToken] = useState('');
+  const GET_CURRENT_USER = `
+  query{
+    getCurrentUser{
+      id,
+      firstName,
+      lastName,
+      email,
+      phone,
+      password,
+      subscribe,
+      banned,
+      role
+    }
+  }
+  `;
 
   const loginUser = () => {
     let emailInput = (document.getElementById('email') as HTMLInputElement)
@@ -39,11 +55,14 @@ export default function Login() {
           console.log(response);
           // const test = response.data.data.auth.login.token;
           if (response.data.data.auth.login) {
+            // if(response.data.data.auth.login)
             setCookies('jwt', response.data.data.auth.login.token, {
               maxAge: 60 * 60,
             });
-
-            window.location.href = '/';
+            console.log(response.data.data.auth.login.token);
+            setToken(response.data.data.auth.login.token);
+            setErrorMsg('');
+            // window.location.href = '/';
           }
           // console.log(test);
         })
@@ -53,6 +72,32 @@ export default function Login() {
         });
     }
   };
+
+  useEffect(() => {
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: GET_CURRENT_USER,
+        // headers: headers,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    )
+      .then((response) => {
+        console.log(response);
+        if (response.data.data.getCurrentUser.banned == false) {
+          window.location.href = '/';
+        } else {
+          setErrorMsg('Your account is banned!');
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [token]);
 
   return (
     <div className={styles.outer}>

@@ -32,7 +32,7 @@ export default function Home() {
   const [shops, setShops] = useState<Shop[] | null>([]);
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const GET_SHOPS_QUERY = `query{
-    Shops{
+    shops{
       id,
       name,
       image,
@@ -64,10 +64,15 @@ export default function Home() {
 
     GRAPHQLAPI.post('', {
       query: GET_SHOPS_QUERY,
-    }).then((response) => {
-      console.log(response);
-      setShops(response.data.data.Shops);
-    });
+    })
+      .then((response) => {
+        console.log(response);
+        console.log('fetch shop');
+        setShops(response.data.data.shops);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
 
   return (
@@ -93,6 +98,7 @@ export default function Home() {
                 policy={s.policy}
                 aboutUs={s.aboutUs}
                 banned={s.banned}
+                key={s.id}
               />
             );
           })}

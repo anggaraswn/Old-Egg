@@ -41,6 +41,7 @@ func (r *mutationResolver) CreateShop(ctx context.Context, input model.NewShop) 
 		AboutUs:    input.AboutUs,
 		Banned:     false,
 		UserID:     input.UserID,
+		Rating:     0,
 	}
 
 	return shop, db.Model(shop).Create(&shop).Error
@@ -69,6 +70,40 @@ func (r *queryResolver) Shop(ctx context.Context, id string) (*model.Shop, error
 	shop := new(model.Shop)
 
 	return shop, db.First(shop, "id = ?", id).Error
+}
+
+// TopShop is the resolver for the topShop field.
+func (r *queryResolver) TopShop(ctx context.Context) ([]*model.Shop, error) {
+	// panic(fmt.Errorf("not implemented: TopShop - topShop"))
+	db := database.GetDB()
+
+	var shops []*model.Shop
+
+	return shops, db.Model(shops).Select("s.id, s.name, s.image, s.banner, s.followers, s.sales_count, s.policy, s.about_us, s.banned, s.user_id, COUNT(th.id) AS totalTransaction FROM shops AS s JOIN products AS p ON s.id = p.shop_id JOIN transaction_details AS td ON td.product_id = p.id JOIN transaction_headers AS th ON th.id = td.transaction_header_id WHERE s.banned = false GROUP BY s.id ORDER BY totalTransaction DESC ").Limit(3).Find(&shops).Error
+}
+
+// ShopProducts is the resolver for the shopProducts field.
+func (r *queryResolver) ShopProducts(ctx context.Context, shopID string, sortBy *string, categoryID *string) ([]*model.Product, error) {
+	// panic(fmt.Errorf("not implemented: ShopProducts - shopProducts"))
+	db := database.GetDB()
+
+	var products []*model.Product
+
+	p := db.Model(products).Where("shop_id = ?")
+
+	if sortBy != nil {
+		if *sortBy == "topSold" {
+			p = db.Model(products).Select("p.id, p.name, p.images, p.price, p.discount, p.rating, p.stock, p.description, p.number_of_reviews, p.number_bought, p.number_of_ratings, p.category_id, p.shop_id, p.brand_id, SUM(td.quantity) AS totalQuantitySold FROM products AS p JOIN transaction_details AS td ON td.product_id = p.id WHERE p.shop_id = ? GROUP BY p.id ORDER BY totalQuantitySold DESC", shopID)
+		} else if *sortBy == "topRating" {
+			p = p.Order("rating DESC")
+		}
+	}
+
+	if categoryID != nil {
+		p = p.Where("category_id = ?", categoryID)
+	}
+
+	return products, p.Find(&products).Error
 }
 
 // User is the resolver for the user field.

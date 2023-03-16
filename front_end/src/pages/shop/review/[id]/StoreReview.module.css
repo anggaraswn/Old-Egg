@@ -9,7 +9,16 @@
 
 .sellerListInfo {
   list-style: none;
-  width: 40%;
+  width: 60%;
+}
+
+.sellerData {
+  display: flex;
+}
+
+.sellerDataRating {
+  display: flex;
+  align-items: center;
 }
 
 .avatar {
@@ -78,6 +87,10 @@
   border-bottom: 2px solid rgb(204, 79, 63);
 }
 
+.curr {
+  text-align: center;
+}
+
 .curr a {
   color: rgb(204, 79, 63);
 }
@@ -94,4 +107,42 @@
 
 .pageContentInner {
   padding: 0 20px;
+}
+
+.aboutUsContent {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.star {
+  color: rgb(255, 187, 0);
+}
+
+@media (max-width: 450px) {
+  .contentInner {
+    width: 100%;
+    padding: 0 0;
+  }
+  .sellerList {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .sellerListInfo {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .tab {
+    flex-direction: column;
+  }
+
+  .tabCell {
+    text-align: center;
+  }
+
+  .curr::after {
+    transform: translate(-50%, -50%);
+    left: 50%;
+  }
 }

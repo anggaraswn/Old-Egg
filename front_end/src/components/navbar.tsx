@@ -11,8 +11,27 @@ export default function Navbar() {
   const [auth, setAuth] = useState(false);
   const [user, setUser] = useState('');
   const [open, setOpen] = useState(false);
-
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [carts, setCarts] = useState([]);
   let res: any = null;
+
+  const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
+  const CARTS_QUERY = `query{
+    carts{
+      product{
+        id,
+        name,
+        images,
+        price,
+        discount,
+        rating,
+        stock,
+        description,
+      },
+      quantity,
+      notes
+    }
+  }`;
 
   const logOut = () => {
     removeCookies('jwt');
@@ -25,6 +44,22 @@ export default function Navbar() {
   useEffect(() => {
     if (token) {
       setAuth(true);
+
+      GRAPHQLAPI.post(
+        '',
+        {
+          query: CARTS_QUERY,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      ).then((response) => {
+        console.log(response);
+        setTotalPrice(0);
+        setCarts(response.data.data.carts);
+      });
     } else {
       setAuth(false);
     }
@@ -77,6 +112,12 @@ export default function Navbar() {
   const openCart = () => {
     window.location.href = '/cart';
   };
+
+  useEffect(() => {
+    carts.map((c) => {
+      setTotalPrice(totalPrice + c.product.price * c.quantity);
+    });
+  }, [carts]);
 
   return (
     <nav className={styles.navbar}>
@@ -204,14 +245,27 @@ export default function Navbar() {
             </div>
           </a>
         </div>
-        <Image
-          onClick={openCart}
-          src="/assets/icon-cart.png"
-          alt="Cart Icon"
-          height={28}
-          width={28}
-          className={styles.cart}
-        ></Image>
+        <div className={styles.cartContainer}>
+          <Image
+            onClick={openCart}
+            src="/assets/icon-cart.png"
+            alt="Cart Icon"
+            height={28}
+            width={28}
+            className={styles.cart}
+          ></Image>
+          {carts.length == 0 ? (
+            <div></div>
+          ) : (
+            <div>
+              <p className={styles.totalItem}>
+                {carts.length}{' '}
+                {carts.length == 1 ? <span>item</span> : <span>items</span>}
+              </p>
+              <p className={styles.totalPrice}>${totalPrice.toFixed(2)}</p>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

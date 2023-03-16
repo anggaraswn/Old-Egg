@@ -452,22 +452,26 @@ export default function WishlistDetail() {
                                   <div className={styles.itemInfoInner}>
                                     <div className={styles.itemBranding}>
                                       <div>
-                                        {[...Array(fullStars)].map(
-                                          (_, index) => (
-                                            <FaStar
-                                              key={index}
-                                              className={styles.star}
-                                            />
+                                        {[
+                                          ...Array(
+                                            fullStars >= 0 ? fullStars : 0,
                                           ),
-                                        )}
-                                        {[...Array(halfStars)].map(
-                                          (_, index) => (
-                                            <FaStarHalfAlt
-                                              key={index}
-                                              className={styles.star}
-                                            />
+                                        ].map((_, index) => (
+                                          <FaStar
+                                            key={index}
+                                            className={styles.star}
+                                          />
+                                        ))}
+                                        {[
+                                          ...Array(
+                                            halfStars >= 0 ? halfStars : 0,
                                           ),
-                                        )}
+                                        ].map((_, index) => (
+                                          <FaStarHalfAlt
+                                            key={index}
+                                            className={styles.star}
+                                          />
+                                        ))}
                                       </div>
                                       <div>({w.product.numberOfRatings})</div>
                                     </div>
