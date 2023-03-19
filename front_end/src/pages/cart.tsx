@@ -119,6 +119,10 @@ export default function Cart() {
     console.log('in');
   };
 
+  const handleCheckout = () => {
+    window.location.href = '/checkout';
+  };
+
   return (
     <div className={styles.body}>
       <Navbar />
@@ -179,7 +183,7 @@ export default function Cart() {
                       </li>
                     </ul>
                     <div className={styles.summaryActions}>
-                      <button>SECURE CHECKOUT</button>
+                      <button onClick={handleCheckout}>SECURE CHECKOUT</button>
                       <div className={styles.others}>
                         <div className={styles.splitLine}>
                           <div className={styles.line}></div>

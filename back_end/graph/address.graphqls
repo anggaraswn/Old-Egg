@@ -7,6 +7,22 @@ type Address {
     country: String!
     phone: String!
     description: String!
+    details: String!
+    city: String!
+    state: String!
+    zipCode: String!
+    addressAs: String
+    isDefault: Boolean!
+}
+
+input NewAddress {
+    firstName: String!
+    lastName: String!
+    company: String
+    country: String!
+    phone: String!
+    description: String!
+    details: String!
     city: String!
     state: String!
     zipCode: String!
@@ -19,6 +35,7 @@ extend type Query {
     address(id: ID!): Address!
 }
 
-# extend type Mutation{
-#     createAddress:
-# }
+extend type Mutation {
+    createAddress(input: NewAddress!): Address! @auth
+    deleteAddress(addressID: ID!): Address! @auth
+}

@@ -27,6 +27,7 @@ extend type Query {
     shop(id: ID!): Shop! @goField(forceResolver: true)
     topShop: [Shop!]! @goField(forceResolver: true)
     shopProducts(shopID: ID!, sortBy: String, categoryID: ID): [Product!]!
+    shopOrders(shopID: ID!, filter: String): [TransactionHeader!]!
 }
 
 extend type Mutation {

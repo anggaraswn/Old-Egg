@@ -3,6 +3,13 @@ type PaymentType {
     name: String!
 }
 
+type Delivery {
+    id: ID!
+    name: String!
+    price: Float!
+    description: String!
+}
+
 type TransactionHeader {
     id: ID!
     transactionDate: Time!
@@ -10,6 +17,7 @@ type TransactionHeader {
     address: Address! @goField(forceResolver: true)
     transactionDetails: [TransactionDetail!]! @goField(forceResolver: true)
     paymentType: PaymentType! @goField(forceResolver: true)
+    delivery: Delivery! @goField(forceResolver: true)
     status: String!
     invoice: ID!
 }
@@ -18,4 +26,36 @@ type TransactionDetail {
     transactionHeader: TransactionHeader! @goField(forceResolver: true)
     product: Product! @goField(forceResolver: true)
     quantity: Int!
+}
+
+type Voucher {
+    id: ID!
+    currency: Float!
+    createdAt: Time!
+    valid: Boolean!
+}
+
+extend type Query {
+    transactionHeaders: [TransactionHeader!]!
+    currentUserTransactionHeaders(
+        orderStatus: String
+        ordersByDay: Int
+        search: String
+    ): [TransactionHeader!]! @auth
+    paymentTypes: [PaymentType!]!
+    paymentType(id: ID!): PaymentType!
+    deliveries: [Delivery!]!
+    delivery(id: ID!): Delivery!
+}
+
+extend type Mutation {
+    checkout(
+        deliveryID: ID!
+        paymentTypeID: ID!
+        addressID: ID!
+    ): TransactionHeader! @auth
+    updateTransactionHeader(
+        status: String!
+        transactionHeaderID: ID!
+    ): TransactionHeader!
 }

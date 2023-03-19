@@ -21,6 +21,35 @@ func (r *queryResolver) Reviews(ctx context.Context, productID *string) ([]*mode
 	panic(fmt.Errorf("not implemented: Reviews - reviews"))
 }
 
+// ShopReviews is the resolver for the shopReviews field.
+func (r *queryResolver) ShopReviews(ctx context.Context, shopID string, search *string, filter *int) ([]*model.ShopReview, error) {
+	panic(fmt.Errorf("not implemented: ShopReviews - shopReviews"))
+	// db := database.GetDB()
+
+	// var shopReviews []*model.ShopReview
+
+	// s := db.Model(shopReviews).Where("shop_id = ?", shopID)
+
+	// if search != nil {
+	// 	s = s.Where("review LIKE ? OR review_details LIKE ?", "%"+*search+"%", "%"+*search+"%")
+	// }
+
+	// if filter != nil {
+	// 	if *filter == "30" {
+	// 		date := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
+	// 		s = s.Where("created_at >= ?", date)
+	// 	} else if *filter == "60" {
+	// 		date := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
+	// 		s = s.Where("created_at >= ?", date)
+	// 	} else if *filter == "12" {
+	// 		date := time.Now().AddDate(0, -12, 0).Format("2006-01-02")
+	// 		s = s.Where("created_at >= ?", date)
+	// 	}
+	// }
+
+	// return shopReviews, s.Find(&shopReviews).Error
+}
+
 // User is the resolver for the user field.
 func (r *reviewResolver) User(ctx context.Context, obj *model.Review) (*model.User, error) {
 	panic(fmt.Errorf("not implemented: User - user"))

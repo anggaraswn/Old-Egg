@@ -8,17 +8,97 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/anggaraswn/gqlgen-todos/service"
+	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // User is the resolver for the user field.
 func (r *addressResolver) User(ctx context.Context, obj *model.Address) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.Where("id = ?", obj.UserID).Take(&user).Error
+}
+
+// CreateAddress is the resolver for the createAddress field.
+func (r *mutationResolver) CreateAddress(ctx context.Context, input model.NewAddress) (*model.Address, error) {
+	// panic(fmt.Errorf("not implemented: CreateAddress - createAddress"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	isDefault := new(model.Address)
+	if err := db.Where("user_id = ? AND is_default = TRUE", userID).Take(&isDefault).Error; err != nil {
+		isDefault = nil
+	}
+
+	if isDefault != nil {
+		db.Exec("UPDATE addresses SET is_default = FALSE WHERE id = ?", isDefault.ID)
+	}
+
+	address := model.Address{
+		ID:          uuid.NewString(),
+		UserID:      userID,
+		FirstName:   input.FirstName,
+		LastName:    input.LastName,
+		Company:     *input.Company,
+		Country:     input.Country,
+		Phone:       input.Phone,
+		Description: input.Description,
+		Details:     input.Details,
+		City:        input.City,
+		State:       input.State,
+		ZipCode:     input.ZipCode,
+		AddressAs:   *input.AddressAs,
+		IsDefault:   input.IsDefault,
+	}
+
+	return &address, db.Model(address).Create(&address).Error
+}
+
+// DeleteAddress is the resolver for the deleteAddress field.
+func (r *mutationResolver) DeleteAddress(ctx context.Context, addressID string) (*model.Address, error) {
+	// panic(fmt.Errorf("not implemented: DeleteAddress - deleteAddress"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	address := new(model.Address)
+	if err := db.Where("id = ?", addressID).Take(&address).Error; err != nil {
+		return nil, err
+	}
+
+	return address, db.Exec("DELETE FROM addresses WHERE id = ?", addressID).Error
 }
 
 // Addresses is the resolver for the addresses field.
 func (r *queryResolver) Addresses(ctx context.Context) ([]*model.Address, error) {
-	panic(fmt.Errorf("not implemented: Addresses - addresses"))
+	// panic(fmt.Errorf("not implemented: Addresses - addresses"))
+	db := database.GetDB()
+
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+	var addresses []*model.Address
+
+	return addresses, db.Where("user_id = ?", userID).Find(&addresses).Error
 }
 
 // Address is the resolver for the address field.
@@ -30,3 +110,21 @@ func (r *queryResolver) Address(ctx context.Context, id string) (*model.Address,
 func (r *Resolver) Address() AddressResolver { return &addressResolver{r} }
 
 type addressResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *addressResolver) AddressField(ctx context.Context, obj *model.Address) (string, error) {
+	panic(fmt.Errorf("not implemented: AddressField - addressField"))
+}
+func (r *addressResolver) Address(ctx context.Context, obj *model.Address) (string, error) {
+	panic(fmt.Errorf("not implemented: Address - address"))
+	// db := database.GetDB()
+
+	// address := new(model.Address)
+
+	// return address, db.First(address, "id = ?", obj.ID).Error
+}

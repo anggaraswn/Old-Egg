@@ -1,0 +1,43 @@
+.default {
+  border: 1px solid rgb(209, 104, 71);
+  width: 300px;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.cardContainer {
+  border: 1px solid gray;
+  width: 300px;
+  margin: 10px 0;
+  padding: 10px;
+}
+
+.addressAs {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.name {
+  font-weight: bold;
+}
+
+.action {
+  display: flex;
+  margin-top: 15px;
+  justify-content: space-between;
+}
+
+.action button {
+  cursor: pointer;
+}
+
+.defaultBTN {
+  background-color: rgb(209, 104, 71);
+  border: none;
+  color: white;
+  border-radius: 30px;
+}
+
+.btnContainer button {
+  margin: 0 5px;
+}

@@ -95,6 +95,10 @@
   /* padding: 0 10px; */
 }
 
+.summaryActions:hover button {
+  cursor: pointer;
+}
+
 @media (max-width: 450px) {
   .inner {
     flex-direction: column;

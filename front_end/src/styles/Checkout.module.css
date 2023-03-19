@@ -1,0 +1,294 @@
+.pageSectionInner {
+  padding: 20px 40px;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.shipItemCell {
+  display: flex;
+  background-color: rgb(255, 255, 255);
+}
+
+.checkOutStepTitle {
+  display: flex;
+  align-items: center;
+}
+
+.number {
+  margin-right: 10px;
+  height: 36px;
+  width: 36px;
+  border: 1px solid black;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.option {
+  display: flex;
+  border: 1px solid rgb(223, 151, 106);
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  width: 200px;
+}
+
+.orangeColor {
+  color: rgb(209, 104, 71);
+  font-size: 15px;
+}
+
+.checkOutTabsTop {
+  padding: 0px 30px;
+}
+
+.checkOutTabContent {
+  padding: 30px 30px 0 30px;
+}
+
+.marginTop {
+  margin-top: 10px;
+}
+
+.marginTop button {
+  padding: 8px 14px;
+}
+
+.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+@keyframes modal-in {
+  0% {
+    translate: -50% 10%;
+    scale: 0.5;
+  }
+  100% {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+  }
+}
+
+.modal,
+.background,
+.container {
+  transition: 0.5s;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  background: white;
+  color: black;
+  padding: 30px;
+  padding: 0 48px 48px 48px;
+  width: 500px;
+  border-radius: 12px;
+  translate: -50% -50%;
+  scale: 1;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.body.open .modal {
+  opacity: 1;
+  visibility: visible;
+  animation: modal-in 0.5s;
+}
+
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.body.open .background {
+  visibility: visible;
+  opacity: 1;
+}
+
+.body {
+  background-color: rgb(244, 245, 247);
+}
+
+.titleModal {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.nameContainer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  padding: 0 6px;
+}
+
+.row label {
+  color: rgb(150, 150, 150);
+}
+
+.company {
+  display: flex;
+  flex-direction: column;
+  padding: 0 6px;
+  /* width: 10; */
+  color: rgb(150, 150, 150);
+}
+
+.country {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.phone {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.address {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0 6px;
+  color: rgb(150, 150, 150);
+}
+
+.marginBot {
+  margin-bottom: 10px;
+}
+
+.addressDetails {
+  display: flex;
+  padding: 0 6px;
+  gap: 9px;
+  color: rgb(150, 150, 150);
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  width: 32%;
+}
+
+.saveAddressAs {
+  display: flex;
+  padding: 0 6px;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.saveContainer {
+  display: flex;
+  flex-direction: column;
+  color: rgb(150, 150, 150);
+  width: 40%;
+}
+
+.divider {
+  margin: 30px 0;
+  padding: 0 6px;
+}
+
+.actionBTN {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.actionBTN button {
+  cursor: pointer;
+}
+
+.actionBTN button:first-child {
+  border: 1px solid rgb(221, 221, 221);
+  padding: 8px 14px;
+  background-color: white;
+  border-radius: 5px;
+}
+
+.orangeBTN {
+  border: 1px solid rgb(204, 104, 3);
+  padding: 8px 14px;
+  background-color: orange;
+  border-radius: 5px;
+}
+
+.scroll {
+  height: 300px;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.deliveryItemCell {
+  background-color: rgb(255, 255, 255);
+  margin-top: 20px;
+}
+
+.showMoreBox {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.itemCell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 19px;
+  min-width: 30%;
+}
+
+.deliveryDetails {
+  color: rgb(204, 78, 0);
+  font-weight: bold;
+}
+
+.deliveryPrice {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.selected {
+  border: 2px solid rgb(204, 78, 0);
+}
+
+.productContainer {
+  display: flex;
+}
+
+.productContainer img {
+  width: 149px;
+  height: 112px;
+}
+
+.productInfo {
+  width: 40%;
+}
+
+.productInfo p {
+  margin: 0;
+}

@@ -245,9 +245,8 @@ export default function Navbar() {
             </div>
           </a>
         </div>
-        <div className={styles.cartContainer}>
+        <div className={styles.cartContainer} onClick={openCart}>
           <Image
-            onClick={openCart}
             src="/assets/icon-cart.png"
             alt="Cart Icon"
             height={28}

@@ -7,9 +7,90 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/anggaraswn/gqlgen-todos/service"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
+
+// Checkout is the resolver for the checkout field.
+func (r *mutationResolver) Checkout(ctx context.Context, deliveryID string, paymentTypeID string, addressID string) (*model.TransactionHeader, error) {
+	panic(fmt.Errorf("not implemented: Checkout - checkout"))
+}
+
+// UpdateTransactionHeader is the resolver for the updateTransactionHeader field.
+func (r *mutationResolver) UpdateTransactionHeader(ctx context.Context, status string, transactionHeaderID string) (*model.TransactionHeader, error) {
+	panic(fmt.Errorf("not implemented: UpdateTransactionHeader - updateTransactionHeader"))
+}
+
+// TransactionHeaders is the resolver for the transactionHeaders field.
+func (r *queryResolver) TransactionHeaders(ctx context.Context) ([]*model.TransactionHeader, error) {
+	panic(fmt.Errorf("not implemented: TransactionHeaders - transactionHeaders"))
+}
+
+// CurrentUserTransactionHeaders is the resolver for the currentUserTransactionHeaders field.
+func (r *queryResolver) CurrentUserTransactionHeaders(ctx context.Context, orderStatus *string, ordersByDay *int, search *string) ([]*model.TransactionHeader, error) {
+	// panic(fmt.Errorf("not implemented: CurrentUserTransactionHeaders - currentUserTransactionHeaders"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	var transactionHeaders []*model.TransactionHeader
+
+	t := db.Model(transactionHeaders).Where("user_id = ?", userID)
+
+	if orderStatus != nil && *orderStatus != "All" {
+		t = t.Where("status LIKE ?", orderStatus)
+	}
+
+	if ordersByDay != nil && *ordersByDay != -1 {
+		date := time.Now().AddDate(0, 0, -*ordersByDay).Format("2006-01-02")
+		t = t.Where("transaction_date >= ?", date)
+	}
+
+	if search != nil {
+		t = t.Where("transaction_headers.id LIKE ? OR invoice LIKE ? OR products.name ?", "%"+*search+"%", "%"+*search+"%", "%"+*search+"%").
+			Joins("JOIN transaction_details ON transaction_headers.id = transaction_details.transaction_header_id").
+			Joins("JOIN products ON transaction_details.product_id = products.id")
+	}
+
+	return transactionHeaders, t.Find(&transactionHeaders).Error
+}
+
+// PaymentTypes is the resolver for the paymentTypes field.
+func (r *queryResolver) PaymentTypes(ctx context.Context) ([]*model.PaymentType, error) {
+	// panic(fmt.Errorf("not implemented: PaymentTypes - paymentTypes"))
+	db := database.GetDB()
+	var paymentTypes []*model.PaymentType
+
+	return paymentTypes, db.Find(&paymentTypes).Error
+}
+
+// PaymentType is the resolver for the paymentType field.
+func (r *queryResolver) PaymentType(ctx context.Context, id string) (*model.PaymentType, error) {
+	panic(fmt.Errorf("not implemented: PaymentType - paymentType"))
+}
+
+// Deliveries is the resolver for the deliveries field.
+func (r *queryResolver) Deliveries(ctx context.Context) ([]*model.Delivery, error) {
+	// panic(fmt.Errorf("not implemented: Deliveries - deliveries"))
+	db := database.GetDB()
+	var deliveries []*model.Delivery
+
+	return deliveries, db.Find(&deliveries).Error
+}
+
+// Delivery is the resolver for the delivery field.
+func (r *queryResolver) Delivery(ctx context.Context, id string) (*model.Delivery, error) {
+	panic(fmt.Errorf("not implemented: Delivery - delivery"))
+}
 
 // TransactionHeader is the resolver for the transactionHeader field.
 func (r *transactionDetailResolver) TransactionHeader(ctx context.Context, obj *model.TransactionDetail) (*model.TransactionHeader, error) {
@@ -39,6 +120,11 @@ func (r *transactionHeaderResolver) TransactionDetails(ctx context.Context, obj 
 // PaymentType is the resolver for the paymentType field.
 func (r *transactionHeaderResolver) PaymentType(ctx context.Context, obj *model.TransactionHeader) (*model.PaymentType, error) {
 	panic(fmt.Errorf("not implemented: PaymentType - paymentType"))
+}
+
+// Delivery is the resolver for the delivery field.
+func (r *transactionHeaderResolver) Delivery(ctx context.Context, obj *model.TransactionHeader) (*model.Delivery, error) {
+	panic(fmt.Errorf("not implemented: Delivery - delivery"))
 }
 
 // TransactionDetail returns TransactionDetailResolver implementation.

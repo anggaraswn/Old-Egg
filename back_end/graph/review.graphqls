@@ -32,6 +32,7 @@ type ShopReview {
 
 extend type Query {
     reviews(productID: ID): [Review!]!
+    shopReviews(shopID: ID!, search: String, filter: Int): [ShopReview!]!
 }
 
 extend type Mutation {

@@ -377,9 +377,9 @@ func (r *queryResolver) Carts(ctx context.Context) ([]*model.Cart, error) {
 	}
 
 	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
-	var models []*model.Cart
+	var carts []*model.Cart
 
-	return models, db.Where("user_id = ?", userID).Find(&models).Error
+	return carts, db.Where("user_id = ?", userID).Find(&carts).Error
 }
 
 // Cart is the resolver for the cart field.

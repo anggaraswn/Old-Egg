@@ -106,6 +106,22 @@ func (r *queryResolver) ShopProducts(ctx context.Context, shopID string, sortBy 
 	return products, p.Find(&products).Error
 }
 
+// ShopOrders is the resolver for the shopOrders field.
+func (r *queryResolver) ShopOrders(ctx context.Context, shopID string, filter *string) ([]*model.TransactionHeader, error) {
+	// panic(fmt.Errorf("not implemented: ShopOrders - shopOrders"))
+	db := database.GetDB()
+
+	var shopOrders []*model.TransactionHeader
+
+	s := db.Model(shopOrders).Joins("transaction_details ON transaction_headers.id = transaction_details.transaction_header_id JOIN products ON transaction_details.product_id = products.id").Where("products.shop = ?", shopID)
+
+	if filter != nil && *filter != "All" {
+		s = s.Where("transaction_headers.status = ?", filter)
+	}
+
+	return shopOrders, s.Find(&shopOrders).Error
+}
+
 // User is the resolver for the user field.
 func (r *shopResolver) User(ctx context.Context, obj *model.Shop) (*model.User, error) {
 	// panic(fmt.Errorf("not implemented: User - user"))

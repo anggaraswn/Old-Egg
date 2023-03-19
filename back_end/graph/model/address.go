@@ -10,6 +10,7 @@ type Address struct {
 	Country     string `json:"country"`
 	Phone       string `json:"phone"`
 	Description string `json:"description"`
+	Details     string `json:"details"`
 	City        string `json:"city"`
 	State       string `json:"state"`
 	ZipCode     string `json:"zipCode"`
