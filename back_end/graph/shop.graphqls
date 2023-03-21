@@ -1,12 +1,12 @@
 type Shop {
     id: ID!
     name: String!
-    image: String!
-    banner: String!
+    image: String
+    banner: String
     followers: Int!
     salesCount: Int!
-    policy: String!
-    aboutUs: String!
+    policy: String
+    aboutUs: String
     banned: Boolean!
     rating: Float!
     user: User! @goField(forceResolver: true)
@@ -15,10 +15,10 @@ type Shop {
 
 input NewShop {
     name: String!
-    image: String!
-    banner: String!
-    policy: String!
-    aboutUs: String!
+    image: String
+    banner: String
+    policy: String
+    aboutUs: String
     userID: ID!
 }
 

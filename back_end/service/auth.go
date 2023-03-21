@@ -42,6 +42,8 @@ func UserLogin(ctx context.Context, email string, password string) (interface{},
 				Message: "Email not found",
 			}
 		}
+
+		println("Test")
 		return nil, err
 	}
 

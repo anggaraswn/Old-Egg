@@ -175,6 +175,10 @@ export default function WishlistDetail() {
         setSubtotalPrice(0);
         setWishlist(response.data.data.wishlist);
         // console.log(response.data.data.wishlist.wishlistDetails.length);
+        // wishlist?.wishlistDetails.map((w) => {
+        //   console.log(w.product.price * w.quantity);
+        //   setSubtotalPrice(subTotalPrice + w.product.price * w.quantity);
+        // });
       })
       .catch((err) => {
         console.log(err);
@@ -182,10 +186,13 @@ export default function WishlistDetail() {
   }, [changes]);
 
   useEffect(() => {
+    var total = 0;
     wishlist?.wishlistDetails.map((w) => {
-      console.log(w.product.price * w.quantity);
-      setSubtotalPrice(subTotalPrice + w.product.price * w.quantity);
+      total += w.product.price * w.quantity;
+      // console.log(w.product.price * w.quantity);
+      // setSubtotalPrice(subTotalPrice + w.product.price * w.quantity);
     });
+    setSubtotalPrice(total);
   }, [wishlist]);
 
   const removeItem = (productID: string) => {
@@ -247,8 +254,9 @@ export default function WishlistDetail() {
         variables: {
           wishlistID: wishlist?.id,
           productID: productID,
-          quantity: (document.getElementById('quantity') as HTMLInputElement)
-            .value,
+          quantity: (
+            document.getElementById(`quantity-${productID}`) as HTMLInputElement
+          ).value,
         },
       },
       {
@@ -290,6 +298,7 @@ export default function WishlistDetail() {
     });
   };
 
+  console.log(subTotalPrice);
   return (
     <div
       className={` ${styles['body']} ${
@@ -360,7 +369,7 @@ export default function WishlistDetail() {
                         <div className={styles.subTotal}>
                           <p>
                             Subtotal({wishlist?.wishlistDetails.length} items):{' '}
-                            <strong>${subTotalPrice}</strong>
+                            <strong>${subTotalPrice.toFixed(2)}</strong>
                           </p>
                         </div>
                         <button
@@ -439,7 +448,7 @@ export default function WishlistDetail() {
                           w.product.rating - fullStars,
                         );
                         return (
-                          <div className={styles.item}>
+                          <div className={styles.item} key={w.product.id}>
                             <div className={styles.itemContainer}>
                               <img
                                 src={w.product.images}
@@ -494,7 +503,7 @@ export default function WishlistDetail() {
                                         onChange={() => {
                                           updateQuantity(w.product.id);
                                         }}
-                                        id="quantity"
+                                        id={`quantity-${w.product.id}`}
                                       />
                                       <button
                                         className={`${styles.orangeBTN} ${styles.addToCartBTN}`}

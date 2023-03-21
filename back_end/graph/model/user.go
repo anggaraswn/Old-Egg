@@ -12,6 +12,7 @@ type User struct {
 	Subscribe	bool	 `json:"subscribe"`
 	Banned   	bool     `json:"banned"`
 	Role    	UserRole `json:"role"`
+	Currency	float64`json:"currency"`
 }
 
 func HashPassword(s string) (string, error) {

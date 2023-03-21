@@ -87,7 +87,7 @@ func (r *mutationResolver) CreateCart(ctx context.Context, input model.NewCart) 
 }
 
 // UpdateCart is the resolver for the updateCart field.
-func (r *mutationResolver) UpdateCart(ctx context.Context, input model.NewCart) (*model.Cart, error) {
+func (r *mutationResolver) UpdateCart(ctx context.Context, input model.NewCart, deliveryID *string) (*model.Cart, error) {
 	// panic(fmt.Errorf("not implemented: UpdateCart - updateCart"))
 	db := database.GetDB()
 	if ctx.Value("auth") == nil {
@@ -211,6 +211,8 @@ func (r *mutationResolver) CreateWishlistDetail(ctx context.Context, wishlistID 
 
 	if quantity != nil {
 		wishlist.Quantity = *quantity
+	} else {
+		wishlist.Quantity = 1
 	}
 
 	return wishlist, db.Model(wishlist).Create(&wishlist).Error

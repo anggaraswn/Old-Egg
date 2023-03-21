@@ -64,12 +64,12 @@ type NewReview struct {
 }
 
 type NewShop struct {
-	Name    string `json:"name"`
-	Image   string `json:"image"`
-	Banner  string `json:"banner"`
-	Policy  string `json:"policy"`
-	AboutUs string `json:"aboutUs"`
-	UserID  string `json:"userID"`
+	Name    string  `json:"name"`
+	Image   *string `json:"image"`
+	Banner  *string `json:"banner"`
+	Policy  *string `json:"policy"`
+	AboutUs *string `json:"aboutUs"`
+	UserID  string  `json:"userID"`
 }
 
 type NewUser struct {

@@ -47,6 +47,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, 
 		Banned:    input.Banned,
 		Role:      input.Role,
 		ID:        uuid.NewString(),
+		Currency:  0,
 	}
 	// var user *model.User
 	// user.ID = input.UserID
@@ -108,6 +109,37 @@ func (r *mutationResolver) UpdatePassword(ctx context.Context, currentPassword s
 	} else {
 		user.Password, _ = model.HashPassword(newPassword)
 	}
+
+	return user, db.Save(user).Error
+}
+
+// UpdateCurrency is the resolver for the updateCurrency field.
+func (r *mutationResolver) UpdateCurrency(ctx context.Context, currency float64) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: UpdateCurrency - updateCurrency"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, Invalid Token !",
+		}
+	}
+
+	id := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	user, _ := service.UserGetByID(ctx, id)
+
+	if user == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, UserID isn't valid!",
+		}
+	}
+
+	if user.Currency < currency {
+		return nil, &gqlerror.Error{
+			Message: "Error, cannot reduce user's currecy",
+		}
+	}
+
+	user.Currency -= currency
 
 	return user, db.Save(user).Error
 }

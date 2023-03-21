@@ -57,7 +57,7 @@ export default function Navbar() {
         },
       ).then((response) => {
         console.log(response);
-        setTotalPrice(0);
+        // setTotalPrice(0);
         setCarts(response.data.data.carts);
       });
     } else {
@@ -114,9 +114,14 @@ export default function Navbar() {
   };
 
   useEffect(() => {
+    var total = 0;
+
     carts.map((c) => {
-      setTotalPrice(totalPrice + c.product.price * c.quantity);
+      // console.log('Product Price = ' + c.product.price);
+      total += c.product.price * c.quantity;
+      // setTotalPrice(totalPrice + c.product.price * c.quantity);
     });
+    setTotalPrice(totalPrice + total);
   }, [carts]);
 
   return (

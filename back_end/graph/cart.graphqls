@@ -49,7 +49,7 @@ extend type Query {
 
 extend type Mutation {
     createCart(input: NewCart!): Cart! @auth
-    updateCart(input: NewCart!): Cart @auth
+    updateCart(input: NewCart!, deliveryID: ID): Cart @auth
     deleteCart(productID: ID!): Cart! @auth
     createWishlist(name: String!, option: Option!): Wishlist! @auth
     updateWishlist(

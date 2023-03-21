@@ -106,8 +106,11 @@ export default function CartCard(props: {
         query: UPDATE_CART_MUTATION,
         variables: {
           productID: cart.product.id,
-          quantity: (document.getElementById('quantity') as HTMLInputElement)
-            .value,
+          quantity: (
+            document.getElementById(
+              `quantity-${cart.product.id}`,
+            ) as HTMLInputElement
+          ).value,
           notes: '',
         },
       },
@@ -268,7 +271,7 @@ export default function CartCard(props: {
             min={1}
             max={cart.product.stock}
             onChange={updateQuantity}
-            id="quantity"
+            id={`quantity-${cart.product.id}`}
           />
           <div className={styles.itemAction}>${cart.product.price}</div>
         </div>

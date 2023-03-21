@@ -89,7 +89,15 @@ export default function Login() {
       .then((response) => {
         console.log(response);
         if (response.data.data.getCurrentUser.banned == false) {
-          window.location.href = '/';
+          console.log(response.data.data.getCurrentUser);
+          if (response.data.data.getCurrentUser.role === 'USER') {
+            window.location.href = '/';
+          } else if (response.data.data.getCurrentUser.role === 'ADMIN') {
+            // console.log('in');
+            window.location.href = '/admin';
+          } else {
+            window.location.href = '/seller';
+          }
         } else {
           setErrorMsg('Your account is banned!');
         }

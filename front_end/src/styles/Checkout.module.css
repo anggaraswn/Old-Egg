@@ -278,6 +278,7 @@
 
 .productContainer {
   display: flex;
+  justify-content: space-between;
 }
 
 .productContainer img {
@@ -291,4 +292,104 @@
 
 .productInfo p {
   margin: 0;
+}
+
+.payItemCell {
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  border: 1px solid gray;
+  padding: 19px;
+  width: 20%;
+  justify-content: space-between;
+}
+
+.selectedPay {
+  border: 1px solid rgb(204, 78, 0);
+}
+
+.rowInner {
+  display: flex;
+}
+
+.rowSide {
+  width: 30%;
+  margin-left: 30px;
+}
+
+.summaryContent ul {
+  list-style: none;
+  padding: 0;
+}
+
+.summaryContent ul li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.totalPrice {
+  display: flex;
+  align-items: center;
+}
+
+.totalPrice div {
+  font-size: 20px;
+}
+
+.totalPrice span {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.reviewBTN {
+  display: flex;
+  justify-content: center;
+}
+
+.reviewBTN button {
+  font-weight: bold;
+  width: 100%;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  width: 100%;
+  font-size: 15px;
+}
+
+.selectedAddress {
+  border: 2px solid orange;
+  padding: 5px;
+  width: fit-content;
+  height: fit-content;
+}
+
+@media (max-width: 850px) {
+  .rowInner {
+    flex-direction: column;
+  }
+
+  .rowSide {
+    width: 100%;
+    margin: 0;
+  }
+}
+
+@media (max-width: 450px) {
+  .checkOutTabContent {
+    padding: 2px;
+  }
+
+  .showMoreBox {
+    flex-direction: column;
+  }
+
+  .checkOutTabsTop {
+    padding: 1px;
+  }
+
+  .payItemCell {
+    width: 80%;
+  }
 }

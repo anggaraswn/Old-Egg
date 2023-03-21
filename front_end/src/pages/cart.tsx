@@ -109,9 +109,12 @@ export default function Cart() {
   }, [changes]);
 
   useEffect(() => {
+    var total = 0;
     carts.map((c) => {
-      setTotalPrice(totalPrice + c.product.price * c.quantity);
+      total += c.product.price * c.quantity;
+      // setTotalPrice(totalPrice + c.product.price * c.quantity);
     });
+    setTotalPrice(total);
   }, [carts]);
 
   const handleChanges = () => {

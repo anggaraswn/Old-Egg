@@ -4,7 +4,14 @@ import FooterMain from '@/components/footerMain';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
-import { FaRegBuilding, FaPlus } from 'react-icons/fa';
+import {
+  FaRegBuilding,
+  FaPlus,
+  FaCreditCard,
+  FaBitcoin,
+  FaPaypal,
+  FaMoneyCheckAlt,
+} from 'react-icons/fa';
 import AddressCard from '@/components/addressCard';
 
 interface Product {
@@ -64,7 +71,16 @@ export default function CheckOut() {
   const [isOpen, setIsOpen] = useState(false);
   const [deliveries, setDeliveries] = useState<Delivery[]>([]);
   const [paymentTypes, setPaymentTypes] = useState<PaymentTypes[]>([]);
-  const [selected, setSelected] = useState('');
+  const [selected, setSelected] = useState<Delivery | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentTypes | null>(
+    null,
+  );
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+  const [errroMsg, setErrorMsg] = useState('');
+  const [user, setUser] = useState([]);
+  const [superTotalPrice, setSuperTotalPrice] = useState(0);
+  const [defaultAddress, setDefaultAddress] = useState<Address | null>(null);
+
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const CARTS_QUERY = `query{
     carts{
@@ -144,6 +160,56 @@ export default function CheckOut() {
     }
   }`;
 
+  const GET_CURRENT_USER = `query{
+    getCurrentUser{
+      id,
+      firstName,
+      lastName,
+      currency
+    }
+  }`;
+
+  const CHECKOUT_MUTATION = `mutation checkOut($deliveryID: ID!, $paymentTypeID:ID!, $addressID: ID!){
+    checkout(deliveryID: $deliveryID, paymentTypeID:$paymentTypeID, addressID: $addressID){
+      id,
+      user{
+        id,
+        firstName,
+        lastName
+      },
+      transactionDate,
+      address{
+        id,
+        addressAs
+      },
+      transactionDetails{
+        product{
+          id,
+          name,
+          price
+        }
+        quantity
+      },
+      delivery{
+        id,
+        name
+      },
+      paymentType{
+        name
+      },
+      invoice
+    }
+  }`;
+
+  const UPDATE_CURRENCY_MUTATION = `mutation updateCurrency($currency: Float!){
+    updateCurrency(currency: $currency){
+      id,
+      firstName,
+      lastName,
+      currency
+    }
+  }`;
+
   useEffect(() => {
     GRAPHQLAPI.post(
       '',
@@ -191,7 +257,34 @@ export default function CheckOut() {
       console.log(response);
       setPaymentTypes(response.data.data.paymentTypes);
     });
+
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: GET_CURRENT_USER,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      console.log(response);
+      setUser(response.data.data.getCurrentUser);
+    });
   }, [token]);
+
+  useEffect(() => {
+    carts.map((c) => {
+      setTotalPrice(totalPrice + c.quantity * c.product.price);
+    });
+  }, carts);
+
+  useEffect(() => {
+    if (selected?.price) {
+      setSuperTotalPrice(totalPrice + selected?.price);
+    }
+  }, [selected]);
 
   const openModal = () => {
     setIsOpen(true);
@@ -282,8 +375,69 @@ export default function CheckOut() {
     console.log('in');
   };
 
-  const handleSelect = (deliveryID: string) => {
-    setSelected(deliveryID);
+  const handleSelect = (delivery: Delivery) => {
+    setSelected(delivery);
+  };
+
+  const handleSelectPayment = (payment: PaymentTypes) => {
+    setSelectedPayment(payment);
+  };
+  const handleSelectAddress = (address: Address) => {
+    setSelectedAddress(address);
+  };
+
+  const handleCheckOut = () => {
+    if (selectedPayment == null) {
+      setErrorMsg('Please select a payment method');
+    } else {
+      if (user.currency < totalPrice) {
+        setErrorMsg('Your balance is insufficient');
+      } else {
+        setErrorMsg('');
+        const addressID = selectedAddress
+          ? selectedAddress.id
+          : defaultAddress?.id;
+        const deliveryID = selected?.id ? selected.id : '1';
+        console.log(deliveryID);
+        console.log(selectedPayment?.id);
+        console.log(defaultAddress);
+        GRAPHQLAPI.post(
+          '',
+          {
+            query: CHECKOUT_MUTATION,
+            variables: {
+              deliveryID: deliveryID,
+              paymentTypeID: selectedPayment.id,
+              addressID: addressID,
+            },
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        ).then((response) => {
+          console.log(response);
+          GRAPHQLAPI.post(
+            '',
+            {
+              query: UPDATE_CURRENCY_MUTATION,
+              variables: {
+                currency: superTotalPrice,
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            },
+          ).then((response) => {
+            console.log(response);
+            // window.location.href =
+          });
+        });
+      }
+    }
   };
 
   return (
@@ -385,133 +539,203 @@ export default function CheckOut() {
           Check Out (
           <span className={styles.itemCount}>{carts.length} item(s)</span>)
         </div>
-        <div className={styles.shipItemCell}>
-          <div className={styles.checkOutStep}>
-            <div className={styles.checkOutStepTitle}>
-              <div className={styles.number}>1</div>
-              <h2>Shipping</h2>
-            </div>
-            <div className={styles.checkOutStepBody}>
-              <div className={styles.checkOutTabs}>
-                <div className={styles.checkOutTabsTop}>
-                  <p>How would you like to get your order</p>
-                  <div className={styles.option}>
-                    <div>
-                      <div>Ship to</div>
-                      <div className={styles.orangeColor}>Your Location</div>
+        <div className={styles.rowInner}>
+          <div className={styles.rowBody}>
+            <div className={styles.shipItemCell}>
+              <div className={styles.checkOutStep}>
+                <div className={styles.checkOutStepTitle}>
+                  <div className={styles.number}>1</div>
+                  <h2>Shipping</h2>
+                </div>
+                <div className={styles.checkOutStepBody}>
+                  <div className={styles.checkOutTabs}>
+                    <div className={styles.checkOutTabsTop}>
+                      <p>How would you like to get your order</p>
+                      <div className={styles.option}>
+                        <div>
+                          <div>Ship to</div>
+                          <div className={styles.orangeColor}>
+                            Your Location
+                          </div>
+                        </div>
+                        <FaRegBuilding />
+                      </div>
                     </div>
-                    <FaRegBuilding />
+                    <div className={styles.checkOutTabContent}>
+                      <div>Ship to Your Location</div>
+                      <p>
+                        Have your order delivered to your home, office or
+                        anywhere.
+                        <br />
+                        We work with a number of different carriers & will ship
+                        via the one who can best meet your delivery needs.
+                      </p>
+                      <div className={styles.marginTop}>
+                        <button onClick={handleAddNewAddress}>
+                          <FaPlus /> ADD NEW ADDRESS
+                        </button>
+                      </div>
+                      {addresses.map((a) => {
+                        return (
+                          <div
+                            className={`${styles['addressCardContainer']} ${
+                              selectedAddress == a ? styles.selectedAddress : ''
+                            }`}
+                            onClick={() => handleSelectAddress(a)}
+                            key={a.id}
+                          >
+                            <AddressCard
+                              address={a}
+                              key={a.id}
+                              handleChanges={handleChanges}
+                              setDefaultAddress={setDefaultAddress}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-                <div className={styles.checkOutTabContent}>
-                  <div>Ship to Your Location</div>
-                  <p>
-                    Have your order delivered to your home, office or anywhere.
-                    <br />
-                    We work with a number of different carriers & will ship via
-                    the one who can best meet your delivery needs.
-                  </p>
-                  <div className={styles.marginTop}>
-                    <button onClick={handleAddNewAddress}>
-                      <FaPlus /> ADD NEW ADDRESS
-                    </button>
+              </div>
+            </div>
+            <div className={styles.deliveryItemCell}>
+              <div className={styles.checkOutStep}>
+                <div className={styles.checkOutStepTitle}>
+                  <div className={styles.number}>2</div>
+                  <h2>DELIVERY</h2>
+                </div>
+                {carts.map((c) => {
+                  return (
+                    <div className={styles.checkOutStepBody} key={c.product.id}>
+                      <div className={styles.checkOutTabs}>
+                        <div className={styles.checkOutTabsTop}>
+                          <p className={styles.groupTitle}>
+                            Newegg International Shipping Service (
+                            {deliveries.length}{' '}
+                            {deliveries.length == 1 ? (
+                              <span>Item</span>
+                            ) : (
+                              <span>Items</span>
+                            )}
+                            )
+                          </p>
+                          <div className={styles.tabsTitle}>
+                            How soon you would like to receive the products
+                          </div>
+                        </div>
+                        <div className={styles.checkOutTabContent}>
+                          <div className={styles.productContainer}>
+                            <img src={c.product.images} alt="Product Image" />
+                            <div className={styles.productInfo}>
+                              <p>{c.product.name}</p>
+                              <p>{c.product.description}</p>
+                            </div>
+                            <div className={styles.productQty}>
+                              {c.quantity}
+                            </div>
+                            <div className={styles.productPrice}>
+                              ${(c.quantity * c.product.price).toFixed(2)}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className={styles.showMoreBox}>
+                {deliveries.map((d) => {
+                  return (
+                    <div
+                      className={`${styles['itemCell']} ${
+                        selected?.id === d.id ? styles.selected : ''
+                      }`}
+                      onClick={() => handleSelect(d)}
+                      key={d.id}
+                    >
+                      <div className={styles.deliveryDetails}>
+                        {d.name}
+                        <br />
+                        {d.description}
+                      </div>
+                      {d.price == 0 ? (
+                        <div className={styles.deliveryPrice}>FREE</div>
+                      ) : (
+                        <div className={styles.deliveryPrice}>
+                          ${d.price.toFixed(2)}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+                <div></div>
+              </div>
+            </div>
+            <div className={styles.paymentItemCell}>
+              <div className={styles.checkOutStep}>
+                <div className={styles.checkOutStepTitle}>
+                  <div className={styles.number}>3</div>
+                  <h2>PAYMENT</h2>
+                </div>
+                <div className={styles.checkOutTabsTop}>
+                  <div>How do you want to pay?</div>
+                  <div className={styles.showMoreBox}>
+                    {paymentTypes.map((p) => {
+                      return (
+                        <div
+                          className={`${styles['payItemCell']} ${
+                            selectedPayment?.id === p.id
+                              ? styles.selectedPay
+                              : ''
+                          }`}
+                          onClick={() => handleSelectPayment(p)}
+                          key={p.id}
+                        >
+                          <div>{p.name}</div>
+                          {p.id === '1' && <FaCreditCard />}
+                          {p.id === '2' && <FaBitcoin />}
+                          {p.id === '3' && <FaPaypal />}
+                          {p.id === '4' && <FaMoneyCheckAlt />}
+                        </div>
+                      );
+                    })}
                   </div>
-                  {addresses.map((a) => {
-                    return (
-                      <AddressCard
-                        address={a}
-                        key={a.id}
-                        handleChanges={handleChanges}
-                      />
-                    );
-                  })}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div className={styles.deliveryItemCell}>
-          <div className={styles.checkOutStep}>
-            <div className={styles.checkOutStepTitle}>
-              <div className={styles.number}>2</div>
-              <h2>DELIVERY</h2>
-            </div>
-            {carts.map((c) => {
-              return (
-                <div className={styles.checkOutStepBody}>
-                  <div className={styles.checkOutTabs}>
-                    <div className={styles.checkOutTabsTop}>
-                      <p className={styles.groupTitle}>
-                        Newegg International Shipping Service (
-                        {deliveries.length}{' '}
-                        {deliveries.length == 1 ? (
-                          <span>Item</span>
-                        ) : (
-                          <span>Items</span>
-                        )}
-                        )
-                      </p>
-                      <div className={styles.tabsTitle}>
-                        How soon you would like to receive the products
-                      </div>
-                      <div className={styles.showMoreBox}>
-                        {deliveries.map((d) => {
-                          return (
-                            <div
-                              className={`${styles['itemCell']} ${
-                                selected === d.id ? styles.selected : ''
-                              }`}
-                              onClick={() => handleSelect(d.id)}
-                            >
-                              <div className={styles.deliveryDetails}>
-                                {d.name}
-                                <br />
-                                {d.description}
-                              </div>
-                              {d.price == 0 ? (
-                                <div className={styles.deliveryPrice}>FREE</div>
-                              ) : (
-                                <div className={styles.deliveryPrice}>
-                                  ${d.price.toFixed(2)}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                        <div></div>
-                      </div>
-                    </div>
-                    <div className={styles.checkOutTabContent}>
-                      <div className={styles.productContainer}>
-                        <img src={c.product.images} alt="Product Image" />
-                        <div className={styles.productInfo}>
-                          <p>{c.product.name}</p>
-                          <p>{c.product.description}</p>
-                        </div>
-                        <div className={styles.productQty}>{c.quantity}</div>
-                        <div className={styles.productPrice}>
-                          ${(c.quantity * c.product.price).toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          <div className={styles.rowSide}>
+            <h3>Order Summary</h3>
+            <div className={styles.summaryWrap}>
+              <div className={styles.summaryContent}>
+                <ul>
+                  <li>
+                    <div>Item(s): </div>
+                    <span>${totalPrice}</span>
+                  </li>
+                  <li>
+                    <div>Delivery:</div>
+                    <span>${selected?.price}</span>
+                  </li>
+                  <hr />
+                  <li className={styles.totalPrice}>
+                    <div>Total:</div>
+
+                    {selected?.price ? (
+                      <span>${superTotalPrice}</span>
+                    ) : (
+                      <span>${totalPrice}</span>
+                    )}
+                  </li>
+                </ul>
+                <div className={styles.reviewBTN}>
+                  <button className={styles.orangeBTN} onClick={handleCheckOut}>
+                    Review Your Order
+                  </button>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-        <div className={styles.paymentItemCell}>
-          <div className={styles.checkOutStep}>
-            <div className={styles.checkOutStepTitle}>
-              <div className={styles.number}>3</div>
-              <h2>PAYMENT</h2>
+                <p className={styles.error}>{errroMsg}</p>
+              </div>
             </div>
-            <div className={styles.checkOutTabsTop}>
-              How do you want to pay?
-            </div>
-            {paymentTypes.map((p) => {
-              return <div>{p.name}</div>;
-            })}
           </div>
         </div>
         <div></div>

@@ -26,6 +26,7 @@ type User {
     subscribe: Boolean!
     banned: Boolean!
     role: UserRole!
+    currency: Float!
 }
 
 input NewUser {
@@ -49,6 +50,7 @@ type Mutation {
     updatePhonenumber(phone: String!): User! @goField(forceResolver: true)
     updatePassword(currentPassword: String!, newPassword: String!): User!
         @goField(forceResolver: true)
+    updateCurrency(currency: Float!): User! @goField(forceResolver: true)
 }
 
 type Query {

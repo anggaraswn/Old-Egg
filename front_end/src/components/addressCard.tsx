@@ -22,8 +22,9 @@ interface Address {
 export default function AddressCard(props: {
   address: Address;
   handleChanges: Function;
+  setDefaultAddress: Function;
 }) {
-  const { address, handleChanges } = props;
+  const { address, handleChanges, setDefaultAddress } = props;
   const token = getCookie('jwt');
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const DELETE_ADDRESS_MUATION = `mutation deleteAddress($addressID: ID!){
@@ -52,6 +53,10 @@ export default function AddressCard(props: {
       handleChanges();
     });
   };
+
+  if (address.isDefault) {
+    setDefaultAddress(address);
+  }
 
   return (
     <div
