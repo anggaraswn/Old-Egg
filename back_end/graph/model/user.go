@@ -1,6 +1,10 @@
 package model
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"time"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 type User struct {
 	ID       	string   `json:"id" gorm:"primaryKey"`
@@ -13,6 +17,8 @@ type User struct {
 	Banned   	bool     `json:"banned"`
 	Role    	UserRole `json:"role"`
 	Currency	float64`json:"currency"`
+	VerificationCode string	`json:"verificationCode"`
+	VerificationCodeValid *time.Time `json:"verificationCodeValid"`
 }
 
 func HashPassword(s string) (string, error) {

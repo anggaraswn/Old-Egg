@@ -135,13 +135,16 @@ export default function Register() {
           console.log(response);
           const test = response.data.data.createUser;
           console.log(test);
+          if (response.data.errors) {
+            setErrorMsg('Email already exists');
+          } else {
+            window.location.href = '/login';
+          }
         })
         .catch((err) => {
           console.log('ERROR');
           console.log(err.error);
         });
-
-      // window.location.href = '/';
     }
   };
 

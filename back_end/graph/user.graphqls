@@ -27,6 +27,8 @@ type User {
     banned: Boolean!
     role: UserRole!
     currency: Float!
+    verificationCode: String
+    verificationCodeValid: Time
 }
 
 input NewUser {
@@ -51,6 +53,14 @@ type Mutation {
     updatePassword(currentPassword: String!, newPassword: String!): User!
         @goField(forceResolver: true)
     updateCurrency(currency: Float!): User! @goField(forceResolver: true)
+    insertVerificationCode(
+        email: String!
+        verificationCode: String!
+        duration: Int!
+    ): User! @goField(forceResolver: true)
+    validateVerificationCode(email: String!, verificationCode: String!): Any!
+        @goField(forceResolver: true)
+    validateEmail(email: String!): Boolean! @goField(forceResolver: true)
 }
 
 type Query {

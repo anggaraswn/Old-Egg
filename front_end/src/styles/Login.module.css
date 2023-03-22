@@ -1,6 +1,7 @@
 .outer {
   background-color: white;
   height: 100vh;
+  margin-top: 5px;
 }
 
 .container {
@@ -26,6 +27,7 @@
 
 #signInBTN {
   background-color: orange;
+  margin-top: 5px;
 }
 
 .signUp {
@@ -48,4 +50,19 @@
   display: flex;
   justify-content: center;
   color: gray;
+}
+
+.error {
+  color: red;
+}
+
+.title {
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }

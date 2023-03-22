@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
@@ -36,6 +37,17 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, 
 
 	db := database.GetDB()
 	password, err := model.HashPassword(input.Password)
+
+	var count int64
+	if err := db.Model(&model.User{}).Where("email = ?", input.Email).Count(&count).Error; err != nil {
+		return nil, err
+	}
+
+	if count > 0 {
+		return nil, &gqlerror.Error{
+			Message: "Error, Email already exist!",
+		}
+	}
 
 	user := &model.User{
 		FirstName: input.FirstName,
@@ -142,6 +154,82 @@ func (r *mutationResolver) UpdateCurrency(ctx context.Context, currency float64)
 	user.Currency -= currency
 
 	return user, db.Save(user).Error
+}
+
+// InsertVerificationCode is the resolver for the insertVerificationCode field.
+func (r *mutationResolver) InsertVerificationCode(ctx context.Context, email string, verificationCode string, duration int) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: InsertVerificationCode - insertVerificationCode"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	if err := db.Where("email = ?", email).Take(&user).Error; err != nil {
+		return nil, err
+	}
+
+	if user.VerificationCodeValid != nil {
+		durationValid := time.Since(*user.VerificationCodeValid)
+		println(durationValid.Minutes())
+        if durationValid.Minutes() < -3 {
+            return nil, &gqlerror.Error{
+                Message: "Cannot request new code yet, please try again later.",
+            }
+        }
+	}
+
+	user.VerificationCode = verificationCode
+	time := time.Now().Add(time.Minute * time.Duration(duration))
+	user.VerificationCodeValid = &time
+
+	return user, db.Save(user).Error
+}
+
+// ValidateVerificationCode is the resolver for the validateVerificationCode field.
+func (r *mutationResolver) ValidateVerificationCode(ctx context.Context, email string, verificationCode string) (interface{}, error) {
+	// panic(fmt.Errorf("not implemented: ValidateVerificationCode - validateVerificationCode"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	if err := db.Where("email = ?", email).Take(&user).Error; err != nil {
+		return nil, err
+	}
+
+	if user.VerificationCode == verificationCode {
+		if time.Now().Before(*user.VerificationCodeValid) {
+			token, err := service.JwtGenerate(ctx, user.ID)
+			if err != nil {
+				return nil, err
+			}
+
+			return map[string]interface{}{
+				"token": token,
+			}, nil
+		} else {
+			return false, &gqlerror.Error{
+				Message: "Error verification code has expired",
+			}
+		}
+	}
+
+	return false, &gqlerror.Error{
+		Message: "Error invalid verification code",
+	}
+}
+
+// ValidateEmail is the resolver for the validateEmail field.
+func (r *mutationResolver) ValidateEmail(ctx context.Context, email string) (bool, error) {
+	// panic(fmt.Errorf("not implemented: ValidateEmail - validateEmail"))
+	db := database.GetDB()
+
+	var count int64
+	err := db.Model(&model.User{}).Where("email = ?", email).Count(&count).Error
+
+	if count > 0 {
+		return true, err
+	}
+
+	return false, err
 }
 
 // User is the resolver for the user field.

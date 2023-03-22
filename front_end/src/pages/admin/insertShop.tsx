@@ -69,8 +69,10 @@ export default function InsertShop() {
   };
 
   useEffect(() => {
-    (document.getElementById('password') as HTMLInputElement).value =
-      name + '123456';
+    if (name != '') {
+      (document.getElementById('password') as HTMLInputElement).value =
+        name + '123456';
+    }
   }, [name]);
 
   const handleInsert = () => {

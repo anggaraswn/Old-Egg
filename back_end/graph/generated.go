@@ -109,30 +109,33 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		Auth                    func(childComplexity int) int
-		Checkout                func(childComplexity int, deliveryID string, paymentTypeID string, addressID string) int
-		CreateAddress           func(childComplexity int, input model.NewAddress) int
-		CreateCart              func(childComplexity int, input model.NewCart) int
-		CreateProduct           func(childComplexity int, input model.NewProduct) int
-		CreateReview            func(childComplexity int, input model.NewReview) int
-		CreateSaveForLater      func(childComplexity int, productID string, quantity int) int
-		CreateShop              func(childComplexity int, input model.NewShop) int
-		CreateUser              func(childComplexity int, input model.NewUser, phone *string) int
-		CreateWishlist          func(childComplexity int, name string, option model.Option) int
-		CreateWishlistDetail    func(childComplexity int, wishlistID string, productID string, quantity *int) int
-		DeleteAddress           func(childComplexity int, addressID string) int
-		DeleteCart              func(childComplexity int, productID string) int
-		DeleteSaveForLater      func(childComplexity int, productID string) int
-		DeleteWishlist          func(childComplexity int, wishlistID string) int
-		DeleteWishlistDetail    func(childComplexity int, wishlistID string, productID string) int
-		UpdateCart              func(childComplexity int, input model.NewCart, deliveryID *string) int
-		UpdateCurrency          func(childComplexity int, currency float64) int
-		UpdatePassword          func(childComplexity int, currentPassword string, newPassword string) int
-		UpdatePhonenumber       func(childComplexity int, phone string) int
-		UpdateShop              func(childComplexity int, input model.NewShop) int
-		UpdateTransactionHeader func(childComplexity int, status string, transactionHeaderID string) int
-		UpdateWishlist          func(childComplexity int, wishlistID string, name *string, option *string, notes *string) int
-		UpdateWishlistDetail    func(childComplexity int, wishlistID *string, productID string, quantity *int) int
+		Auth                     func(childComplexity int) int
+		Checkout                 func(childComplexity int, deliveryID string, paymentTypeID string, addressID string) int
+		CreateAddress            func(childComplexity int, input model.NewAddress) int
+		CreateCart               func(childComplexity int, input model.NewCart) int
+		CreateProduct            func(childComplexity int, input model.NewProduct) int
+		CreateReview             func(childComplexity int, input model.NewReview) int
+		CreateSaveForLater       func(childComplexity int, productID string, quantity int) int
+		CreateShop               func(childComplexity int, input model.NewShop) int
+		CreateUser               func(childComplexity int, input model.NewUser, phone *string) int
+		CreateWishlist           func(childComplexity int, name string, option model.Option) int
+		CreateWishlistDetail     func(childComplexity int, wishlistID string, productID string, quantity *int) int
+		DeleteAddress            func(childComplexity int, addressID string) int
+		DeleteCart               func(childComplexity int, productID string) int
+		DeleteSaveForLater       func(childComplexity int, productID string) int
+		DeleteWishlist           func(childComplexity int, wishlistID string) int
+		DeleteWishlistDetail     func(childComplexity int, wishlistID string, productID string) int
+		InsertVerificationCode   func(childComplexity int, email string, verificationCode string, duration int) int
+		UpdateCart               func(childComplexity int, input model.NewCart, deliveryID *string) int
+		UpdateCurrency           func(childComplexity int, currency float64) int
+		UpdatePassword           func(childComplexity int, currentPassword string, newPassword string) int
+		UpdatePhonenumber        func(childComplexity int, phone string) int
+		UpdateShop               func(childComplexity int, input model.NewShop) int
+		UpdateTransactionHeader  func(childComplexity int, status string, transactionHeaderID string) int
+		UpdateWishlist           func(childComplexity int, wishlistID string, name *string, option *string, notes *string) int
+		UpdateWishlistDetail     func(childComplexity int, wishlistID *string, productID string, quantity *int) int
+		ValidateEmail            func(childComplexity int, email string) int
+		ValidateVerificationCode func(childComplexity int, email string, verificationCode string) int
 	}
 
 	PaymentType struct {
@@ -252,16 +255,18 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		Banned    func(childComplexity int) int
-		Currency  func(childComplexity int) int
-		Email     func(childComplexity int) int
-		FirstName func(childComplexity int) int
-		ID        func(childComplexity int) int
-		LastName  func(childComplexity int) int
-		Password  func(childComplexity int) int
-		Phone     func(childComplexity int) int
-		Role      func(childComplexity int) int
-		Subscribe func(childComplexity int) int
+		Banned                func(childComplexity int) int
+		Currency              func(childComplexity int) int
+		Email                 func(childComplexity int) int
+		FirstName             func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		LastName              func(childComplexity int) int
+		Password              func(childComplexity int) int
+		Phone                 func(childComplexity int) int
+		Role                  func(childComplexity int) int
+		Subscribe             func(childComplexity int) int
+		VerificationCode      func(childComplexity int) int
+		VerificationCodeValid func(childComplexity int) int
 	}
 
 	Voucher struct {
@@ -304,6 +309,9 @@ type MutationResolver interface {
 	UpdatePhonenumber(ctx context.Context, phone string) (*model.User, error)
 	UpdatePassword(ctx context.Context, currentPassword string, newPassword string) (*model.User, error)
 	UpdateCurrency(ctx context.Context, currency float64) (*model.User, error)
+	InsertVerificationCode(ctx context.Context, email string, verificationCode string, duration int) (*model.User, error)
+	ValidateVerificationCode(ctx context.Context, email string, verificationCode string) (interface{}, error)
+	ValidateEmail(ctx context.Context, email string) (bool, error)
 	CreateAddress(ctx context.Context, input model.NewAddress) (*model.Address, error)
 	DeleteAddress(ctx context.Context, addressID string) (*model.Address, error)
 	CreateCart(ctx context.Context, input model.NewCart) (*model.Cart, error)
@@ -829,6 +837,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.DeleteWishlistDetail(childComplexity, args["wishlistID"].(string), args["productID"].(string)), true
 
+	case "Mutation.insertVerificationCode":
+		if e.complexity.Mutation.InsertVerificationCode == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_insertVerificationCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.InsertVerificationCode(childComplexity, args["email"].(string), args["verificationCode"].(string), args["duration"].(int)), true
+
 	case "Mutation.updateCart":
 		if e.complexity.Mutation.UpdateCart == nil {
 			break
@@ -924,6 +944,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateWishlistDetail(childComplexity, args["wishlistID"].(*string), args["productID"].(string), args["quantity"].(*int)), true
+
+	case "Mutation.validateEmail":
+		if e.complexity.Mutation.ValidateEmail == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_validateEmail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ValidateEmail(childComplexity, args["email"].(string)), true
+
+	case "Mutation.validateVerificationCode":
+		if e.complexity.Mutation.ValidateVerificationCode == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_validateVerificationCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.ValidateVerificationCode(childComplexity, args["email"].(string), args["verificationCode"].(string)), true
 
 	case "PaymentType.id":
 		if e.complexity.PaymentType.ID == nil {
@@ -1693,6 +1737,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.Subscribe(childComplexity), true
 
+	case "User.verificationCode":
+		if e.complexity.User.VerificationCode == nil {
+			break
+		}
+
+		return e.complexity.User.VerificationCode(childComplexity), true
+
+	case "User.verificationCodeValid":
+		if e.complexity.User.VerificationCodeValid == nil {
+			break
+		}
+
+		return e.complexity.User.VerificationCodeValid(childComplexity), true
+
 	case "Voucher.createdAt":
 		if e.complexity.Voucher.CreatedAt == nil {
 			break
@@ -2221,6 +2279,39 @@ func (ec *executionContext) field_Mutation_deleteWishlist_args(ctx context.Conte
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_insertVerificationCode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["verificationCode"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verificationCode"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["verificationCode"] = arg1
+	var arg2 int
+	if tmp, ok := rawArgs["duration"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("duration"))
+		arg2, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["duration"] = arg2
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_updateCart_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -2410,6 +2501,45 @@ func (ec *executionContext) field_Mutation_updateWishlist_args(ctx context.Conte
 		}
 	}
 	args["notes"] = arg3
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_validateEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_validateVerificationCode_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	var arg1 string
+	if tmp, ok := rawArgs["verificationCode"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verificationCode"))
+		arg1, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["verificationCode"] = arg1
 	return args, nil
 }
 
@@ -2875,6 +3005,10 @@ func (ec *executionContext) fieldContext_Address_user(ctx context.Context, field
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -3749,6 +3883,10 @@ func (ec *executionContext) fieldContext_Cart_user(ctx context.Context, field gr
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4335,6 +4473,10 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4411,6 +4553,10 @@ func (ec *executionContext) fieldContext_Mutation_updatePhonenumber(ctx context.
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4487,6 +4633,10 @@ func (ec *executionContext) fieldContext_Mutation_updatePassword(ctx context.Con
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4563,6 +4713,10 @@ func (ec *executionContext) fieldContext_Mutation_updateCurrency(ctx context.Con
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -4575,6 +4729,194 @@ func (ec *executionContext) fieldContext_Mutation_updateCurrency(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateCurrency_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_insertVerificationCode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_insertVerificationCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().InsertVerificationCode(rctx, fc.Args["email"].(string), fc.Args["verificationCode"].(string), fc.Args["duration"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋanggaraswnᚋgqlgenᚑtodosᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_insertVerificationCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "firstName":
+				return ec.fieldContext_User_firstName(ctx, field)
+			case "lastName":
+				return ec.fieldContext_User_lastName(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "phone":
+				return ec.fieldContext_User_phone(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
+			case "subscribe":
+				return ec.fieldContext_User_subscribe(ctx, field)
+			case "banned":
+				return ec.fieldContext_User_banned(ctx, field)
+			case "role":
+				return ec.fieldContext_User_role(ctx, field)
+			case "currency":
+				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_insertVerificationCode_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_validateVerificationCode(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_validateVerificationCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ValidateVerificationCode(rctx, fc.Args["email"].(string), fc.Args["verificationCode"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(interface{})
+	fc.Result = res
+	return ec.marshalNAny2interface(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_validateVerificationCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Any does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_validateVerificationCode_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_validateEmail(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_validateEmail(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().ValidateEmail(rctx, fc.Args["email"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(bool)
+	fc.Result = res
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_validateEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_validateEmail_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return
 	}
@@ -7108,6 +7450,10 @@ func (ec *executionContext) fieldContext_Query_user(ctx context.Context, field g
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -7267,6 +7613,10 @@ func (ec *executionContext) fieldContext_Query_getCurrentUser(ctx context.Contex
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -9254,6 +9604,10 @@ func (ec *executionContext) fieldContext_Review_user(ctx context.Context, field 
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -9528,6 +9882,10 @@ func (ec *executionContext) fieldContext_SaveForLater_user(ctx context.Context, 
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -10142,6 +10500,10 @@ func (ec *executionContext) fieldContext_Shop_user(ctx context.Context, field gr
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -10398,6 +10760,10 @@ func (ec *executionContext) fieldContext_ShopReview_user(ctx context.Context, fi
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -11152,6 +11518,10 @@ func (ec *executionContext) fieldContext_TransactionHeader_user(ctx context.Cont
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -11914,6 +12284,88 @@ func (ec *executionContext) fieldContext_User_currency(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _User_verificationCode(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_verificationCode(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VerificationCode, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_verificationCode(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _User_verificationCodeValid(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_verificationCodeValid(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.VerificationCodeValid, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_verificationCodeValid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Voucher_id(ctx context.Context, field graphql.CollectedField, obj *model.Voucher) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Voucher_id(ctx, field)
 	if err != nil {
@@ -12415,6 +12867,10 @@ func (ec *executionContext) fieldContext_Wishlist_user(ctx context.Context, fiel
 				return ec.fieldContext_User_role(ctx, field)
 			case "currency":
 				return ec.fieldContext_User_currency(ctx, field)
+			case "verificationCode":
+				return ec.fieldContext_User_verificationCode(ctx, field)
+			case "verificationCodeValid":
+				return ec.fieldContext_User_verificationCodeValid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -15310,6 +15766,24 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 				return ec._Mutation_updateCurrency(ctx, field)
 			})
 
+		case "insertVerificationCode":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_insertVerificationCode(ctx, field)
+			})
+
+		case "validateVerificationCode":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_validateVerificationCode(ctx, field)
+			})
+
+		case "validateEmail":
+
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_validateEmail(ctx, field)
+			})
+
 		case "createAddress":
 
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
@@ -16963,6 +17437,14 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "verificationCode":
+
+			out.Values[i] = ec._User_verificationCode(ctx, field, obj)
+
+		case "verificationCodeValid":
+
+			out.Values[i] = ec._User_verificationCodeValid(ctx, field, obj)
+
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -18858,6 +19340,22 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
+	return res
+}
+
+func (ec *executionContext) unmarshalOTime2ᚖtimeᚐTime(ctx context.Context, v interface{}) (*time.Time, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := graphql.UnmarshalTime(v)
+	return &res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel ast.SelectionSet, v *time.Time) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	res := graphql.MarshalTime(*v)
 	return res
 }
 
