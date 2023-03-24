@@ -95,3 +95,65 @@
 .pageContentInner {
   padding: 0 20px;
 }
+
+.star {
+  color: rgb(255, 187, 0);
+}
+
+.categoriesContainer {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+  padding: 0 15px 10px 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.categoriesItem {
+  border: 2px solid gray;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.productscontainer {
+  display: flex;
+}
+
+.banned {
+  margin: 200px;
+  text-align: center;
+}
+
+@media (max-width: 450px) {
+  .contentInner {
+    width: 100%;
+    padding: 0 0;
+  }
+  .sellerList {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .sellerListInfo {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .tab {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .tabCell {
+    text-align: center;
+  }
+
+  .curr::after {
+    transform: translate(-50%, -50%);
+    left: 50%;
+  }
+
+  .productscontainer {
+    flex-direction: column;
+  }
+}

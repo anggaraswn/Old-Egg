@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.subContainer {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  gap: 5px;
+}
+
+.orangeBTN {
+  background-color: orange;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+}

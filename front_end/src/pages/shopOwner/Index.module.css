@@ -1,0 +1,158 @@
+.banned {
+  font-weight: bold;
+  font-size: 30px;
+  text-align: center;
+  margin: 200px;
+}
+
+.contentInner {
+  padding: 10px 40px;
+}
+
+.sellerList {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sellerListInfo {
+  list-style: none;
+  width: 40%;
+}
+
+.avatar {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background-color: rgb(232, 232, 232);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profilePic {
+  width: 53px;
+  height: 14px;
+  /* height: 150px; */
+}
+
+.sellerHead span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.sellerBtn button {
+  background-color: rgb(25, 70, 184);
+  border: none;
+  border-radius: 30px;
+  padding: 3px 12px;
+  color: white;
+  font-size: 10px;
+  margin-right: 5px;
+}
+
+.sellerBtn a {
+  border: 1px solid rgb(209, 209, 209);
+  border-radius: 30px;
+  padding: 3px 12px;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.sortByContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.subContainer2 {
+  display: flex;
+  column-gap: 5px;
+  width: 40%;
+  justify-content: space-between;
+}
+
+.changepagecontainer {
+  display: flex;
+}
+
+.alignCenter {
+  display: flex;
+  align-items: center;
+}
+
+.alignCenter button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  padding: 20px 20px 20px 10%;
+}
+
+.productsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+}
+
+.cardContainer {
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cardContainer p {
+  text-align: center;
+}
+
+.productImage {
+  height: 6rem;
+  width: 6rem;
+  line-height: 6rem;
+  font-size: 2.5rem;
+  background: #eee;
+  /* border-radius: 50%; */
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+.contentContainer {
+  padding: 15px;
+}
+
+.orangeBTN {
+  background-color: orange;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: bold;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.group1 {
+  display: flex;
+  align-items: center;
+  width: 60%;
+}
+
+.group2 {
+  width: 40%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.spaceBetween {
+  display: flex;
+  justify-content: space-between;
+}
+
+.updateBTN {
+  width: 50%;
+}

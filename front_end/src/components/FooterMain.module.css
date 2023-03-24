@@ -32,3 +32,26 @@
   color: #d4d6e2;
   text-decoration: none;
 }
+
+@media (max-width: 450px) {
+  .gridContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px;
+  }
+
+  .list ul {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .title {
+    text-align: center;
+    font-weight: bold;
+    margin: 0;
+    margin-top: 10px;
+    text-decoration: underline;
+  }
+}

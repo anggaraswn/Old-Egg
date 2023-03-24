@@ -3,7 +3,7 @@ import styles from '../styles/Login.module.css';
 import Footer from '@/components/footer';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { setCookies } from 'cookies-next';
+import { removeCookies, setCookies } from 'cookies-next';
 import emailjs from 'emailjs-com';
 
 const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
@@ -28,7 +28,9 @@ export default function Login() {
       password,
       subscribe,
       banned,
-      role
+      role,
+      TwoFA,
+      email
     }
   }
   `;
@@ -37,8 +39,8 @@ export default function Login() {
     validateEmail(email: $email)
   }`;
 
-  const INSERT_VERIFICATION_MUTATION = `mutation insertVerificationCode($email: String! ,$verificationCode: String!, $duration: Int!){
-    insertVerificationCode(email: $email, verificationCode: $verificationCode, duration: $duration){
+  const INSERT_VERIFICATION_MUTATION = `mutation insertVerificationCode($email: String! ,$verificationCode: String!, $duration: Int!, $constraint: Boolean!){
+    insertVerificationCode(email: $email, verificationCode: $verificationCode, duration: $duration, constraint: $constraint){
       id,
       verificationCode,
       verificationCodeValid
@@ -88,6 +90,7 @@ export default function Login() {
   };
 
   useEffect(() => {
+    var email = '';
     GRAPHQLAPI.post(
       '',
       {
@@ -105,12 +108,52 @@ export default function Login() {
         if (response.data.data.getCurrentUser.banned == false) {
           console.log(response.data.data.getCurrentUser);
           if (response.data.data.getCurrentUser.role === 'USER') {
-            window.location.href = '/';
+            if (response.data.data.getCurrentUser.TwoFA) {
+              removeCookies('jwt');
+              const { v1 } = require('uuid');
+              const verificationCode = v1().slice(0, 6);
+              // console.log(verificationCode);
+              email = response.data.data.getCurrentUser.email;
+              GRAPHQLAPI.post('', {
+                query: INSERT_VERIFICATION_MUTATION,
+                variables: {
+                  email: response.data.data.getCurrentUser.email,
+                  verificationCode: verificationCode,
+                  duration: 15,
+                  constraint: false,
+                },
+              }).then((response) => {
+                console.log(response);
+                const message = {
+                  from_name: 'NewEgg',
+                  message: `Your verification code is: ${verificationCode}`,
+                  email: email,
+                };
+                emailjs
+                  .send(
+                    'service_f6grouv',
+                    'template_hhticgf',
+                    message,
+                    'YxdxE8wQhw9aHzbgE',
+                  )
+                  .then(
+                    (response) => {
+                      console.log(response);
+                      window.location.href = '/loginWithCode';
+                    },
+                    (error) => {
+                      console.log(error);
+                    },
+                  );
+              });
+            } else {
+              window.location.href = '/';
+            }
           } else if (response.data.data.getCurrentUser.role === 'ADMIN') {
             // console.log('in');
             window.location.href = '/admin';
           } else {
-            window.location.href = '/seller';
+            window.location.href = '/shopOwner';
           }
         } else {
           setErrorMsg('Your account is banned!');
@@ -140,12 +183,14 @@ export default function Login() {
             email: email,
             verificationCode: verificationCode,
             duration: 15,
+            constraint: false,
           },
         }).then((response) => {
           console.log(response);
           const message = {
             from_name: 'NewEgg',
             message: `Your verification code is: ${verificationCode}`,
+            email: email,
           };
           emailjs
             .send(

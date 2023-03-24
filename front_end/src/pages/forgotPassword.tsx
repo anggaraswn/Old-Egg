@@ -18,8 +18,8 @@ export default function ForgotPassword() {
   const VALIDATE_EMAIL_MUTATION = `mutation validateEmail($email: String!){
     validateEmail(email: $email)
   }`;
-  const INSERT_VERIFICATION_MUTATION = `mutation insertVerificationCode($email: String! ,$verificationCode: String!, $duration: Int!){
-    insertVerificationCode(email: $email, verificationCode: $verificationCode, duration: $duration){
+  const INSERT_VERIFICATION_MUTATION = `mutation insertVerificationCode($email: String! ,$verificationCode: String!, $duration: Int!, $constraint: Boolean!){
+    insertVerificationCode(email: $email, verificationCode: $verificationCode, duration: $duration, constraint: $constraint){
       id,
       verificationCode,
       verificationCodeValid
@@ -76,29 +76,35 @@ export default function ForgotPassword() {
               email: email,
               verificationCode: verificationCode,
               duration: 5,
+              constraint: true,
             },
           }).then((response) => {
             console.log(response);
-            // const message = {
-            //   from_name: 'NewEgg',
-            //   message: `Your verification code is: ${verificationCode}`,
-            // };
-            // emailjs
-            //   .send(
-            //     'service_f6grouv',
-            //     'template_hhticgf',
-            //     message,
-            //     'YxdxE8wQhw9aHzbgE',
-            //   )
-            //   .then(
-            //     (response) => {
-            //       console.log(response);
-            //       setStep(2);
-            //     },
-            //     (error) => {
-            //       console.log(error);
-            //     },
-            //   );
+            if (response.data.data.insertVerificationCode == null) {
+              setError('Cannot request new code yet, please try again later.');
+            } else {
+              const message = {
+                from_name: 'NewEgg',
+                message: `Your verification code is: ${verificationCode}`,
+                email: email,
+              };
+              emailjs
+                .send(
+                  'service_f6grouv',
+                  'template_hhticgf',
+                  message,
+                  'YxdxE8wQhw9aHzbgE',
+                )
+                .then(
+                  (response) => {
+                    console.log(response);
+                    setStep(2);
+                  },
+                  (error) => {
+                    console.log(error);
+                  },
+                );
+            }
           });
         }
       });

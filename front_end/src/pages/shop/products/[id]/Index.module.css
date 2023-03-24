@@ -1,0 +1,48 @@
+.cardContainer {
+  text-align: left;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+.cardContainer a {
+  text-decoration: none;
+}
+
+.productImage {
+  height: 6rem;
+  width: 6rem;
+  line-height: 6rem;
+  font-size: 2.5rem;
+  background: #eee;
+  /* border-radius: 50%; */
+  margin-bottom: 1rem;
+  align-self: center;
+}
+
+.productName {
+  color: black;
+  font-size: 15px;
+  margin: 0;
+  text-align: center;
+}
+
+.productPrice {
+  font-size: 1rem;
+  /* padding: 1rem 0; */
+  line-height: 1.8;
+  height: 12rem;
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.itemsContainer {
+  display: flex;
+  flex-wrap: wrap;
+}

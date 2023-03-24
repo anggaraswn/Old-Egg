@@ -272,3 +272,14 @@ div.privateP:hover {
 .links a {
   z-index: 999;
 }
+
+@media (max-width: 450px) {
+  .card {
+    padding: 0;
+  }
+
+  .wishlistItem {
+    flex-direction: column;
+    padding-left: 0;
+  }
+}

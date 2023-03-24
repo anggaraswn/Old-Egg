@@ -82,6 +82,16 @@ type NewUser struct {
 	Role      UserRole `json:"role"`
 }
 
+type SearchProduct struct {
+	Keyword    *string  `json:"keyword"`
+	MinPrice   *float64 `json:"minPrice"`
+	MaxPrice   *float64 `json:"maxPrice"`
+	OrderBy    *string  `json:"orderBy"`
+	CategoryID *string  `json:"categoryID"`
+	Discount   *bool    `json:"discount"`
+	HighRating *bool    `json:"highRating"`
+}
+
 type UserRole string
 
 const (

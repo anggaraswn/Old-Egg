@@ -145,7 +145,7 @@ export default function Navbar() {
             ></Image>
           </a>
         </div>
-        <div>
+        <div className={styles.location}>
           <Image
             src="/assets/icon-location.png"
             alt="NewEgg Icon"
@@ -174,9 +174,16 @@ export default function Navbar() {
           alt="Bell Icon"
           width={28}
           height={28}
+          className={styles.none}
         ></Image>
         <a href="">
-          <Image src="/assets/en.svg" alt="flag" height={16} width={16}></Image>
+          <Image
+            src="/assets/en.svg"
+            alt="flag"
+            height={16}
+            width={16}
+            className={styles.none}
+          ></Image>
         </a>
         <div>
           {!auth ? (

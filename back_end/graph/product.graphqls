@@ -52,11 +52,29 @@ input NewBrand {
     description: String!
 }
 
+input SearchProduct {
+    keyword: String
+    minPrice: Float
+    maxPrice: Float
+    orderBy: String
+    categoryID: String
+    discount: Boolean
+    highRating: Boolean
+}
+
 extend type Query {
     product(id: ID!): Product!
-    products(shopID: ID, limit: Int, topSold: Boolean): [Product!]!
+    products(
+        shopID: ID
+        limit: Int
+        topSold: Boolean
+        search: SearchProduct
+    ): [Product!]!
+    categories: [Category!]! @goField(forceResolver: true)
+    brands: [Brand!]! @goField(forceResolver: true)
 }
 
 extend type Mutation {
     createProduct(input: NewProduct!): Product!
+    updateProduct(productID: ID!, input: NewProduct!): Product! @auth
 }

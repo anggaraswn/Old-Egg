@@ -1,0 +1,40 @@
+.productcard {
+  background-color: gray;
+  /* max-width: 20%; */
+  /* width: 2.3%; */
+  height: 300px;
+  /* padding: 28%; */
+  margin-top: 5px;
+}
+
+.productcardimage {
+  height: 70%;
+  max-height: 70%;
+  width: 100%;
+  max-width: 100%;
+
+  object-fit: cover;
+}
+
+.productcarddetailname {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+
+  max-width: 100%;
+  max-height: 100%;
+}
+
+@media (max-width: 1000px) {
+  .productcard {
+    width: 45%;
+    max-width: 45%;
+  }
+}
+
+@media (max-width: 500px) {
+  .productcard {
+    width: 100%;
+    max-width: 100%;
+  }
+}

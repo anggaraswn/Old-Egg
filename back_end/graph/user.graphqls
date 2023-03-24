@@ -29,6 +29,7 @@ type User {
     currency: Float!
     verificationCode: String
     verificationCodeValid: Time
+    TwoFA: Boolean!
 }
 
 input NewUser {
@@ -57,14 +58,19 @@ type Mutation {
         email: String!
         verificationCode: String!
         duration: Int!
+        constraint: Boolean!
     ): User! @goField(forceResolver: true)
     validateVerificationCode(email: String!, verificationCode: String!): Any!
         @goField(forceResolver: true)
     validateEmail(email: String!): Boolean! @goField(forceResolver: true)
+    updateBanStatus(userID: ID!, banned: Boolean!): User!
+        @goField(forceResolver: true)
+    updateTwoFA(twoFA: Boolean!): User! @goField(forceResolver: true) @auth
 }
 
 type Query {
     user(id: ID!): User! @goField(forceResolver: true) @auth
+    users(limit: Int, offset: Int): [User!]! @goField(forceResolver: true)
     protected: String! @goField(forceResolver: true) @auth
     getCurrentUser: User! @goField(forceResolver: true) @auth
 }

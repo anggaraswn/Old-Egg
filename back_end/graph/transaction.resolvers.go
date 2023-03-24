@@ -104,7 +104,67 @@ func (r *mutationResolver) Checkout(ctx context.Context, deliveryID string, paym
 
 // UpdateTransactionHeader is the resolver for the updateTransactionHeader field.
 func (r *mutationResolver) UpdateTransactionHeader(ctx context.Context, status string, transactionHeaderID string) (*model.TransactionHeader, error) {
-	panic(fmt.Errorf("not implemented: UpdateTransactionHeader - updateTransactionHeader"))
+	// panic(fmt.Errorf("not implemented: UpdateTransactionHeader - updateTransactionHeader"))
+	db := database.GetDB()
+
+	transactionHeader := new(model.TransactionHeader)
+
+	if err := db.First(transactionHeader, "id = ?", transactionHeaderID).Error; err != nil {
+		return nil, err
+	}
+
+	transactionHeader.Status = status
+	
+	return transactionHeader, db.Save(transactionHeader).Error
+}
+
+// CreateVoucher is the resolver for the createVoucher field.
+func (r *mutationResolver) CreateVoucher(ctx context.Context, currency float64) (*model.Voucher, error) {
+	// panic(fmt.Errorf("not implemented: CreateVoucher - createVoucher"))
+	db := database.GetDB()
+
+	voucher := model.Voucher{
+		ID:        uuid.NewString(),
+		Currency:  currency,
+		CreatedAt: time.Now(),
+		Valid:     true,
+	}
+
+	return &voucher, db.Model(voucher).Create(&voucher).Error
+}
+
+// ReedemVoucher is the resolver for the reedemVoucher field.
+func (r *mutationResolver) ReedemVoucher(ctx context.Context, voucherID string) (*model.Voucher, error) {
+	// panic(fmt.Errorf("not implemented: ReedemVoucher - reedemVoucher"))
+	db := database.GetDB()
+
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	voucher := new(model.Voucher)
+
+	if err := db.Where("id = ?", voucherID).Find(&voucher).Error; err != nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, voucher not found",
+		}
+	}
+
+	if voucher.Valid == false {
+		return nil, &gqlerror.Error{
+			Message: "Error, invalid voucher",
+		}
+	}
+
+	voucher.Valid = false
+
+	db.Exec("UPDATE users SET currency = currency + ? WHERE id = ?", voucher.Currency, userID)
+
+	return voucher, db.Save(voucher).Error
 }
 
 // TransactionHeaders is the resolver for the transactionHeaders field.
@@ -128,8 +188,8 @@ func (r *queryResolver) CurrentUserTransactionHeaders(ctx context.Context, order
 
 	t := db.Model(transactionHeaders).Where("user_id = ?", userID)
 
-	if orderStatus != nil && *orderStatus != "All" {
-		t = t.Where("status LIKE ?", orderStatus)
+	if orderStatus != nil && *orderStatus != "all" {
+		t = t.Where("status LIKE ?", *orderStatus)
 	}
 
 	if ordersByDay != nil && *ordersByDay != -1 {
@@ -138,7 +198,7 @@ func (r *queryResolver) CurrentUserTransactionHeaders(ctx context.Context, order
 	}
 
 	if search != nil {
-		t = t.Where("transaction_headers.id LIKE ? OR invoice LIKE ? OR products.name ?", "%"+*search+"%", "%"+*search+"%", "%"+*search+"%").
+		t = t.Where("transaction_headers.id LIKE ? OR invoice LIKE ? OR products.name LIKE ?", "%"+*search+"%", "%"+*search+"%", "%"+*search+"%").
 			Joins("JOIN transaction_details ON transaction_headers.id = transaction_details.transaction_header_id").
 			Joins("JOIN products ON transaction_details.product_id = products.id")
 	}

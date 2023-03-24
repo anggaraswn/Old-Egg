@@ -60,6 +60,7 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.NewUser, 
 		Role:      input.Role,
 		ID:        uuid.NewString(),
 		Currency:  0,
+		TwoFa:     false,
 	}
 	// var user *model.User
 	// user.ID = input.UserID
@@ -157,7 +158,7 @@ func (r *mutationResolver) UpdateCurrency(ctx context.Context, currency float64)
 }
 
 // InsertVerificationCode is the resolver for the insertVerificationCode field.
-func (r *mutationResolver) InsertVerificationCode(ctx context.Context, email string, verificationCode string, duration int) (*model.User, error) {
+func (r *mutationResolver) InsertVerificationCode(ctx context.Context, email string, verificationCode string, duration int, constraint bool) (*model.User, error) {
 	// panic(fmt.Errorf("not implemented: InsertVerificationCode - insertVerificationCode"))
 	db := database.GetDB()
 
@@ -170,11 +171,13 @@ func (r *mutationResolver) InsertVerificationCode(ctx context.Context, email str
 	if user.VerificationCodeValid != nil {
 		durationValid := time.Since(*user.VerificationCodeValid)
 		println(durationValid.Minutes())
-        if durationValid.Minutes() < -3 {
-            return nil, &gqlerror.Error{
-                Message: "Cannot request new code yet, please try again later.",
-            }
-        }
+		if constraint {
+			if durationValid.Minutes() < -3 {
+				return nil, &gqlerror.Error{
+					Message: "Cannot request new code yet, please try again later.",
+				}
+			}
+		}
 	}
 
 	user.VerificationCode = verificationCode
@@ -232,9 +235,59 @@ func (r *mutationResolver) ValidateEmail(ctx context.Context, email string) (boo
 	return false, err
 }
 
+// UpdateBanStatus is the resolver for the updateBanStatus field.
+func (r *mutationResolver) UpdateBanStatus(ctx context.Context, userID string, banned bool) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: UpdateBanStatus - updateBanStatus"))
+	db := database.GetDB()
+
+	user, _ := service.UserGetByID(ctx, userID)
+
+	user.Banned = banned
+
+	return user, db.Save(user).Error
+}
+
+// UpdateTwoFa is the resolver for the updateTwoFA field.
+func (r *mutationResolver) UpdateTwoFa(ctx context.Context, twoFa bool) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: UpdateTwoFa - updateTwoFA"))
+	db := database.GetDB()
+
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Error, Invalid Token !",
+		}
+	}
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	user, _ := service.UserGetByID(ctx, userID)
+
+	user.TwoFa = twoFa
+
+	return user, db.Save(user).Error
+}
+
 // User is the resolver for the user field.
 func (r *queryResolver) User(ctx context.Context, id string) (*model.User, error) {
 	return service.UserGetByID(ctx, id)
+}
+
+// Users is the resolver for the users field.
+func (r *queryResolver) Users(ctx context.Context, limit *int, offset *int) ([]*model.User, error) {
+	// panic(fmt.Errorf("not implemented: Users - users"))
+	db := database.GetDB()
+
+	var users []*model.User
+
+	u := db.Model(users)
+
+	if limit != nil {
+		u = u.Limit(*limit)
+	}
+	if offset != nil {
+		u = u.Offset(*offset)
+	}
+
+	return users, u.Find(&users).Error
 }
 
 // Protected is the resolver for the protected field.

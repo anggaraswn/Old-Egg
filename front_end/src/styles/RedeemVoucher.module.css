@@ -1,0 +1,35 @@
+.content {
+  height: 90vh;
+  text-align: center;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+  gap: 5px;
+}
+
+.group label {
+  text-align: left;
+}
+
+.orangeBTN {
+  background-color: orange;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+.error {
+  color: red;
+}

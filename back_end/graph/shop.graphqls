@@ -23,14 +23,25 @@ input NewShop {
 }
 
 extend type Query {
-    shops: [Shop!]! @goField(forceResolver: true)
-    shop(id: ID!): Shop! @goField(forceResolver: true)
+    shops(limit: Int, offset: Int, filter: String): [Shop!]!
+        @goField(forceResolver: true)
+    shop(id: ID, userID: ID): Shop! @goField(forceResolver: true)
     topShop: [Shop!]! @goField(forceResolver: true)
-    shopProducts(shopID: ID!, sortBy: String, categoryID: ID): [Product!]!
-    shopOrders(shopID: ID!, filter: String): [TransactionHeader!]!
+    shopProducts(
+        shopID: ID!
+        sortBy: String
+        categoryID: ID
+        limit: Int
+        offset: Int
+    ): [Product!]!
+    shopOrders(filter: String): [TransactionHeader!]! @auth
 }
 
 extend type Mutation {
     createShop(input: NewShop!): Shop!
-    updateShop(input: NewShop!): Shop!
+    updateShop(aboutUs: String, shopName: String, image: String): Shop!
+        @goField(forceResolver: true)
+        @auth
+    updateShopBanStatus(shopID: ID!, banned: Boolean!): Shop!
+        @goField(forceResolver: true)
 }

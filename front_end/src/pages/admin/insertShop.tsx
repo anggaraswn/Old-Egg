@@ -2,14 +2,13 @@ import { useEffect, useState } from 'react';
 import styles from './InsertShop.module.css';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
+import emailjs from 'emailjs-com';
 
 export default function InsertShop() {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const token = getCookie('jwt');
   const [user, setUser] = useState([]);
-  const INSERT_SHOP_MUTATION = `mutation createShop($name: String!, $image: String!, $banner: String!, $policy:String!, $aboutUs:String!, $userID: ID!){
+  const INSERT_SHOP_MUTATION = `mutation createShop($name: String!, $image: String, $banner: String, $policy:String, $aboutUs:String, $userID: ID!){
     createShop(input: {
       name: $name,
       image: $image,
@@ -76,10 +75,9 @@ export default function InsertShop() {
   }, [name]);
 
   const handleInsert = () => {
-    setEmail((document.getElementById('email') as HTMLInputElement).value);
-    setPassword(
-      (document.getElementById('password') as HTMLInputElement).value,
-    );
+    const email = (document.getElementById('email') as HTMLInputElement).value;
+    const password = (document.getElementById('password') as HTMLInputElement)
+      .value;
     GRAPHQLAPI.post('', {
       query: INSERT_USER_MUTATION,
       variables: {
@@ -102,6 +100,30 @@ export default function InsertShop() {
           name: name,
           userID: userID,
         },
+      }).then((response) => {
+        console.log(response);
+        const message = {
+          from_name: 'NewEgg',
+          message: `Your shop has been created`,
+          email: `Email       : ${email}`,
+          password: `Password    : ${password}`,
+        };
+        emailjs
+          .send(
+            'service_f6grouv',
+            'template_ght3fi1',
+            message,
+            'YxdxE8wQhw9aHzbgE',
+          )
+          .then(
+            (response) => {
+              console.log(response);
+              // window.location.href = '/admin';
+            },
+            (error) => {
+              console.log(error);
+            },
+          );
       });
     });
   };
@@ -122,7 +144,7 @@ export default function InsertShop() {
           Generate Password
         </button>
         <div className={styles.group}>
-          <label htmlFor="password">Shop Pass</label>
+          <label htmlFor="password">Shop Password</label>
           <input type="text" id="password" />
         </div>
         <button className={styles.orangeBTN} onClick={handleInsert}>

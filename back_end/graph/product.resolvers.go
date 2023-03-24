@@ -10,7 +10,9 @@ import (
 
 	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/anggaraswn/gqlgen-todos/service"
 	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // CreateProduct is the resolver for the createProduct field.
@@ -31,6 +33,7 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewPro
 		NumberBought:    0,
 		CategoryID:      input.CategoryID,
 		ShopID:          input.ShopID,
+		BrandID:         input.BrandID,
 	}
 
 	err := db.Create(product).Error
@@ -38,19 +41,70 @@ func (r *mutationResolver) CreateProduct(ctx context.Context, input model.NewPro
 	return product, err
 }
 
+// UpdateProduct is the resolver for the updateProduct field.
+func (r *mutationResolver) UpdateProduct(ctx context.Context, productID string, input model.NewProduct) (*model.Product, error) {
+	// panic(fmt.Errorf("not implemented: UpdateProduct - updateProduct"))
+	db := database.GetDB()
+
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	shop := new(model.Shop)
+
+	db.First(shop, "user_id = ?", userID)
+
+	product := new(model.Product)
+
+	if err := db.Where("id = ? AND shop_id = ?", productID, shop.ID).Take(&product).Error; err != nil {
+		shop = nil
+	}
+
+	product.Name = input.Name
+	// product.CategoryID = input.CategoryID
+	db.Exec("UPDATE products SET category_id = ? WHERE id = ? AND shop_id = ?", input.CategoryID, productID, shop.ID)
+	// product.BrandID = input.BrandID
+	db.Exec("UPDATE products SET brand_id = ? WHERE id = ? AND shop_id = ?", input.BrandID, productID, shop.ID)
+	product.Images = input.Images
+	product.Description = input.Description
+	product.Price = input.Price
+	product.Stock = input.Stock
+
+	return product, db.Save(product).Error
+}
+
 // Category is the resolver for the category field.
 func (r *productResolver) Category(ctx context.Context, obj *model.Product) (*model.Category, error) {
-	panic(fmt.Errorf("not implemented: Category - category"))
+	// panic(fmt.Errorf("not implemented: Category - category"))
+	db := database.GetDB()
+
+	var category *model.Category
+
+	return category, db.Where("id = ?", obj.CategoryID).Find(&category).Error
 }
 
 // Shop is the resolver for the shop field.
 func (r *productResolver) Shop(ctx context.Context, obj *model.Product) (*model.Shop, error) {
-	panic(fmt.Errorf("not implemented: Shop - shop"))
+	// panic(fmt.Errorf("not implemented: Shop - shop"))
+	db := database.GetDB()
+
+	var shop *model.Shop
+
+	return shop, db.Where("id = ?", obj.ShopID).Find(&shop).Error
 }
 
 // Brand is the resolver for the brand field.
 func (r *productResolver) Brand(ctx context.Context, obj *model.Product) (*model.Brand, error) {
-	panic(fmt.Errorf("not implemented: Brand - brand"))
+	// panic(fmt.Errorf("not implemented: Brand - brand"))
+	db := database.GetDB()
+
+	var brand *model.Brand
+
+	return brand, db.Where("id = ?", obj.BrandID).Find(&brand).Error
 }
 
 // Reviews is the resolver for the reviews field.
@@ -69,19 +123,45 @@ func (r *queryResolver) Product(ctx context.Context, id string) (*model.Product,
 }
 
 // Products is the resolver for the products field.
-func (r *queryResolver) Products(ctx context.Context, shopID *string, limit *int, topSold *bool) ([]*model.Product, error) {
+func (r *queryResolver) Products(ctx context.Context, shopID *string, limit *int, topSold *bool, search *model.SearchProduct) ([]*model.Product, error) {
 	// panic(fmt.Errorf("not implemented: Products - products"))
 	db := database.GetDB()
 
-	var models []*model.Product
+	var products []*model.Product
 
-	data := db.Model(models)
+	p := db.Model(products)
 
 	if limit != nil {
-		data = data.Limit(*limit)
+		p = p.Limit(*limit)
 	}
 
-	return models, data.Find(&models).Error
+	if search != nil {
+		if search.Keyword != nil {
+			p = p.Where("name LIKE ? OR description LIKE ?", "%"+*search.Keyword+"%", "%"+*search.Keyword+"%")
+		}
+	}
+
+	return products, p.Find(&products).Error
+}
+
+// Categories is the resolver for the categories field.
+func (r *queryResolver) Categories(ctx context.Context) ([]*model.Category, error) {
+	// panic(fmt.Errorf("not implemented: Categories - categories"))
+	db := database.GetDB()
+
+	var categories []*model.Category
+
+	return categories, db.Find(&categories).Error
+}
+
+// Brands is the resolver for the brands field.
+func (r *queryResolver) Brands(ctx context.Context) ([]*model.Brand, error) {
+	// panic(fmt.Errorf("not implemented: Brands - brands"))
+	db := database.GetDB()
+
+	var brands []*model.Brand
+
+	return brands, db.Find(&brands).Error
 }
 
 // Product returns ProductResolver implementation.

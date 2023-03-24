@@ -251,3 +251,28 @@
   margin: 5px 15px;
   text-align: center;
 }
+
+@media (max-width: 450px) {
+  .navbar {
+    padding: 1px;
+  }
+
+  .location {
+    display: none;
+  }
+
+  .none {
+    display: none;
+  }
+
+  .orders {
+    display: none;
+  }
+  .right {
+    gap: 0;
+  }
+
+  .text {
+    display: none;
+  }
+}

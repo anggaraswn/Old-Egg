@@ -19,6 +19,7 @@ type User struct {
 	Currency	float64`json:"currency"`
 	VerificationCode string	`json:"verificationCode"`
 	VerificationCodeValid *time.Time `json:"verificationCodeValid"`
+	TwoFa 	bool `json:"twoFA"`
 }
 
 func HashPassword(s string) (string, error) {

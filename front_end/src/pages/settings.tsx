@@ -20,6 +20,7 @@ interface User {
 export default function Settings() {
   const [user, setUser] = useState<User | null>(null);
   const token = getCookie('jwt');
+  const [checked, setChecked] = useState(false);
   let res = null;
 
   const addPhoneNumber = () => {
@@ -28,6 +29,10 @@ export default function Settings() {
 
   const changePassword = () => {
     window.location.href = '/changePassword';
+  };
+
+  const handleCheckboxChange = (event: any) => {
+    setChecked(event.target.checked);
   };
 
   const GET_CURRENT_USER = `
@@ -41,10 +46,21 @@ export default function Settings() {
       password,
       subscribe,
       banned,
-      role
+      role,
+      TwoFA
     }
   }
   `;
+
+  const UPDATE_2FA_MUTATION = `mutation updateTwoFA($twoFA: Boolean!){
+    updateTwoFA(twoFA: $twoFA){
+      id,
+      firstName,
+      lastName,
+      email,
+      TwoFA
+    }
+  }`;
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
 
@@ -64,9 +80,29 @@ export default function Settings() {
       res = response.data.data.getCurrentUser;
       console.log(res);
       setUser(res);
+      setChecked(response.data.data.getCurrentUser.TwoFA);
       console.log(user);
     });
   }, [token]);
+
+  useEffect(() => {
+    GRAPHQLAPI.post(
+      '',
+      {
+        query: UPDATE_2FA_MUTATION,
+        variables: {
+          twoFA: checked,
+        },
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    ).then((response) => {
+      console.log(response);
+    });
+  }, [checked]);
 
   return (
     <div>
@@ -129,6 +165,14 @@ export default function Settings() {
               <button className={styles.btn} onClick={changePassword}>
                 Edit
               </button>
+            </div>
+            <div className={styles.block}>
+              <p className={`${styles['text']} ${styles['point']}`}>2FA</p>
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={handleCheckboxChange}
+              />
             </div>
           </div>
           <div className={styles.text} style={{ fontSize: '13px' }}>

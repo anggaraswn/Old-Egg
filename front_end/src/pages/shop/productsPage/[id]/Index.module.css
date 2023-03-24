@@ -1,0 +1,192 @@
+.contentInner {
+  padding: 10px 40px;
+}
+
+.sellerList {
+  display: flex;
+  align-items: center;
+}
+
+.sellerListInfo {
+  list-style: none;
+  width: 40%;
+}
+
+.avatar {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  background-color: rgb(232, 232, 232);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profilePic {
+  width: 53px;
+  height: 14px;
+  /* height: 150px; */
+}
+
+.sellerHead span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.sellerBtn button {
+  background-color: rgb(25, 70, 184);
+  border: none;
+  border-radius: 30px;
+  padding: 3px 12px;
+  color: white;
+  font-size: 10px;
+  margin-right: 5px;
+}
+
+.sellerBtn a {
+  border: 1px solid rgb(209, 209, 209);
+  border-radius: 30px;
+  padding: 3px 12px;
+  font-size: 10px;
+  text-decoration: none;
+}
+
+.tab {
+  display: flex;
+  justify-content: center;
+}
+
+.tabCell {
+  padding: 0 30px;
+}
+
+.tabCell a {
+  text-decoration: none;
+  color: black;
+}
+
+.curr::after {
+  /* content: '';
+  width: 20px;
+  height: 10px;
+  background-color: rgb(204, 79, 63); */
+  content: '';
+  display: block;
+  position: relative;
+  top: 3px;
+  width: 76px;
+  border-bottom: 2px solid rgb(204, 79, 63);
+}
+
+.curr a {
+  color: rgb(204, 79, 63);
+}
+
+.contentInner2 {
+  border-bottom: 1px solid rgb(132, 148, 184);
+  padding: 20px 0;
+  background-color: rgb(236, 241, 254);
+}
+
+.banner {
+  width: 100%;
+}
+
+.pageContentInner {
+  padding: 0 20px;
+}
+
+.star {
+  color: rgb(255, 187, 0);
+}
+
+.categoriesContainer {
+  display: flex;
+  width: 100%;
+  justify-content: left;
+  padding: 0 15px 10px 0;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.categoriesItem {
+  border: 2px solid gray;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.productsContainer {
+  display: flex;
+}
+
+.banned {
+  margin: 200px;
+  text-align: center;
+}
+
+@media (max-width: 450px) {
+  .contentInner {
+    width: 100%;
+    padding: 0 0;
+  }
+  .sellerList {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .sellerListInfo {
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  .tab {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .tabCell {
+    text-align: center;
+  }
+
+  .curr::after {
+    transform: translate(-50%, -50%);
+    left: 50%;
+  }
+
+  .productsContainer {
+    flex-direction: column;
+  }
+
+  .sortByContainer {
+    padding: 0;
+  }
+}
+
+.sortByContainer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 15px;
+}
+
+.subContainer2 {
+  display: flex;
+  column-gap: 5px;
+  width: 40%;
+  justify-content: space-between;
+}
+
+.changepagecontainer {
+  display: flex;
+}
+
+.alignCenter {
+  display: flex;
+  align-items: center;
+}
+
+.alignCenter button {
+  border: none;
+  background-color: white;
+  cursor: pointer;
+}

@@ -209,8 +209,11 @@ export default function CartCard(props: {
         query: CREATE_SAVE_FOR_LATER_MUTATION,
         variables: {
           productID: cart.product.id,
-          quantity: (document.getElementById('quantity') as HTMLInputElement)
-            .value,
+          quantity: (
+            document.getElementById(
+              `quantity-${cart.product.id}`,
+            ) as HTMLInputElement
+          ).value,
         },
       },
       {

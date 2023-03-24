@@ -50,6 +50,10 @@ export default function AboutUs() {
     return '/shop/review/' + id;
   };
 
+  const handleAllProducts = () => {
+    return '/shop/productsPage/' + id;
+  };
+
   return (
     <div className={styles.body}>
       <Navbar />
@@ -96,7 +100,7 @@ export default function AboutUs() {
                 <a href={handleHome()}>Store Home</a>
               </div>
               <div className={styles.tabCell}>
-                <a href="#">All Products</a>
+                <a href={handleAllProducts()}>All Products</a>
               </div>
               <div className={styles.tabCell}>
                 <a href={handleReviews()}>Reviews</a>

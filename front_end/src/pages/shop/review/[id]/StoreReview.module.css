@@ -118,6 +118,23 @@
   color: rgb(255, 187, 0);
 }
 
+.chartContainer {
+  display: flex;
+  gap: 10px;
+  margin: 10px;
+}
+
+.chart {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background-color: rgb(232, 232, 232);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 @media (max-width: 450px) {
   .contentInner {
     width: 100%;
