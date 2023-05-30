@@ -124,6 +124,12 @@ export default function Navbar() {
     setTotalPrice(totalPrice + total);
   }, [carts]);
 
+  const handleSearch = () => {
+    const search = (document.getElementById('search') as HTMLInputElement)
+      .value;
+    window.location.href = `/search?search=${search}`;
+  };
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
@@ -157,8 +163,8 @@ export default function Navbar() {
 
       <div className={styles.center}>
         <div className={styles.search}>
-          <input type="text" />
-          <button className={styles.searchIcon}>
+          <input type="text" id="search" />
+          <button className={styles.searchIcon} onClick={handleSearch}>
             <Image
               src="/assets/icon-search.png"
               alt="Search Icon"

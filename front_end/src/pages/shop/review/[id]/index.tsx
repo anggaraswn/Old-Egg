@@ -4,7 +4,7 @@ import styles from './StoreReview.module.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
+import { FaStar, FaStarHalfAlt, FaHeart, FaHeartBroken } from 'react-icons/fa';
 
 interface Shop {
   id: string;
@@ -36,6 +36,7 @@ export default function ReviewStore() {
   const { id } = router.query;
   const [shop, setShop] = useState<Shop | null>(null);
   const [allShopReview, setAllShopReview] = useState<ShopReview[]>([]);
+  const [shopReviews, setShopReviews] = useState<ShopReview[]>([]);
   const [fullStars, setFullStars] = useState(0);
   const [halfStars, setHalfStars] = useState(0);
   const [oneStar, setOneStar] = useState(0);
@@ -48,6 +49,11 @@ export default function ReviewStore() {
   const [productAccuracy, setProductAccuracy] = useState(0);
   const [serviceSatisfaction, setServiceSatisfaction] = useState(0);
   const [filterBy, setFilterBy] = useState('all');
+  const [search, setSearch] = useState('');
+  const [reviewStates, setReviewStates] = useState<
+    { like: boolean; dislike: boolean }[]
+  >([]);
+
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
   const GET_SHOP_QUERY = `query Shop($id: ID!){
     shop(id: $id){
@@ -64,20 +70,51 @@ export default function ReviewStore() {
   }
   `;
 
-  useEffect(() => {
-    GRAPHQLAPI.post('', {
-      query: GET_SHOP_QUERY,
-      variables: {
-        id: id,
+  const GET_SHOP_REVIEWS_QUERY = `query shopReviews($shopID: ID!, $search: String, $filter: String){
+    shopReviews(shopID: $shopID, search: $search, filter: $filter){
+      id,
+      user{
+        id,
+        firstName,
+        lastName,
       },
-    })
-      .then((response) => {
-        console.log(response);
-        setShop(response.data.data.shop);
+      rating,
+      review,
+      reviewDetails,
+      createdAt,
+      deliveryOnTime,
+      productAccuracy,
+      serviceSatisfaction,
+      helpful
+    }
+  }`;
+
+  useEffect(() => {
+    if (id) {
+      GRAPHQLAPI.post('', {
+        query: GET_SHOP_QUERY,
+        variables: {
+          id: id,
+        },
       })
-      .catch((err) => {
-        console.log(err);
-      });
+        .then((response) => {
+          console.log(response);
+          setShop(response.data.data.shop);
+          GRAPHQLAPI.post('', {
+            query: GET_SHOP_REVIEWS_QUERY,
+            variables: {
+              shopID: id,
+            },
+          }).then((response) => {
+            console.log(response);
+            setAllShopReview(response.data.data.shopReviews);
+            setShopReviews(response.data.data.shopReviews);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [id]);
 
   useEffect(() => {
@@ -128,12 +165,35 @@ export default function ReviewStore() {
       setOnTimeDelivery(onTime);
       setServiceSatisfaction(satisfaction);
     }
+    setFullStars(Math.floor(avgRating));
+    setHalfStars(Math.round(avgRating - fullStars));
   }, [allShopReview]);
 
   useEffect(() => {
-    setFullStars(Math.floor(shop?.rating));
-    setHalfStars(Math.round(shop?.rating - fullStars));
-  }, [shop]);
+    if (id) {
+      GRAPHQLAPI.post('', {
+        query: GET_SHOP_REVIEWS_QUERY,
+        variables: {
+          shopID: id,
+          search: search,
+          filter: filterBy,
+        },
+      }).then((response) => {
+        console.log(response);
+        setShopReviews(response.data.data.shopReviews);
+      });
+    }
+  }, [filterBy, search]);
+
+  useEffect(() => {
+    const initialStates = shopReviews.map((sr) => {
+      return {
+        like: false,
+        dislike: false,
+      };
+    });
+    setReviewStates(initialStates);
+  }, [shopReviews]);
 
   const handleHome = () => {
     return '/shop/' + id;
@@ -149,6 +209,11 @@ export default function ReviewStore() {
 
   const handleAllProducts = () => {
     return '/shop/productsPage/' + id;
+  };
+
+  const handleSearch = (event: any) => {
+    console.log(event.target.value);
+    setSearch(event.target.value);
   };
 
   return (
@@ -239,7 +304,7 @@ export default function ReviewStore() {
                 {[...Array(halfStars >= 0 ? halfStars : 0)].map((_, index) => (
                   <FaStarHalfAlt key={index} className={styles.star} />
                 ))}
-                &nbsp;{shop?.rating} Ratings
+                &nbsp;{avgRating} Ratings from {shopReviews.length} feedback
               </div>
               <div>
                 To rate this seller or report a problem, please use the link
@@ -335,6 +400,14 @@ export default function ReviewStore() {
             </div>
           </div>
           <div className={styles.reviews}>
+            <div className={styles.search}>
+              <input
+                type="text"
+                className={styles.input}
+                value={search}
+                onChange={handleSearch}
+              />
+            </div>
             <div className={styles.sortByContainer}>
               <span>Filter By: </span>
               <select
@@ -345,9 +418,65 @@ export default function ReviewStore() {
                 className={styles.selectstyle}
               >
                 <option value="all">All</option>
-                <option value="open">Open</option>
-                <option value="cancelled">Cancelled</option>
+                <option value="30">30 Days</option>
+                <option value="60">60 days</option>
+                <option value="12">1 Year</option>
               </select>
+            </div>
+            <div className={styles.reviewCard}>
+              {shopReviews.map((sr, i) => {
+                return (
+                  <div className={styles.card} key={i}>
+                    <div className={styles.left}>
+                      <div>
+                        {sr.user.firstName} {sr.user.lastName}
+                      </div>
+                      <div>{new Date(sr.createdAt).toDateString()}</div>
+                    </div>
+                    <div className={styles.reviewContent}>
+                      <div>
+                        <b> {sr.review}</b>
+                      </div>
+                      <div>{sr.reviewDetails}</div>
+                    </div>
+                    <div className={styles.right}>
+                      <p>Did you find this review helpful?</p>
+                      <div>
+                        <button
+                          className={
+                            reviewStates[i]?.like
+                              ? styles.selectedButton
+                              : styles.unselectedButton
+                          }
+                          onClick={() => {
+                            const newStates = [...reviewStates];
+                            newStates[i].like = true;
+                            newStates[i].dislike = false;
+                            setReviewStates(newStates);
+                          }}
+                        >
+                          <FaHeart />
+                        </button>
+                        <button
+                          className={
+                            reviewStates[i]?.dislike
+                              ? styles.selectedButton
+                              : styles.unselectedButton
+                          }
+                          onClick={() => {
+                            const newStates = [...reviewStates];
+                            newStates[i].like = false;
+                            newStates[i].dislike = true;
+                            setReviewStates(newStates);
+                          }}
+                        >
+                          <FaHeartBroken />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>

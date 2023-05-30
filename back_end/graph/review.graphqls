@@ -30,11 +30,32 @@ type ShopReview {
     helpful: Boolean!
 }
 
+type WishlistReview {
+    id: ID!
+    wishlist: Wishlist! @goField(forceResolver: true)
+    user: User! @goField(forceResolver: true)
+    rating: Float!
+    review: String!
+    detailReview: String!
+    name: String!
+}
+
 extend type Query {
-    reviews(productID: ID): [Review!]!
-    shopReviews(shopID: ID!, search: String, filter: Int): [ShopReview!]!
+    reviews: [Review!]! @auth
+    shopReviews(shopID: ID!, search: String, filter: String): [ShopReview!]!
+    wishlistReviews(wishlistID: ID!): [WishlistReview!]!
 }
 
 extend type Mutation {
     createReview(input: NewReview!): Review! @auth
+    createWishlistReview(
+        wishlistID: ID!
+        rating: Float!
+        review: String!
+        detailReview: String!
+        name: String
+    ): WishlistReview! @auth
+    deleteReview(reviewID: ID!): Review! @auth
+    updateReview(reviewID: ID!, rating: Float!, description: String!): Review!
+        @auth
 }

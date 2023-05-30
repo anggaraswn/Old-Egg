@@ -135,6 +135,34 @@
   align-items: center;
 }
 
+.card {
+  display: flex;
+  column-gap: 10vw;
+}
+
+.reviewContent {
+  width: 30%;
+}
+
+.selectedButton {
+  background-color: red;
+}
+
+.right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 30%;
+}
+
+.tagContainer {
+  display: flex;
+}
+
+.tagContainer button {
+  margin: 0 5px;
+}
+
 @media (max-width: 450px) {
   .contentInner {
     width: 100%;

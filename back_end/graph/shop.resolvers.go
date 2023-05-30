@@ -223,7 +223,7 @@ func (r *queryResolver) ShopOrders(ctx context.Context, filter *string) ([]*mode
 	var shopOrders []*model.TransactionHeader
 
 	s := db.Model(shopOrders).Joins("JOIN transaction_details ON transaction_headers.id = transaction_details.transaction_header_id").
-	Joins("JOIN products ON transaction_details.product_id = products.id").Where("products.shop_id = ?", shop.ID)
+		Joins("JOIN products ON transaction_details.product_id = products.id").Where("products.shop_id = ?", shop.ID)
 
 	if filter != nil && *filter != "all" {
 		s = s.Where("transaction_headers.status LIKE ?", *filter)

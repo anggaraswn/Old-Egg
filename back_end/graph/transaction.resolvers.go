@@ -114,7 +114,7 @@ func (r *mutationResolver) UpdateTransactionHeader(ctx context.Context, status s
 	}
 
 	transactionHeader.Status = status
-	
+
 	return transactionHeader, db.Save(transactionHeader).Error
 }
 

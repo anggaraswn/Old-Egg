@@ -151,8 +151,22 @@ export default function WishList() {
         <div className={styles.topBar}>
           <div className={styles.pageTitle}>WISH LIST</div>
           <button className={styles.selectedBTN}>My Lists</button>
-          <button className={styles.otherBTN}>Followed Lists</button>
-          <button className={styles.otherBTN}>Public Lists</button>
+          <button
+            className={styles.otherBTN}
+            onClick={() => {
+              window.location.href = '/followedList';
+            }}
+          >
+            Followed Lists
+          </button>
+          <button
+            className={styles.otherBTN}
+            onClick={() => {
+              window.location.href = '/wishlist/publicWishlist/';
+            }}
+          >
+            Public Lists
+          </button>
         </div>
         <div className={styles.pageSectionInner}>
           <div className={styles.wishlistOperate}>

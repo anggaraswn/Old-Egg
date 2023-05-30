@@ -13,6 +13,7 @@ interface Product {
 }
 
 export default function ProductCard(props: Product) {
+  console.log(props);
   return (
     <div className={styles.productcard}>
       {/* <Link href={links.productDetail(props.id)} passHref> */}

@@ -139,7 +139,19 @@ func (r *queryResolver) Products(ctx context.Context, shopID *string, limit *int
 		if search.Keyword != nil {
 			p = p.Where("name LIKE ? OR description LIKE ?", "%"+*search.Keyword+"%", "%"+*search.Keyword+"%")
 		}
+		if search.OrderBy != nil {
+			println("in")
+			if *search.OrderBy == "highestprice" {
+				p = p.Order("price DESC")
+			} else if *search.OrderBy == "lowestprice" {
+				p = p.Order("price ASC")
+			} else if *search.OrderBy == "highestrating" {
+				p = p.Order("rating DESC")
+			} else if *search.OrderBy == "lowestrating" {
+				p = p.Order("rating ASC")
+			}
 	}
+}
 
 	return products, p.Find(&products).Error
 }

@@ -192,6 +192,7 @@ export default function Order() {
             className={styles.input}
             value={search}
             onChange={handleSearch}
+            placeholder="Search review"
           />
         </div>
         <div className={styles.transactionsContainer}>

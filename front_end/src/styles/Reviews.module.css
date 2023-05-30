@@ -1,0 +1,78 @@
+.star {
+  color: rgb(255, 187, 0);
+}
+
+.reviewCard {
+  padding: 10px 20px 20px 20px;
+  border: 1px solid gray;
+  margin: 10px;
+}
+
+.group {
+  display: flex;
+  justify-content: space-between;
+  color: gray;
+}
+
+.description {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.links {
+  text-align: right;
+}
+
+.links a {
+  z-index: 999;
+  margin: 0 10px;
+  visibility: hidden;
+  text-decoration: none;
+}
+
+.reviewCard:hover .links a {
+  visibility: visible;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.product {
+  margin: 10px 0;
+  display: flex;
+}
+
+.product img {
+  height: 100px;
+}
+
+.form {
+  margin-left: 10px;
+}
+
+.inputField {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.buttonContainer {
+  margin: 20px 0;
+}
+
+.backBTN {
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  width: 8vw;
+}
+
+.orangeBTN {
+  background-color: orange;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  margin-left: 10px;
+  width: 8vw;
+}

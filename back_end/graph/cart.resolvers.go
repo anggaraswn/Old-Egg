@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
@@ -144,10 +145,11 @@ func (r *mutationResolver) CreateWishlist(ctx context.Context, name string, opti
 	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
 
 	wishlist := model.Wishlist{
-		ID:     uuid.NewString(),
-		Name:   name,
-		UserID: userID,
-		Option: option,
+		ID:          uuid.NewString(),
+		Name:        name,
+		UserID:      userID,
+		Option:      option,
+		CreatedDate: time.Now(),
 	}
 
 	if err := db.Model(wishlist).Create(&wishlist).Error; err != nil {
@@ -368,6 +370,46 @@ func (r *mutationResolver) DeleteSaveForLater(ctx context.Context, productID str
 	return saveForLater.Product, db.Exec("DELETE FROM save_for_laters WHERE user_id = ? AND product_id = ?", userID, productID).Error
 }
 
+// FollowWishlist is the resolver for the followWishlist field.
+func (r *mutationResolver) FollowWishlist(ctx context.Context, wishlistID string) (*model.WishlistFollower, error) {
+	// panic(fmt.Errorf("not implemented: FollowWishlist - followWishlist"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	follow := model.WishlistFollower{
+		WishlistID: wishlistID,
+		UserID:     userID,
+	}
+
+	return &follow, db.Create(follow).Error
+}
+
+// UnfollowWishlist is the resolver for the unfollowWishlist field.
+func (r *mutationResolver) UnfollowWishlist(ctx context.Context, wishlistID string) (*model.WishlistFollower, error) {
+	// panic(fmt.Errorf("not implemented: UnfollowWishlist - unfollowWishlist"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	follow := new(model.WishlistFollower)
+	if err := db.Where("user_id = ? AND wishlist_id = ?", userID, wishlistID).Take(&follow).Error; err != nil {
+		return nil, err
+	}
+
+	return follow, db.Exec("DELETE FROM wishlist_followers WHERE user_id = ? AND wishlist_id = ?", userID, wishlistID).Error
+}
+
 // Carts is the resolver for the carts field.
 func (r *queryResolver) Carts(ctx context.Context) ([]*model.Cart, error) {
 	// panic(fmt.Errorf("not implemented: Carts - carts"))
@@ -408,8 +450,45 @@ func (r *queryResolver) CurrentUserWishlist(ctx context.Context) ([]*model.Wishl
 }
 
 // Wishlists is the resolver for the wishlists field.
-func (r *queryResolver) Wishlists(ctx context.Context) ([]*model.Wishlist, error) {
-	panic(fmt.Errorf("not implemented: Wishlists - wishlists"))
+func (r *queryResolver) Wishlists(ctx context.Context, filter *string, sortBy *string, limit *int, offset *int) ([]*model.Wishlist, error) {
+	// panic(fmt.Errorf("not implemented: Wishlists - wishlists"))
+	db := database.GetDB()
+
+	var wishlists []*model.Wishlist
+	temp := db.Model(wishlists)
+
+	if filter != nil {
+		temp = temp.Where("option LIKE ?", filter)
+	}
+
+	if sortBy != nil {
+		if *sortBy == "createdDate" {
+			println("Created Date")
+			temp = temp.Order("created_date DESC")
+		} else if *sortBy == "highestRating" {
+			println("Highest Rating")
+			temp = temp.Select("wishlists.id, wishlists.name, wishlists.user_id, wishlists.option, wishlists.created_date, wishlists.notes").Joins("LEFT JOIN wishlist_reviews ON wishlists.id = wishlist_reviews.wishlist_id").Group("wishlists.id").Order("COUNT(wishlist_reviews.id) DESC, AVG(wishlist_reviews.rating) DESC")
+		} else if *sortBy == "lowestRating" {
+			temp = temp.Select("wishlists.id, wishlists.name, wishlists.user_id, wishlists.option, wishlists.created_date, wishlists.notes").Joins("LEFT JOIN wishlist_reviews ON wishlists.id = wishlist_reviews.wishlist_id").Group("wishlists.id").Order("COUNT(wishlist_reviews.id) DESC, AVG(wishlist_reviews.rating) ASC")
+		} else if *sortBy == "highestPrice" {
+			temp = temp.Select("wishlists.id, wishlists.name, wishlists.user_id, wishlists.option, wishlists.created_date, wishlists.notes ").Joins("LEFT JOIN wishlist_details ON wishlists.id = wishlist_details.wishlist_id JOIN products  ON wishlist_details.product_id = products.id").Group("wishlists.id").Order("SUM(products.price) DESC")
+		} else if *sortBy == "lowestPrice" {
+			temp = temp.Select("wishlists.id, wishlists.name, wishlists.user_id, wishlists.option, wishlists.created_date, wishlists.notes ").Joins("LEFT JOIN wishlist_details ON wishlists.id = wishlist_details.wishlist_id JOIN products  ON wishlist_details.product_id = products.id").Group("wishlists.id").Order("SUM(products.price) ASC")
+		} else if *sortBy == "highestFollowers" {
+			temp = temp.Select("wishlists.id, wishlists.name, wishlists.user_id, wishlists.option, wishlists.created_date, wishlists.notes").Joins("LEFT JOIN wishlist_followers ON wishlists.id = wishlist_followers.wishlist_id").Group("wishlists.id").Order("COUNT(wishlist_followers.wishlist_id) DESC")
+		}
+
+	}
+
+	if offset != nil {
+		temp = temp.Offset(*offset)
+	}
+
+	if limit != nil {
+		temp = temp.Limit(*limit)
+	}
+
+	return wishlists, temp.Find(&wishlists).Error
 }
 
 // Wishlist is the resolver for the wishlist field.
@@ -446,6 +525,49 @@ func (r *queryResolver) WishlistDetails(ctx context.Context, wishlistID string) 
 
 	var models []*model.WishListDetail
 	return models, db.Where("wishlist_id = ?", wishlistID).Find(&models).Error
+}
+
+// WishlistFollower is the resolver for the wishlistFollower field.
+func (r *queryResolver) WishlistFollower(ctx context.Context, wishlistID string) (*model.WishlistFollower, error) {
+	// panic(fmt.Errorf("not implemented: WishlistFollower - wishlistFollower"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	follow := new(model.WishlistFollower)
+
+	return follow, db.Where("user_id = ?", userID).Find(&follow).Error
+}
+
+// WishlistFollowers is the resolver for the wishlistFollowers field.
+func (r *queryResolver) WishlistFollowers(ctx context.Context, wishlistID string) ([]*model.WishlistFollower, error) {
+	// panic(fmt.Errorf("not implemented: WishlistFollowers - wishlistFollowers"))
+	db := database.GetDB()
+	var followers []*model.WishlistFollower
+
+	return followers, db.Where("wishlist_id = ?", wishlistID).Find(&followers).Error
+}
+
+// UserFollowedWishlists is the resolver for the userFollowedWishlists field.
+func (r *queryResolver) UserFollowedWishlists(ctx context.Context) ([]*model.WishlistFollower, error) {
+	// panic(fmt.Errorf("not implemented: UserFollowedWishlists - userFollowedWishlists"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	var followed []*model.WishlistFollower
+
+	return followed, db.Where("user_id = ?", userID).Find(&followed).Error
 }
 
 // User is the resolver for the user field.
@@ -507,6 +629,26 @@ func (r *wishlistResolver) WishlistDetails(ctx context.Context, obj *model.Wishl
 	return models, db.Where("wishlist_id = ?", obj.ID).Find(&models).Error
 }
 
+// Wishlist is the resolver for the wishlist field.
+func (r *wishlistFollowerResolver) Wishlist(ctx context.Context, obj *model.WishlistFollower) (*model.Wishlist, error) {
+	// panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
+	db := database.GetDB()
+
+	wishlist := new(model.Wishlist)
+
+	return wishlist, db.Where("id = ?", obj.WishlistID).Find(&wishlist).Error
+}
+
+// User is the resolver for the user field.
+func (r *wishlistFollowerResolver) User(ctx context.Context, obj *model.WishlistFollower) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.Where("id = ?", obj.UserID).Find(&user).Error
+}
+
 // Cart returns CartResolver implementation.
 func (r *Resolver) Cart() CartResolver { return &cartResolver{r} }
 
@@ -519,7 +661,11 @@ func (r *Resolver) WishListDetail() WishListDetailResolver { return &wishListDet
 // Wishlist returns WishlistResolver implementation.
 func (r *Resolver) Wishlist() WishlistResolver { return &wishlistResolver{r} }
 
+// WishlistFollower returns WishlistFollowerResolver implementation.
+func (r *Resolver) WishlistFollower() WishlistFollowerResolver { return &wishlistFollowerResolver{r} }
+
 type cartResolver struct{ *Resolver }
 type saveForLaterResolver struct{ *Resolver }
 type wishListDetailResolver struct{ *Resolver }
 type wishlistResolver struct{ *Resolver }
+type wishlistFollowerResolver struct{ *Resolver }

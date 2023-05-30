@@ -46,6 +46,8 @@ func main() {
 	db.AutoMigrate(&model.TransactionHeader{})
 	db.AutoMigrate(&model.TransactionDetail{})
 	db.AutoMigrate(&model.Voucher{})
+	db.AutoMigrate(&model.WishlistReview{})
+	db.AutoMigrate(&model.WishlistFollower{})
 	
 
 	router := mux.NewRouter()

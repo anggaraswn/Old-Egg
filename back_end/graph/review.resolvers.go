@@ -7,8 +7,13 @@ package graph
 import (
 	"context"
 	"fmt"
+	"time"
 
+	"github.com/anggaraswn/gqlgen-todos/database"
 	"github.com/anggaraswn/gqlgen-todos/graph/model"
+	"github.com/anggaraswn/gqlgen-todos/service"
+	"github.com/google/uuid"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // CreateReview is the resolver for the createReview field.
@@ -16,53 +21,168 @@ func (r *mutationResolver) CreateReview(ctx context.Context, input model.NewRevi
 	panic(fmt.Errorf("not implemented: CreateReview - createReview"))
 }
 
+// CreateWishlistReview is the resolver for the createWishlistReview field.
+func (r *mutationResolver) CreateWishlistReview(ctx context.Context, wishlistID string, rating float64, review string, detailReview string, name *string) (*model.WishlistReview, error) {
+	// panic(fmt.Errorf("not implemented: CreateWishlistReview - createWishlistReview"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	if name != nil {
+		wishlistReview := model.WishlistReview{
+			ID:           uuid.NewString(),
+			WishlistID:   wishlistID,
+			UserID:       userID,
+			Rating:       rating,
+			Review:       review,
+			DetailReview: detailReview,
+			Name:         *name,
+		}
+		if err := db.Model(wishlistReview).Create(&wishlistReview).Error; err != nil {
+			return nil, err
+		}
+
+		return &wishlistReview, nil
+	} else {
+		wishlistReview := model.WishlistReview{
+			ID:           uuid.NewString(),
+			WishlistID:   wishlistID,
+			UserID:       userID,
+			Rating:       rating,
+			Review:       review,
+			DetailReview: detailReview,
+			Name:         "Anonymous",
+		}
+
+		if err := db.Model(wishlistReview).Create(&wishlistReview).Error; err != nil {
+			return nil, err
+		}
+
+		return &wishlistReview, nil
+	}
+}
+
+// DeleteReview is the resolver for the deleteReview field.
+func (r *mutationResolver) DeleteReview(ctx context.Context, reviewID string) (*model.Review, error) {
+	// panic(fmt.Errorf("not implemented: DeleteReview - deleteReview"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	review := new(model.Review)
+
+	if err := db.Where("user_id = ? AND id = ?", userID, reviewID).Take(&review).Error; err != nil {
+		return nil, err
+	}
+
+	return review, db.Exec("DELETE FROM reviews WHERE user_id = ? AND id = ?", userID, reviewID).Error
+}
+
+// UpdateReview is the resolver for the updateReview field.
+func (r *mutationResolver) UpdateReview(ctx context.Context, reviewID string, rating float64, description string) (*model.Review, error) {
+	// panic(fmt.Errorf("not implemented: UpdateReview - updateReview"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	review := new(model.Review)
+
+	if err := db.Where("user_id = ? AND id = ?", userID, reviewID).Take(&review).Error; err != nil {
+		return nil, err
+	}
+
+	return review, db.Exec("UPDATE reviews SET rating = ?, description = ? WHERE user_id = ? AND id = ?", rating, description, userID, reviewID).Error
+}
+
 // Reviews is the resolver for the reviews field.
-func (r *queryResolver) Reviews(ctx context.Context, productID *string) ([]*model.Review, error) {
-	panic(fmt.Errorf("not implemented: Reviews - reviews"))
+func (r *queryResolver) Reviews(ctx context.Context) ([]*model.Review, error) {
+	// panic(fmt.Errorf("not implemented: Reviews - reviews"))
+	db := database.GetDB()
+	if ctx.Value("auth") == nil {
+		return nil, &gqlerror.Error{
+			Message: "Invalid Token !",
+		}
+	}
+
+	userID := ctx.Value("auth").(*service.JwtCustomClaim).ID
+
+	var reviews []*model.Review
+
+	return reviews, db.Where("user_id = ?", userID).Find(&reviews).Error
 }
 
 // ShopReviews is the resolver for the shopReviews field.
-func (r *queryResolver) ShopReviews(ctx context.Context, shopID string, search *string, filter *int) ([]*model.ShopReview, error) {
-	panic(fmt.Errorf("not implemented: ShopReviews - shopReviews"))
-	// db := database.GetDB()
+func (r *queryResolver) ShopReviews(ctx context.Context, shopID string, search *string, filter *string) ([]*model.ShopReview, error) {
+	// panic(fmt.Errorf("not implemented: ShopReviews - shopReviews"))
+	db := database.GetDB()
 
-	// var shopReviews []*model.ShopReview
+	var shopReviews []*model.ShopReview
 
-	// s := db.Model(shopReviews).Where("shop_id = ?", shopID)
+	s := db.Model(shopReviews).Where("shop_id = ?", shopID)
 
-	// if search != nil {
-	// 	s = s.Where("review LIKE ? OR review_details LIKE ?", "%"+*search+"%", "%"+*search+"%")
-	// }
+	if search != nil {
+		s = s.Where("review LIKE ? OR review_details LIKE ?", "%"+*search+"%", "%"+*search+"%")
+	}
 
-	// if filter != nil {
-	// 	if *filter == "30" {
-	// 		date := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
-	// 		s = s.Where("created_at >= ?", date)
-	// 	} else if *filter == "60" {
-	// 		date := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
-	// 		s = s.Where("created_at >= ?", date)
-	// 	} else if *filter == "12" {
-	// 		date := time.Now().AddDate(0, -12, 0).Format("2006-01-02")
-	// 		s = s.Where("created_at >= ?", date)
-	// 	}
-	// }
+	if filter != nil {
+		if *filter == "30" {
+			date := time.Now().AddDate(0, 0, -30).Format("2006-01-02")
+			s = s.Where("created_at >= ?", date)
+		} else if *filter == "60" {
+			date := time.Now().AddDate(0, 0, -60).Format("2006-01-02")
+			s = s.Where("created_at >= ?", date)
+		} else if *filter == "12" {
+			date := time.Now().AddDate(0, -12, 0).Format("2006-01-02")
+			s = s.Where("created_at >= ?", date)
+		}
+	}
 
-	// return shopReviews, s.Find(&shopReviews).Error
+	return shopReviews, s.Find(&shopReviews).Error
+}
+
+// WishlistReviews is the resolver for the wishlistReviews field.
+func (r *queryResolver) WishlistReviews(ctx context.Context, wishlistID string) ([]*model.WishlistReview, error) {
+	// panic(fmt.Errorf("not implemented: WishlistReviews - wishlistReviews"))
+	db := database.GetDB()
+
+	var wishlistReviews []*model.WishlistReview
+
+	return wishlistReviews, db.Where("wishlist_id = ?", wishlistID).Find(&wishlistReviews).Error
 }
 
 // User is the resolver for the user field.
 func (r *reviewResolver) User(ctx context.Context, obj *model.Review) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.First(user, "id = ?", obj.UserID).Error
 }
 
 // Product is the resolver for the product field.
 func (r *reviewResolver) Product(ctx context.Context, obj *model.Review) (*model.Product, error) {
-	panic(fmt.Errorf("not implemented: Product - product"))
-}
+	// panic(fmt.Errorf("not implemented: Product - product"))
+	db := database.GetDB()
 
-// Rating is the resolver for the rating field.
-func (r *reviewResolver) Rating(ctx context.Context, obj *model.Review) (float64, error) {
-	panic(fmt.Errorf("not implemented: Rating - rating"))
+	product := new(model.Product)
+
+	return product, db.First(product, "id = ?", obj.ProductID).Error
 }
 
 // Shop is the resolver for the shop field.
@@ -72,7 +192,12 @@ func (r *shopReviewResolver) Shop(ctx context.Context, obj *model.ShopReview) (*
 
 // User is the resolver for the user field.
 func (r *shopReviewResolver) User(ctx context.Context, obj *model.ShopReview) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: User - user"))
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.First(user, "id = ?", obj.UserID).Error
 }
 
 // TransactionHeader is the resolver for the transactionHeader field.
@@ -80,9 +205,19 @@ func (r *shopReviewResolver) TransactionHeader(ctx context.Context, obj *model.S
 	panic(fmt.Errorf("not implemented: TransactionHeader - transactionHeader"))
 }
 
-// Rating is the resolver for the rating field.
-func (r *shopReviewResolver) Rating(ctx context.Context, obj *model.ShopReview) (float64, error) {
-	panic(fmt.Errorf("not implemented: Rating - rating"))
+// Wishlist is the resolver for the wishlist field.
+func (r *wishlistReviewResolver) Wishlist(ctx context.Context, obj *model.WishlistReview) (*model.Wishlist, error) {
+	panic(fmt.Errorf("not implemented: Wishlist - wishlist"))
+}
+
+// User is the resolver for the user field.
+func (r *wishlistReviewResolver) User(ctx context.Context, obj *model.WishlistReview) (*model.User, error) {
+	// panic(fmt.Errorf("not implemented: User - user"))
+	db := database.GetDB()
+
+	user := new(model.User)
+
+	return user, db.Where("id = ?", obj.UserID).Find(&user).Error
 }
 
 // Review returns ReviewResolver implementation.
@@ -91,5 +226,22 @@ func (r *Resolver) Review() ReviewResolver { return &reviewResolver{r} }
 // ShopReview returns ShopReviewResolver implementation.
 func (r *Resolver) ShopReview() ShopReviewResolver { return &shopReviewResolver{r} }
 
+// WishlistReview returns WishlistReviewResolver implementation.
+func (r *Resolver) WishlistReview() WishlistReviewResolver { return &wishlistReviewResolver{r} }
+
 type reviewResolver struct{ *Resolver }
 type shopReviewResolver struct{ *Resolver }
+type wishlistReviewResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *reviewResolver) Rating(ctx context.Context, obj *model.Review) (float64, error) {
+	panic(fmt.Errorf("not implemented: Rating - rating"))
+}
+func (r *shopReviewResolver) Rating(ctx context.Context, obj *model.ShopReview) (float64, error) {
+	panic(fmt.Errorf("not implemented: Rating - rating"))
+}

@@ -4,6 +4,8 @@ import axios from 'axios';
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa';
 import styles from '../styles/Search.module.css';
 import ProductCard from '@/components/productCard';
+import Navbar from '@/components/navbar';
+import FooterMain from '@/components/footerMain';
 
 interface Product {
   id: string;
@@ -21,7 +23,7 @@ interface Product {
 
 export default function Search() {
   const router = useRouter();
-  const { search, category } = router.query;
+  const { search } = router.query;
   const [limit, setLimit] = useState(4);
   const [offset, setOffset] = useState(0);
   const [products, setProducts] = useState<Product[]>([]);
@@ -31,22 +33,22 @@ export default function Search() {
   const [refresh, setRefresh] = useState(false);
 
   const GRAPHQLAPI = axios.create({ baseURL: 'http://localhost:8080/query' });
-  const SEARCH_PRODUCTS_QUERY = `query products($keyword: String){
-    products(search: {
-      keyword: $keyword
+  const SEARCH_PRODUCTS_QUERY = `query($keyword:String, $orderBy: String, $limit: Int){
+    products(limit:$limit,search:{
+      keyword:$keyword
+      orderBy:$orderBy
     }){
-      id,
-      name,
+      id
+      name
+      images
+      price
       description
+      discount
     }
   }`;
 
-  const refreshComponent = () => {
-    setRefresh(!refresh);
-  };
-  //offset = (page-1)*limit
-
   useEffect(() => {
+    console.log(search);
     if (search) {
       GRAPHQLAPI.post('', {
         query: SEARCH_PRODUCTS_QUERY,
@@ -54,15 +56,16 @@ export default function Search() {
           keyword: search,
         },
       })
-        .then((res) => {
-          console.log(res.data.data.products.length / limit);
-          setTotalPage(Math.ceil(res.data.data.products.length / limit));
+        .then((response) => {
+          console.log(search);
+          console.log(response);
+          setProducts(response.data.data.products);
+          setTotalPage(Math.ceil(response.data.data.products.length / limit));
           setCurrentPage(1);
           setOffset(0);
         })
         .catch((err) => {
           console.log(err);
-          console.log('Eror disini');
         });
     }
   }, [refresh]);
@@ -72,10 +75,8 @@ export default function Search() {
   }, [limit, search]);
 
   useEffect(() => {
-    console.log(offset);
+    console.log('in');
     if (search && totalPage) {
-      console.log('masuk');
-      console.log(search);
       GRAPHQLAPI.post('', {
         query: SEARCH_PRODUCTS_QUERY,
         variables: {
@@ -85,35 +86,30 @@ export default function Search() {
           orderBy: orderBy,
         },
       })
-        .then((res) => {
-          setProducts(res.data.data.products);
-          // setCurrentPage();
+        .then((response) => {
+          setProducts(response.data.data.products);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  }, [search, category, totalPage, offset, orderBy]);
+  }, [search, totalPage, offset, orderBy]);
 
-  const handleNextPageClick = () => {
-    if (currentPage < totalPage) {
-      setCurrentPage(currentPage + 1);
-    }
+  const refreshComponent = () => {
+    setRefresh(!refresh);
   };
 
-  useEffect(() => {
-    // console.log(limit);
-    // console.log(offset);
-    setOffset((currentPage - 1) * limit);
-  }, [currentPage]);
-
-  const handlePrevPageClick = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
+  const handleNext = () => {
+    if (currentPage < totalPage) setCurrentPage(currentPage + 1);
+  };
+
   return (
     <div className={styles.maincontainer}>
+      <Navbar />
       <div className={styles.header}></div>
       <div className={styles.pagedivider}>
         <div className={styles.leftside}></div>
@@ -140,7 +136,7 @@ export default function Search() {
                 <div>
                   {' '}
                   <button
-                    onClick={handlePrevPageClick}
+                    onClick={handlePrev}
                     style={{
                       display: 'inline',
                     }}
@@ -149,7 +145,7 @@ export default function Search() {
                     <FaAngleLeft />
                   </button>
                   <button
-                    onClick={handleNextPageClick}
+                    onClick={handleNext}
                     style={{
                       display: 'inline',
                     }}
@@ -196,21 +192,21 @@ export default function Search() {
             </div>
           </div>
           <div className={styles.productcontainer}>
-            {products.map((e) => {
+            {products.map((p) => {
               return (
-                <ProductCard
-                  id={e.id}
-                  image={e.images}
-                  name={e.name}
-                  price={e.price}
-                  key={e.id}
-                  discount={e.discount}
-                />
+                <div className={styles.productCard} key={p.id}>
+                  <img src={p.images} alt="" />
+                  <div className={styles.productInfo}>
+                    <div>{p.name}</div>
+                    <div>${p.price}</div>
+                  </div>
+                </div>
               );
             })}
           </div>
         </div>
       </div>
+      <FooterMain />
     </div>
   );
 }
